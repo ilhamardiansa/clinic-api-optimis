@@ -22,7 +22,6 @@ import { Schedule } from './entity/schedule.entity';
 import { Transaction } from './entity/transaction.entity';
 import { User } from './entity/user.entity';
 import { Village } from './entity/village.entity';
-import * as dotenv from 'dotenv';
 
 export const DATABASE_ENTITIES = [
   Bank,
@@ -49,20 +48,6 @@ export const DATABASE_ENTITIES = [
   User,
   Village,
 ];
-
-export const typeormConnectionConfig: TypeOrmModuleOptions = {
-  type: 'mysql',
-  host: process.env.DATABASE_HOST,
-  port: parseInt(<string>process.env.DATABASE_PORT) || 3306,
-  username: process.env.DATABASE_USERNAME,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
-  entities: DATABASE_ENTITIES,
-  ssl: {
-    rejectUnauthorized: false 
-  },
-  synchronize: true,
-};
 
 
 export const format_api = (status: boolean, data: any, message: any) => ({
