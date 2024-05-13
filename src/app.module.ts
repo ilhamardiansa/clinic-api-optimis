@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeormConnectionConfig } from './env';
-import { DataSourceModule } from './datasoruce.module';
 import { BankModule } from './modules/bank.module';
 import { CategoryModule } from './modules/category.module';
 import { CityModule } from './modules/city.module';
@@ -30,7 +29,6 @@ import * as dotenv from 'dotenv';
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeormConnectionConfig),
-    DataSourceModule,
     BankModule,
     CategoryModule,
     CityModule,
