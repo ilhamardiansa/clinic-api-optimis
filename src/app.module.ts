@@ -25,6 +25,7 @@ import { TransactionModule } from './modules/transaction.module';
 import { UserModule } from './modules/user.module';
 import { VillageModule } from './modules/village.module';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -38,6 +39,11 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DATABASE_NAME,
       entities: DATABASE_ENTITIES,
       synchronize: true,
+    }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '2h' },
     }),
     BankModule,
     CategoryModule,
