@@ -22,6 +22,7 @@ import { Schedule } from './entity/schedule.entity';
 import { Transaction } from './entity/transaction.entity';
 import { User } from './entity/user.entity';
 import { Village } from './entity/village.entity';
+import { Otp } from './entity/otp.entity';
 
 export const DATABASE_ENTITIES = [
   Bank,
@@ -47,6 +48,7 @@ export const DATABASE_ENTITIES = [
   Transaction,
   User,
   Village,
+  Otp
 ];
 
 
