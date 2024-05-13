@@ -26,6 +26,7 @@ import { UserModule } from './modules/user.module';
 import { VillageModule } from './modules/village.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { Authmodule } from './modules/auth.module';
 
 @Module({
   imports: [
@@ -43,7 +44,6 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '2h' },
     }),
     BankModule,
     CategoryModule,
@@ -68,6 +68,7 @@ import { JwtModule } from '@nestjs/jwt';
     TransactionModule,
     UserModule,
     VillageModule,
+    Authmodule,
   ],
 })
 export class AppModule {}

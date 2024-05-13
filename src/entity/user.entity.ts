@@ -5,6 +5,8 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Profile } from 'src/entity/profile.entity';
 import { Schedule } from 'src/entity/schedule.entity';
@@ -16,10 +18,7 @@ import { Reply } from 'src/entity/reply.entity';
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  name: string;
-
+  
   @Column()
   username: string;
 
@@ -32,14 +31,14 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ default: 1 })
+  role_id: number;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 
-  @Column()
-  update_at: Date;
-
-  @Column()
-  role_id: number;
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  updated_at: Date;
 
   @OneToOne((type) => Profile, (profile) => profile.user_id)
   profile: Profile[];

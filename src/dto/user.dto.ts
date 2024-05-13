@@ -1,16 +1,9 @@
-import { IsEmail, IsPhoneNumber, IsStrongPassword, IsString, MaxLength } from 'class-validator';
-
 export class UserDto {
-  @IsString()
-  @MaxLength(64)
-  username: string;
-
-  @IsEmail()
+  name: string;
+  phone_number: string;
   email: string;
-
-  @IsPhoneNumber('ID')
-  phoneNumber: string;
-
-  @IsStrongPassword()
   password: string;
+  created_at: Date;
+  update_at: Date;
+  role_id: number;
 }

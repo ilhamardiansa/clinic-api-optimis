@@ -1,5 +1,4 @@
 export interface UserInterface {
-  name: string;
   username: string;
   phone_number: string;
   email: string;
