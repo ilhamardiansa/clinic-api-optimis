@@ -19,6 +19,7 @@ export class AuthService {
       phone_number: phone,
       password: hashedPassword,
       role_id: 1,
+      verifed: 0,
     });
     return this.authRepository.save(user);
   }
