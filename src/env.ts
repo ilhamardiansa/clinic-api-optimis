@@ -50,8 +50,10 @@ export const DATABASE_ENTITIES = [
 ];
 
 
-export const format_api = (status: boolean, data: any, message: any) => ({
-  Success: status,
-  Data: data,
-  Message: message
+export const format_json = (status: boolean, error:any, meta:any, data: any, message: any) => ({
+  success: status,
+  errors: error,
+  meta: meta,
+  message: message,
+  data: data
 });
