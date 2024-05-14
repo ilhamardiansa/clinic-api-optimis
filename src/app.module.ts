@@ -28,7 +28,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Authmodule } from './modules/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -58,6 +58,7 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
         },
       },
     }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     BankModule,
     CategoryModule,
     CityModule,

@@ -66,7 +66,7 @@ export class AuthController {
 
 
   @Post('auth/verifikasi')
-  @UseGuards(AuthGuard('jwt')) 
+  @UseGuards(AuthGuard('jwt'))
   async verifikasiEmail(@Body() verifikasiDTO: VerifikasiDTO, @Req() req: Request) {
     try {
       const { kode_otp } = verifikasiDTO;

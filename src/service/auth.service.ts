@@ -46,6 +46,18 @@ export class AuthService {
           };
         }
 
+        const waktusaatini = new Date();
+        const get_otp_time = otpExists.created_at;
+
+        const check_otp_expired = Math.floor((waktusaatini.getTime() - get_otp_time.getTime()) / (1000 * 60));
+
+        if (check_otp_expired > 5) {
+          return {
+            status: false,
+            message: 'Kode OTP Sudah Kadarluwasa',
+          };
+        }
+
         otpExists.status = 1;
         CheckUser.verifed = 1;
         await this.otpRepository.save(otpExists);
@@ -169,7 +181,7 @@ export class AuthService {
       };
     }
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId: user.id },
       process.env.JWT_SECRET,
       { expiresIn: '1h' },
     );
