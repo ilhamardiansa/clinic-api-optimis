@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { format_json } from 'src/env';
 import { Otp } from 'src/entity/otp.entity';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,13 @@ export class AuthService {
       };
     }
 
+    if (emailExists.verifed == 1) {
+      return {
+        status: false,
+        message: 'Email telah terverifikasi'
+      };
+    }
+
     const otpExists = await this.otpRepository.findOne({ where: { kode_otp, user_id: emailExists.id, status: 0 }, order: { id: 'DESC' } });
     if (!otpExists) {
       return {
@@ -34,7 +42,9 @@ export class AuthService {
     }
 
     otpExists.status = 1;
+    emailExists.verifed = 1;
     await this.otpRepository.save(otpExists);
+    await this.authRepository.save(emailExists);
 
     return {
       status: true,
@@ -85,6 +95,55 @@ export class AuthService {
       id: save.id,
       username: save.username,
       message: 'Berhasil'
+    };
+  }
+
+  async signIn(email: string, password: string): Promise<{ status: boolean, token:string, verifikasi:boolean, user_id: number }> {
+    const user = await this.authRepository.findOne({ where: { email } });
+
+    if (!user) {
+      return {
+        status: false,
+        verifikasi: false,
+        token: 'User tidak ditemukan',
+        user_id: null
+      };
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return {
+        status: false,
+        verifikasi: false,
+        token: 'Password salah',
+        user_id: null
+      };
+    }
+    if (user.verifed == 0) {
+      const token_verifikasi = jwt.sign(
+        { userId: user.id },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' },
+      );
+
+      return {
+        status: true,
+        verifikasi: false,
+        token: token_verifikasi,
+        user_id: user.id
+      };
+    }
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' },
+    );
+    return {
+      status: true,
+      verifikasi: true,
+      token: 'token',
+      user_id: null
     };
   }
 }
