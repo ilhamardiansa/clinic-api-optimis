@@ -57,7 +57,7 @@ export class AuthService {
     return this.otpRepository.save(newOtp);
   }
 
-  async register(username: string, email: string, phone_number: string, password: string): Promise<{ username: string; status: boolean, message:string, id:number }> {
+  async register(username: string, email: string, phone_number: string, password: string): Promise<{ username: string; status: boolean, message:string, id:number, token:string }> {
 
     const emailExists = await this.authRepository.findOne({ where: { email } });
     if (emailExists) {
@@ -65,7 +65,8 @@ export class AuthService {
         status: false,
         id: null,
         username: username,
-        message: 'Email telah di pakai'
+        message: 'Email telah di pakai',
+        token: null
       };
     }
 
@@ -75,7 +76,8 @@ export class AuthService {
         status: false,
         id: null,
         username: username,
-        message: 'Nomor Handphone telah di pakai'
+        message: 'Nomor Handphone telah di pakai',
+        token: null
       };
     }
 
@@ -90,11 +92,19 @@ export class AuthService {
     });
 
     const save = await this.authRepository.save(user);
+
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' },
+    );
+
     return {
       status: true,
       id: save.id,
       username: save.username,
-      message: 'Berhasil'
+      message: 'Berhasil',
+      token: token
     };
   }
 
