@@ -46,6 +46,7 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1d' },
     }),
     MailerModule.forRoot({
       transport: {

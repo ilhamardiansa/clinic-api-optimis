@@ -16,40 +16,64 @@ export class AuthService {
     private readonly otpRepository: Repository<Otp>,
   ) {}
 
-  async verifikasi(kode_otp: number, email: string): Promise<{ status: boolean, message:string }> {
+  async verifikasi(kode_otp: number, token: string): Promise<{ status: boolean, message:string }> {
 
-    const emailExists = await this.authRepository.findOne({ where: { email } });
-    if (!emailExists) {
+    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+      const userId = extracttoken.userId;
+
+      const CheckUser = await this.authRepository.findOne({ where: { id:userId } });
+        if (!CheckUser) {
+          return {
+            status: false,
+            message: 'Email tidak valid'
+          };
+        }
+
+        if (CheckUser.verifed == 1) {
+          return {
+            status: false,
+            message: 'Email telah terverifikasi'
+          };
+        }
+
+        const otpExists = await this.otpRepository.findOne({ where: { kode_otp, user_id: CheckUser.id, status: 0 }, order: { id: 'DESC' } });
+        if (!otpExists) {
+          return {
+            status: false,
+            message: 'Kode OTP Tidak valid'
+          };
+        }
+
+        otpExists.status = 1;
+        CheckUser.verifed = 1;
+        await this.otpRepository.save(otpExists);
+        await this.authRepository.save(CheckUser);
+
+        return {
+          status: true,
+          message: 'Akun telah berhasil di verifikasi'
+        };
+    } else {
       return {
         status: false,
-        message: 'Email tidak valid'
+        message: 'Invalid Payload'
       };
     }
+  }
 
-    if (emailExists.verifed == 1) {
+  async checkotp(kode_otp: number): Promise<{ status: boolean}> {
+    const newOtp = this.otpRepository.findOne({ where: { kode_otp } });
+    if(newOtp){
+      return {
+        status: true,
+      };
+    } else {
       return {
         status: false,
-        message: 'Email telah terverifikasi'
       };
     }
-
-    const otpExists = await this.otpRepository.findOne({ where: { kode_otp, user_id: emailExists.id, status: 0 }, order: { id: 'DESC' } });
-    if (!otpExists) {
-      return {
-        status: false,
-        message: 'Kode OTP Tidak valid'
-      };
-    }
-
-    otpExists.status = 1;
-    emailExists.verifed = 1;
-    await this.otpRepository.save(otpExists);
-    await this.authRepository.save(emailExists);
-
-    return {
-      status: true,
-      message: 'Akun telah berhasil di verifikasi'
-    };
   }
 
   async saveOtp(kode_otp: number, user_id: number, status:number): Promise<Otp> {

@@ -1,10 +1,11 @@
-import { Controller, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
 import { AuthDTO } from 'src/dto/auth/auth.dto';
 import { SignInDto } from 'src/dto/auth/signin.dto';
 import { VerifikasiDTO } from 'src/dto/auth/verifikasi.dto';
 import { format_json } from 'src/env';
 import { AuthService } from 'src/service/auth.service';
 import { mailService } from 'src/service/mailer/mailer.service';
+import { AuthGuard } from '@nestjs/passport';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -24,8 +25,15 @@ export class AuthController {
       const user = await this.authService.register(username, email, phone_number, password);
       if(user.status == true){
         const code = generateRandomNumber(100000, 999999);
-        const sendemail = this.mailService.sendMail(email, 'Verifikasi email', `Kode verifikasi akun anda : ${code}`);
-        const savecode = await this.authService.saveOtp(code, user.id, 0);
+        const checkotp = this.authService.checkotp(code)
+        let otp;
+        if(checkotp){
+          otp = code;
+        } else {
+          otp = generateRandomNumber(100000, 999999);
+        }
+        const sendemail = this.mailService.sendMail(email, 'Verifikasi email', `Kode verifikasi akun anda : ${otp}`);
+        const saveotp = await this.authService.saveOtp(otp, user.id, 0);
         return format_json(true, false, null, "User signed up successfully", { user: user });
       } else {
         return format_json(false, true, null,user.message, null);
@@ -43,18 +51,37 @@ export class AuthController {
       return format_json(true, false, null, "User signed up successfully", token);
     } else {
       const code = generateRandomNumber(100000, 999999);
-      const sendemail = this.mailService.sendMail(email, 'Verifikasi email', `Kode verifikasi akun anda : ${code}`);
-      const savecode = await this.authService.saveOtp(code, token.user_id, 0);
+        const checkotp = this.authService.checkotp(code)
+        let otp;
+        if(checkotp){
+          otp = code;
+        } else {
+          otp = generateRandomNumber(100000, 999999);
+        }
+      const sendemail = this.mailService.sendMail(email, 'Verifikasi email', `Kode verifikasi akun anda : ${otp}`);
+      const saveotp = await this.authService.saveOtp(otp, token.user_id, 0);
       return format_json(true, false, null, "Silakan verifikasi email anda", token);
     }
   }
 
 
   @Post('auth/verifikasi')
-  async verifikasiEmail(@Body() verifikasiDTO: VerifikasiDTO) {
+  @UseGuards(AuthGuard('jwt')) 
+  async verifikasiEmail(@Body() verifikasiDTO: VerifikasiDTO, @Req() req: Request) {
     try {
-      const { kode_otp, email } = verifikasiDTO;
-      const verifikasiotp = await this.authService.verifikasi(kode_otp, email);
+      const { kode_otp } = verifikasiDTO;
+      const authorizationHeader = req.headers['authorization']; 
+
+    if (!authorizationHeader) {
+      return format_json(false, null, null, "Authorization header is missing", null);
+    }
+
+    const token = authorizationHeader.split(' ')[1];
+
+    if (!token) {
+      return format_json(false, null, null, "Bearer token is missing", null);
+    }
+      const verifikasiotp = await this.authService.verifikasi(kode_otp, token);
       if(verifikasiotp.status == true){
         return format_json(true, null, null, "User signed up successfully", { user: verifikasiotp });
       } else {
