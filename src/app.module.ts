@@ -27,6 +27,8 @@ import { VillageModule } from './modules/village.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Authmodule } from './modules/auth.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 
 @Module({
   imports: [
@@ -44,6 +46,16 @@ import { Authmodule } from './modules/auth.module';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        auth: {
+          user: process.env.SMTP_USERNAME,
+          pass: process.env.SMTP_PASSWORD,
+        },
+      },
     }),
     BankModule,
     CategoryModule,

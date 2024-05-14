@@ -52,7 +52,7 @@ export const DATABASE_ENTITIES = [
 ];
 
 
-export const format_json = (status: boolean, error:any, meta:any, data: any, message: any) => ({
+export const format_json = (status: boolean, error:any, meta:any, message: any, data: any) => ({
   success: status,
   errors: error,
   meta: meta,

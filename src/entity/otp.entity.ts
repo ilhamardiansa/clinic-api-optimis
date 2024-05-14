@@ -10,4 +10,7 @@ export class Otp {
 
   @Column()
   user_id: number;
+
+  @Column({ default: 0 })
+  status: number;
 }
