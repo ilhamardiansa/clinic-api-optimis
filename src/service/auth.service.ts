@@ -44,7 +44,7 @@ export class AuthService {
           };
         }
 
-        const sendemail = this.mailService.sendMail(CheckUser.email, 'Verifikasi email', `Kode verifikasi akun anda : ${otp}`);
+        const sendemail = this.mailService.sendMail(CheckUser.email, 'Verifikasi email', otp, CheckUser.username);
         const saveotp = await this.saveOtp(otp, CheckUser.id, 0);
 
         return {
@@ -176,7 +176,7 @@ export class AuthService {
     };
   }
 
-  async signIn(email: string, password: string): Promise<{ status: boolean, token:string, verifikasi:boolean, user_id: number }> {
+  async signIn(email: string, password: string): Promise<{ status: boolean, token:string, verifikasi:boolean, user_id: number, username:any }> {
     const user = await this.authRepository.findOne({ where: { email } });
 
     if (!user) {
@@ -184,7 +184,8 @@ export class AuthService {
         status: false,
         verifikasi: false,
         token: 'User tidak ditemukan',
-        user_id: null
+        user_id: null,
+        username: null
       };
     }
 
@@ -195,7 +196,8 @@ export class AuthService {
         status: false,
         verifikasi: false,
         token: 'Password salah',
-        user_id: null
+        user_id: null,
+        username: null
       };
     }
     if (user.verifed == 0) {
@@ -209,7 +211,8 @@ export class AuthService {
         status: true,
         verifikasi: false,
         token: token_verifikasi,
-        user_id: user.id
+        user_id: user.id,
+        username: user.username
       };
     }
     const token = jwt.sign(
@@ -221,7 +224,8 @@ export class AuthService {
       status: true,
       verifikasi: true,
       token: 'token',
-      user_id: null
+      user_id: null,
+      username: user.username
     };
   }
 }

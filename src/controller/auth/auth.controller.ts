@@ -32,7 +32,7 @@ export class AuthController {
         } else {
           otp = generateRandomNumber(100000, 999999);
         }
-        const sendemail = this.mailService.sendMail(email, 'Verifikasi email', `Kode verifikasi akun anda : ${otp}`);
+        const sendemail = this.mailService.sendMail(email, 'Verifikasi email', otp, username);
         const saveotp = await this.authService.saveOtp(otp, user.id, 0);
         return format_json(true, false, null, "User signed up successfully", { user: user });
       } else {
@@ -58,7 +58,7 @@ export class AuthController {
         } else {
           otp = generateRandomNumber(100000, 999999);
         }
-      const sendemail = this.mailService.sendMail(email, 'Verifikasi email', `Kode verifikasi akun anda : ${otp}`);
+      const sendemail = this.mailService.sendMail(email, 'Verifikasi email', otp, token.username);
       const saveotp = await this.authService.saveOtp(otp, token.user_id, 0);
       return format_json(true, false, null, "Silakan verifikasi email anda", token);
     }

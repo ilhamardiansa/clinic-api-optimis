@@ -28,6 +28,8 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Authmodule } from './modules/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -59,6 +61,13 @@ import { MailerModule } from '@nestjs-modules/mailer';
           pass: process.env.SMTP_PASSWORD,
         },
         secure: true
+      },
+      template: {
+        dir: join(__dirname, 'template'),
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
       },
     }),
     BankModule,
