@@ -31,7 +31,9 @@ import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DATABASE_HOST,
@@ -40,6 +42,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       entities: DATABASE_ENTITIES,
+      timezone: 'Asia/Jakarta',
       synchronize: true,
     }),
     JwtModule.register({
@@ -55,6 +58,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
           user: process.env.SMTP_USERNAME,
           pass: process.env.SMTP_PASSWORD,
         },
+        secure: true
       },
     }),
     BankModule,

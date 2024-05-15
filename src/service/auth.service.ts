@@ -6,6 +6,12 @@ import * as bcrypt from 'bcrypt';
 import { format_json } from 'src/env';
 import { Otp } from 'src/entity/otp.entity';
 import * as jwt from 'jsonwebtoken';
+import { mailService } from './mailer/mailer.service';
+import * as moment from 'moment-timezone';
+
+export function generateRandomNumber(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 @Injectable()
 export class AuthService {
@@ -14,7 +20,44 @@ export class AuthService {
     private readonly authRepository: Repository<User>,
     @InjectRepository(Otp)
     private readonly otpRepository: Repository<Otp>,
+    private readonly mailService: mailService
   ) {}
+
+  async resendotp(token: string, otp:number): Promise<{ status: boolean, message:string}> {
+    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+      const userId = extracttoken.userId;
+
+      const CheckUser = await this.authRepository.findOne({ where: { id:userId } });
+        if (!CheckUser) {
+          return {
+            status: false,
+            message: 'Email tidak valid'
+          };
+        }
+
+        if (CheckUser.verifed == 1) {
+          return {
+            status: false,
+            message: 'Email telah terverifikasi'
+          };
+        }
+
+        const sendemail = this.mailService.sendMail(CheckUser.email, 'Verifikasi email', `Kode verifikasi akun anda : ${otp}`);
+        const saveotp = await this.saveOtp(otp, CheckUser.id, 0);
+
+        return {
+          status: true,
+          message: 'Berhasil mengirim otp, silakan cek email anda'
+        };
+      } else {
+        return {
+          status: false,
+          message: 'Invalid Payload'
+        };
+      }
+  }
 
   async verifikasi(kode_otp: number, token: string): Promise<{ status: boolean, message:string }> {
 
@@ -38,23 +81,11 @@ export class AuthService {
           };
         }
 
-        const otpExists = await this.otpRepository.findOne({ where: { kode_otp, user_id: CheckUser.id, status: 0 }, order: { id: 'DESC' } });
+        const otpExists = await this.otpRepository.findOne({ where: { kode_otp, user_id: CheckUser.id, status: 0 } });
         if (!otpExists) {
           return {
             status: false,
             message: 'Kode OTP Tidak valid'
-          };
-        }
-
-        const waktusaatini = new Date();
-        const get_otp_time = otpExists.created_at;
-
-        const check_otp_expired = Math.floor((waktusaatini.getTime() - get_otp_time.getTime()) / (1000 * 60));
-
-        if (check_otp_expired > 5) {
-          return {
-            status: false,
-            message: 'Kode OTP Sudah Kadarluwasa',
           };
         }
 
@@ -74,6 +105,7 @@ export class AuthService {
       };
     }
   }
+  
 
   async checkotp(kode_otp: number): Promise<{ status: boolean}> {
     const newOtp = this.otpRepository.findOne({ where: { kode_otp } });

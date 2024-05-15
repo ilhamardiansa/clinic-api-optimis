@@ -48,7 +48,7 @@ export class AuthController {
     const { email, password } = signInDto;
     const token = await this.authService.signIn(email, password);
     if(token.verifikasi == true) {
-      return format_json(true, false, null, "User signed up successfully", token);
+      return format_json(true, false, null, "User signed in successfully", token);
     } else {
       const code = generateRandomNumber(100000, 999999);
         const checkotp = this.authService.checkotp(code)
@@ -83,9 +83,45 @@ export class AuthController {
     }
       const verifikasiotp = await this.authService.verifikasi(kode_otp, token);
       if(verifikasiotp.status == true){
-        return format_json(true, null, null, "User signed up successfully", { user: verifikasiotp });
+        return format_json(true, null, null, verifikasiotp.message, { user: verifikasiotp });
       } else {
         return format_json(false, null, null,verifikasiotp.message, null);
+      }
+    } catch (error) {
+      return format_json(false, true, null,"Server Error", error);
+    }
+  }
+
+  @Post('auth/resend')
+  @UseGuards(AuthGuard('jwt'))
+  async resendOTP(@Req() req: Request) {
+    try {
+      const authorizationHeader = req.headers['authorization']; 
+
+    if (!authorizationHeader) {
+      return format_json(false, null, null, "Authorization header is missing", null);
+    }
+
+    const token = authorizationHeader.split(' ')[1];
+
+    if (!token) {
+      return format_json(false, null, null, "Bearer token is missing", null);
+    }
+
+      const code = generateRandomNumber(100000, 999999);
+        const checkotp = this.authService.checkotp(code)
+        let otp;
+        if(checkotp){
+          otp = code;
+        } else {
+          otp = generateRandomNumber(100000, 999999);
+        }
+
+      const resendotp = await this.authService.resendotp(token, otp);
+      if(resendotp.status == true){
+        return format_json(true, null, null, resendotp.message, { user: resendotp });
+      } else {
+        return format_json(false, null, null,resendotp.message, null);
       }
     } catch (error) {
       return format_json(false, true, null,"Server Error", error);
