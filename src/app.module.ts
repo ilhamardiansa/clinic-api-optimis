@@ -63,7 +63,7 @@ import { join } from 'path';
         secure: true
       },
       template: {
-        dir: join(__dirname, 'template'),
+        dir: join(__dirname, '..', 'src', 'template'),
         adapter: new HandlebarsAdapter(),
         options: {
           strict: true,

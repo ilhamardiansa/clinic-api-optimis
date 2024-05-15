@@ -14,7 +14,7 @@ export class mailService {
       template: './mailer',
       context: {
         name,
-        otp: otp.split(''),
+        otp,
       },
     });
   }
