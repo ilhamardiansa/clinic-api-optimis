@@ -266,7 +266,7 @@ export class AuthService {
     return {
       status: true,
       verifikasi: true,
-      token: 'token',
+      token: token,
       user_id: null,
       fullname: profile.fullname
     };
@@ -289,6 +289,7 @@ export class AuthService {
         const checkprofile = await this.profileRepository.findOne({ where: { user_id:CheckUser.id }});
 
         Object.assign(checkprofile, updateProfile);
+
         await this.profileRepository.save(checkprofile);
 
         return {
