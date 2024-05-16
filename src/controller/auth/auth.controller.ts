@@ -65,7 +65,7 @@ export class AuthController {
   }
 
 
-  @Post('auth/verifikasi')
+  @Post('auth/verification')
   @UseGuards(AuthGuard('jwt'))
   async verifikasiEmail(@Body() verifikasiDTO: VerifikasiDTO, @Req() req: Request) {
     try {
