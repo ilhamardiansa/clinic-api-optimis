@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, UploadedFile } from '@nestjs/common';
 import { AuthDTO } from 'src/dto/auth/auth.dto';
 import { SignInDto } from 'src/dto/auth/signin.dto';
 import { VerifikasiDTO } from 'src/dto/auth/verifikasi.dto';
@@ -6,6 +6,11 @@ import { format_json } from 'src/env';
 import { AuthService } from 'src/service/auth/auth.service';
 import { mailService } from 'src/service/mailer/mailer.service';
 import { AuthGuard } from '@nestjs/passport';
+import { ProfileDto } from 'src/dto/auth/profile.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator';
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -123,6 +128,70 @@ export class AuthController {
       } else {
         return format_json(false, null, null,resendotp.message, null);
       }
+    } catch (error) {
+      return format_json(false, true, null,"Server Error", error);
+    }
+  }
+
+  @Post('users/profiles')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const randomName = uuidv4();
+          const extension = file.originalname.split('.').pop();
+          cb(null, `${randomName}.${extension}`);
+        },
+      }),
+    }),
+  )
+  async profile(@Body() profileDTO: ProfileDto, @Req() req: Request, @UploadedFile() file: Express.Multer.File) {
+    try {
+      const authorizationHeader = req.headers['authorization']; 
+
+    if (!authorizationHeader) {
+      return format_json(false, null, null, "Authorization header is missing", null);
+    }
+
+    const token = authorizationHeader.split(' ')[1];
+
+    if (!token) {
+      return format_json(false, null, null, "Bearer token is missing", null);
+    }
+
+    const { fullname, profil_image, no_identity, birth_date, birth_place, address, gender, work_in, blood_type, marital_status, nationality, religion, country_id, region_id, city_id, district_id, village_id, neighborhood_no, citizen_no, area_code} = profileDTO;
+
+    const profile = {
+      fullname: fullname,
+      profil_image:profil_image,
+      no_identity:no_identity,
+      birth_date:birth_date,
+      birth_place:birth_place,
+      address:address,
+      gender:gender,
+      work_in:work_in,
+      blood_type: blood_type,
+      marital_status: marital_status,
+      nationality: nationality,
+      religion: religion,
+      country_id: country_id,
+      region_id: region_id,
+      city_id: city_id,
+      district_id: district_id,
+      village_id: village_id,
+      neighborhood_no: neighborhood_no,
+      citizen_no: citizen_no,
+      area_code: area_code,
+    };
+
+    const updateProfile = this.authService.profile(token, profile)
+    if((await updateProfile).status == true){
+      return format_json(true, null, null, (await updateProfile).message, { user: updateProfile });
+    } else {
+      return format_json(false, null, null,(await updateProfile).message, null);
+    }
     } catch (error) {
       return format_json(false, true, null,"Server Error", error);
     }

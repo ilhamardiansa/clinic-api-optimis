@@ -13,8 +13,4 @@ export class AuthDTO {
 
   @IsStrongPassword()
   password: string;
-
-  created_at: Date;
-
-  update_at: Date;
 }

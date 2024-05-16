@@ -9,6 +9,7 @@ import * as jwt from 'jsonwebtoken';
 import { mailService } from '../mailer/mailer.service';
 import * as moment from 'moment-timezone';
 import { Profile } from '../../entity/profile/profile.entity';
+import { promises } from 'dns';
 
 
 export function generateRandomNumber(min: number, max: number): number {
@@ -269,5 +270,36 @@ export class AuthService {
       user_id: null,
       fullname: profile.fullname
     };
+  }
+
+  async profile (token:string, updateProfile: Partial<Profile>): Promise<{ status:boolean, message:string }>{
+    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+      const userId = extracttoken.userId;
+
+      const CheckUser = await this.authRepository.findOne({ where: { id:userId } });
+        if (!CheckUser) {
+          return {
+            status: false,
+            message: 'Email tidak valid',
+          };
+        }
+
+        const checkprofile = await this.profileRepository.findOne({ where: { user_id:CheckUser.id }});
+
+        Object.assign(checkprofile, updateProfile);
+        await this.profileRepository.save(checkprofile);
+
+        return {
+          status: true,
+          message: 'Akun telah berhasil di verifikasi',
+        };
+    } else {
+      return {
+        status: false,
+        message: 'Invalid Payload',
+      };
+    }
   }
 }
