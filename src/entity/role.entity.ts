@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Menu } from 'src/entity/menu.entity';
-import { User } from 'src/entity/user.entity';
+import { User } from 'src/entity/profile/user.entity';
 
 @Entity()
 export class Role {

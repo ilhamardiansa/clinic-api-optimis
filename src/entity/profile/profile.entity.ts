@@ -4,8 +4,9 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   ManyToOne,
+  IsNull,
 } from 'typeorm';
-import { User } from 'src/entity/user.entity';
+import { User } from 'src/entity/profile/user.entity';
 import { Country } from 'src/entity/country.entity';
 
 @Entity()
@@ -16,63 +17,63 @@ export class Profile {
   @Column()
   fullname: string;
 
-  @Column()
+  @Column({ nullable: true })
   profil_image: string;
 
-  @Column()
+  @Column({ nullable: true })
   no_identity: number;
 
-  @Column()
+  @Column({ nullable: true })
   birth_date: Date;
 
-  @Column()
+  @Column({ nullable: true })
   birth_place: string;
 
-  @Column()
+  @Column({ nullable: true })
   address: string;
 
-  @Column()
+  @Column({ nullable: true })
   gender: string;
 
-  @Column()
+  @Column({ nullable: true })
   work_in: string;
 
-  @Column()
+  @Column({ nullable: true })
   blood_type: string;
 
-  @Column()
+  @Column({ nullable: true })
   marital_status: string;
 
-  @Column()
+  @Column({ nullable: true })
   nationality: string;
 
-  @Column()
+  @Column({ nullable: true })
   religion: string;
 
   @Column()
   user_id: number;
 
-  @Column()
+  @Column({ nullable: true })
   country_id: number;
 
-  @Column()
+  @Column({ nullable: true })
   region_id: number;
 
-  @Column()
+  @Column({ nullable: true })
   city_id: number;
 
-  @Column()
+  @Column({ nullable: true })
   district_id: number;
 
-  @Column()
+  @Column({ nullable: true })
   village_id: number;
 
-  @Column()
+  @Column({ nullable: true })
   neighborhood_no: number;
 
-  @Column()
+  @Column({ nullable: true })
   citizen_no: number;
 
-  @Column()
+  @Column({ nullable: true })
   area_code: number;
 }

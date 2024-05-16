@@ -3,7 +3,7 @@ import { IsEmail, IsPhoneNumber, IsStrongPassword, IsString, MaxLength } from 'c
 export class AuthDTO {
   @IsString()
   @MaxLength(64)
-  username: string;
+  fullname: string;
 
   @IsEmail()
   email: string;

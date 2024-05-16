@@ -1,4 +1,4 @@
-import { Profile } from 'src/entity/profile.entity';
+import { Profile } from '../entity/profile/profile.entity';
 import { Region } from 'src/entity/region.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 

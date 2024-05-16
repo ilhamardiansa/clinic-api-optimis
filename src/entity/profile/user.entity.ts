@@ -8,7 +8,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn
 } from 'typeorm';
-import { Profile } from 'src/entity/profile.entity';
+import { Profile } from 'src/entity/profile/profile.entity';
 import { Schedule } from 'src/entity/schedule.entity';
 import { Record } from 'src/entity/record.entity';
 import { Review } from 'src/entity/review.entity';
@@ -18,9 +18,6 @@ import { Reply } from 'src/entity/reply.entity';
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-  
-  @Column()
-  username: string;
 
   @Column()
   phone_number: string;
