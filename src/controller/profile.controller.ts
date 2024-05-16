@@ -7,7 +7,7 @@ import {
   Param,
   Body,
 } from '@nestjs/common';
-import { Profile } from '../entity/profile.entity';
+import { Profile } from '../entity/profile/profile.entity';
 import { ProfileService } from '../service/profile.service';
 
 @Controller('profiles')

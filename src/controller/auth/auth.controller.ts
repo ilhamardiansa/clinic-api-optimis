@@ -3,7 +3,7 @@ import { AuthDTO } from 'src/dto/auth/auth.dto';
 import { SignInDto } from 'src/dto/auth/signin.dto';
 import { VerifikasiDTO } from 'src/dto/auth/verifikasi.dto';
 import { format_json } from 'src/env';
-import { AuthService } from 'src/service/auth.service';
+import { AuthService } from 'src/service/auth/auth.service';
 import { mailService } from 'src/service/mailer/mailer.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -21,8 +21,8 @@ export class AuthController {
   @Post('auth/register')
   async register(@Body() authDTO: AuthDTO) {
     try {
-      const { username, email, phone_number, password } = authDTO;
-      const user = await this.authService.register(username, email, phone_number, password);
+      const { fullname, email, phone_number, password } = authDTO;
+      const user = await this.authService.register(fullname, email, phone_number, password);
       if(user.status == true){
         const code = generateRandomNumber(100000, 999999);
         const checkotp = this.authService.checkotp(code)
@@ -32,7 +32,7 @@ export class AuthController {
         } else {
           otp = generateRandomNumber(100000, 999999);
         }
-        const sendemail = this.mailService.sendMail(email, 'Verifikasi email', otp, username);
+        const sendemail = this.mailService.sendMail(email, 'Verifikasi email', otp, fullname);
         const saveotp = await this.authService.saveOtp(otp, user.id, 0);
         return format_json(true, false, null, "User signed up successfully", { user: user });
       } else {
@@ -58,7 +58,7 @@ export class AuthController {
         } else {
           otp = generateRandomNumber(100000, 999999);
         }
-      const sendemail = this.mailService.sendMail(email, 'Verifikasi email', otp, token.username);
+      const sendemail = this.mailService.sendMail(email, 'Verifikasi email', otp, token.fullname);
       const saveotp = await this.authService.saveOtp(otp, token.user_id, 0);
       return format_json(true, false, null, "Silakan verifikasi email anda", token);
     }

@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entity/user.entity';
+import { User } from 'src/entity/profile/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { format_json } from 'src/env';
 import { Otp } from 'src/entity/otp.entity';
 import * as jwt from 'jsonwebtoken';
-import { mailService } from './mailer/mailer.service';
+import { mailService } from '../mailer/mailer.service';
 import * as moment from 'moment-timezone';
+import { Profile } from '../../entity/profile/profile.entity';
+
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -20,6 +22,8 @@ export class AuthService {
     private readonly authRepository: Repository<User>,
     @InjectRepository(Otp)
     private readonly otpRepository: Repository<Otp>,
+    @InjectRepository(Profile)
+    private readonly profileRepository: Repository<Profile>,
     private readonly mailService: mailService
   ) {}
 
@@ -30,6 +34,7 @@ export class AuthService {
       const userId = extracttoken.userId;
 
       const CheckUser = await this.authRepository.findOne({ where: { id:userId } });
+      const get_profile = await this.profileRepository.findOne({ where: { user_id:CheckUser.id } });
         if (!CheckUser) {
           return {
             status: false,
@@ -44,7 +49,7 @@ export class AuthService {
           };
         }
 
-        const sendemail = this.mailService.sendMail(CheckUser.email, 'Verifikasi email', otp, CheckUser.username);
+        const sendemail = this.mailService.sendMail(CheckUser.email, 'Verifikasi email', otp, get_profile.fullname);
         const saveotp = await this.saveOtp(otp, CheckUser.id, 0);
 
         return {
@@ -59,7 +64,7 @@ export class AuthService {
       }
   }
 
-  async verifikasi(kode_otp: number, token: string): Promise<{ status: boolean, message:string }> {
+  async verifikasi(kode_otp: number, token: string): Promise<{ status: boolean, message:string, token:string }> {
 
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -70,14 +75,16 @@ export class AuthService {
         if (!CheckUser) {
           return {
             status: false,
-            message: 'Email tidak valid'
+            message: 'Email tidak valid',
+            token: null
           };
         }
 
         if (CheckUser.verifed == 1) {
           return {
             status: false,
-            message: 'Email telah terverifikasi'
+            message: 'Email telah terverifikasi',
+            token: null
           };
         }
 
@@ -85,7 +92,8 @@ export class AuthService {
         if (!otpExists) {
           return {
             status: false,
-            message: 'Kode OTP Tidak valid'
+            message: 'Kode OTP Tidak valid',
+            token: null
           };
         }
 
@@ -94,14 +102,22 @@ export class AuthService {
         await this.otpRepository.save(otpExists);
         await this.authRepository.save(CheckUser);
 
+        const token = jwt.sign(
+          { userId: CheckUser.id },
+          process.env.JWT_SECRET,
+          { expiresIn: '1h' },
+        );
+
         return {
           status: true,
-          message: 'Akun telah berhasil di verifikasi'
+          message: 'Akun telah berhasil di verifikasi',
+          token: token
         };
     } else {
       return {
         status: false,
-        message: 'Invalid Payload'
+        message: 'Invalid Payload',
+        token: null
       };
     }
   }
@@ -125,14 +141,14 @@ export class AuthService {
     return this.otpRepository.save(newOtp);
   }
 
-  async register(username: string, email: string, phone_number: string, password: string): Promise<{ username: string; status: boolean, message:string, id:number, token:string }> {
+  async register(fullnames: string, email: string, phone_number: string, password: string): Promise<{ fullname: string; status: boolean, message:string, id:number, token:string }> {
 
     const emailExists = await this.authRepository.findOne({ where: { email } });
     if (emailExists) {
       return {
         status: false,
         id: null,
-        username: username,
+        fullname: fullnames,
         message: 'Email telah di pakai',
         token: null
       };
@@ -143,7 +159,7 @@ export class AuthService {
       return {
         status: false,
         id: null,
-        username: username,
+        fullname: fullnames,
         message: 'Nomor Handphone telah di pakai',
         token: null
       };
@@ -151,7 +167,6 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = this.authRepository.create({
-      username: username,
       email: email,
       phone_number: phone_number,
       password: hashedPassword,
@@ -160,6 +175,32 @@ export class AuthService {
     });
 
     const save = await this.authRepository.save(user);
+
+    const profile = this.profileRepository.create({
+      fullname: fullnames,
+      profil_image:null,
+      no_identity:null,
+      birth_date:null,
+      birth_place:null,
+      address:null,
+      gender:null,
+      work_in:null,
+      blood_type: null,
+      marital_status: null,
+      nationality: null,
+      religion: null,
+      user_id: save.id,
+      country_id: null,
+      region_id: null,
+      city_id: null,
+      district_id: null,
+      village_id: null,
+      neighborhood_no: null,
+      citizen_no: null,
+      area_code: null,
+    });
+
+    const saveprofile = await this.profileRepository.save(profile);
 
     const token = jwt.sign(
       { userId: user.id },
@@ -170,14 +211,15 @@ export class AuthService {
     return {
       status: true,
       id: save.id,
-      username: save.username,
+      fullname: saveprofile.fullname,
       message: 'Berhasil',
       token: token
     };
   }
 
-  async signIn(email: string, password: string): Promise<{ status: boolean, token:string, verifikasi:boolean, user_id: number, username:any }> {
+  async signIn(email: string, password: string): Promise<{ status: boolean, token:string, verifikasi:boolean, user_id: number, fullname:any }> {
     const user = await this.authRepository.findOne({ where: { email } });
+    const profile = await this.profileRepository.findOne({ where: { user_id:user.id } });
 
     if (!user) {
       return {
@@ -185,7 +227,7 @@ export class AuthService {
         verifikasi: false,
         token: 'User tidak ditemukan',
         user_id: null,
-        username: null
+        fullname: null
       };
     }
 
@@ -197,7 +239,7 @@ export class AuthService {
         verifikasi: false,
         token: 'Password salah',
         user_id: null,
-        username: null
+        fullname: null
       };
     }
     if (user.verifed == 0) {
@@ -212,7 +254,7 @@ export class AuthService {
         verifikasi: false,
         token: token_verifikasi,
         user_id: user.id,
-        username: user.username
+        fullname: profile.fullname
       };
     }
     const token = jwt.sign(
@@ -225,7 +267,7 @@ export class AuthService {
       verifikasi: true,
       token: 'token',
       user_id: null,
-      username: user.username
+      fullname: profile.fullname
     };
   }
 }

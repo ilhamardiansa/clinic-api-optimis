@@ -11,7 +11,7 @@ import { Drug } from './entity/drug.entity';
 import { MedicalRecordDrug } from './entity/medical_record_drug.entity';
 import { Menu } from './entity/menu.entity';
 import { Payment } from './entity/payment.entity';
-import { Profile } from './entity/profile.entity';
+import { Profile } from './entity/profile/profile.entity';
 import { Record } from './entity/record.entity';
 import { Region } from './entity/region.entity';
 import { Reply } from './entity/reply.entity';
@@ -20,7 +20,7 @@ import { Role } from './entity/role.entity';
 import { Room } from './entity/room.entity';
 import { Schedule } from './entity/schedule.entity';
 import { Transaction } from './entity/transaction.entity';
-import { User } from './entity/user.entity';
+import { User } from './entity/profile/user.entity';
 import { Village } from './entity/village.entity';
 import { Otp } from './entity/otp.entity';
 
