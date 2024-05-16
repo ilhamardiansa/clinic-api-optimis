@@ -272,7 +272,7 @@ export class AuthService {
     };
   }
 
-  async profile (token:string, updateProfile: Partial<Profile>): Promise<{ status:boolean, message:string }>{
+  async profile (token:string, updateProfile: Partial<Profile>): Promise<{ status:boolean, message:string, data:any }>{
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
     if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
@@ -282,7 +282,8 @@ export class AuthService {
         if (!CheckUser) {
           return {
             status: false,
-            message: 'Email tidak valid',
+            message: 'User tidak di temukan',
+            data: null
           };
         }
 
@@ -294,12 +295,14 @@ export class AuthService {
 
         return {
           status: true,
-          message: 'Akun telah berhasil di verifikasi',
+          message: 'Data profiles berhasil di ubah',
+          data: checkprofile
         };
     } else {
       return {
         status: false,
         message: 'Invalid Payload',
+        data: null
       };
     }
   }

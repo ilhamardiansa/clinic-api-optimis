@@ -187,8 +187,9 @@ export class AuthController {
     };
 
     const updateProfile = this.authService.profile(token, profile)
+
     if((await updateProfile).status == true){
-      return format_json(true, null, null, (await updateProfile).message, { user: updateProfile });
+      return format_json(true, null, null, (await updateProfile).message, { user: (await updateProfile).data });
     } else {
       return format_json(false, null, null,(await updateProfile).message, null);
     }
