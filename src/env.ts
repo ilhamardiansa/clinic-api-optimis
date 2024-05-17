@@ -48,14 +48,19 @@ export const DATABASE_ENTITIES = [
   Transaction,
   User,
   Village,
-  Otp
+  Otp,
 ];
 
-
-export const format_json = (status: boolean, error:any, meta:any, message: any, data: any) => ({
+export const format_json = (
+  status: boolean,
+  error: any,
+  meta: any,
+  message: any,
+  data: any,
+) => ({
   success: status,
   errors: error,
   meta: meta,
   message: message,
-  data: data
+  data: data,
 });

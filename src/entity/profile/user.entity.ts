@@ -6,7 +6,7 @@ import {
   OneToOne,
   OneToMany,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { Profile } from 'src/entity/profile/profile.entity';
 import { Schedule } from 'src/entity/schedule.entity';
