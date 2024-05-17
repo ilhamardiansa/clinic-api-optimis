@@ -1,7 +1,9 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class ProfileDto {
     @IsOptional()
+    @IsString()
+    @MaxLength(64)
     fullname: string;
 
     @IsOptional()
