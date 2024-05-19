@@ -135,6 +135,34 @@ export class AuthController {
 
   @Post('users/profiles')
   @UseGuards(AuthGuard('jwt'))
+  async get_profile(@Req() req: Request) {
+    try {
+      const authorizationHeader = req.headers['authorization']; 
+
+    if (!authorizationHeader) {
+      return format_json(false, null, null, "Authorization header is missing", null);
+    }
+
+    const token = authorizationHeader.split(' ')[1];
+
+    if (!token) {
+      return format_json(false, null, null, "Bearer token is missing", null);
+    }
+
+    const getprofile = this.authService.profile(token)
+
+    if((await getprofile).status == true){
+      return format_json(true, null, null, (await getprofile).message, { user: (await getprofile).data });
+    } else {
+      return format_json(false, null, null,(await getprofile).message, null);
+    }
+    } catch (error) {
+      return format_json(false, true, null,"Server Error", error);
+    }
+  }
+
+  @Post('users/update/profiles')
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -147,7 +175,7 @@ export class AuthController {
       }),
     }),
   )
-  async profile(@Body() profileDTO: ProfileDto, @Req() req: Request, @UploadedFile() file: Express.Multer.File) {
+  async update_profile(@Body() profileDTO: ProfileDto, @Req() req: Request, @UploadedFile() file: Express.Multer.File) {
     try {
       const authorizationHeader = req.headers['authorization']; 
 
@@ -186,7 +214,7 @@ export class AuthController {
       area_code: area_code,
     };
 
-    const updateProfile = this.authService.profile(token, profile)
+    const updateProfile = this.authService.update_profile(token, profile)
 
     if((await updateProfile).status == true){
       return format_json(true, null, null, (await updateProfile).message, { user: (await updateProfile).data });

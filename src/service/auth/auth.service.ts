@@ -309,7 +309,7 @@ export class AuthService {
     };
   }
 
-  async profile(
+  async update_profile(
     token: string,
     updateProfile: Partial<Profile>,
   ): Promise<{ status: boolean; message: string; data: any }> {
@@ -340,6 +340,43 @@ export class AuthService {
       return {
         status: true,
         message: 'Data profiles berhasil di ubah',
+        data: checkprofile,
+      };
+    } else {
+      return {
+        status: false,
+        message: 'Invalid Payload',
+        data: null,
+      };
+    }
+  }
+
+  async profile(
+    token: string,
+  ): Promise<{ status: boolean; message: string; data: any }> {
+    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+      const userId = extracttoken.userId;
+
+      const CheckUser = await this.authRepository.findOne({
+        where: { id: userId },
+      });
+      if (!CheckUser) {
+        return {
+          status: false,
+          message: 'User tidak di temukan',
+          data: null,
+        };
+      }
+
+      const checkprofile = await this.profileRepository.findOne({
+        where: { user_id: CheckUser.id },
+      });
+
+      return {
+        status: true,
+        message: 'Data profiles berhasil di ambil',
         data: checkprofile,
       };
     } else {
