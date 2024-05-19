@@ -138,24 +138,24 @@ export class AuthController {
   async get_profile(@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization']; 
-
-    if (!authorizationHeader) {
-      return format_json(false, null, null, "Authorization header is missing", null);
-    }
-
-    const token = authorizationHeader.split(' ')[1];
-
-    if (!token) {
-      return format_json(false, null, null, "Bearer token is missing", null);
-    }
-
-    const getprofile = this.authService.profile(token)
-
-    if((await getprofile).status == true){
-      return format_json(true, null, null, (await getprofile).message, { user: (await getprofile).data });
-    } else {
-      return format_json(false, null, null,(await getprofile).message, null);
-    }
+  
+      if (!authorizationHeader) {
+        return format_json(false, null, null, "Authorization header is missing", null);
+      }
+  
+      const token = authorizationHeader.split(' ')[1];
+  
+      if (!token) {
+        return format_json(false, null, null, "Bearer token is missing", null);
+      }
+  
+      const getprofile = this.authService.profile(token)
+  
+      if((await getprofile).status == true){
+        return format_json(true, null, null, (await getprofile).message, { user: (await getprofile).data });
+      } else {
+        return format_json(false, null, null,(await getprofile).message, null);
+      }
     } catch (error) {
       return format_json(false, true, null,"Server Error", error);
     }
