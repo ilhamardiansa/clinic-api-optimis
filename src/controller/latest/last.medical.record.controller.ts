@@ -1,27 +1,16 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Req,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { LastMedicalRecordDto } from 'src/dto/latest/last.medical.record.dto';
 import { format_json } from 'src/env';
 import { LastMedicalRecordService } from 'src/service/latest/last.medical.record.service';
-import { v4 as uuidv4 } from 'uuid';
 
-@Controller('')
+@Controller('api/users')
 export class LastMedicalRecordController {
   constructor(
     private readonly lastMedicalRecordService: LastMedicalRecordService,
   ) {}
 
-  @Post('api/users/last-medical-record')
+  @Post('last-medical-record')
   @UseGuards(AuthGuard('jwt'))
   async createLastMedicalRecord(
     @Body() lastmedicalrecordDto: LastMedicalRecordDto,
@@ -49,7 +38,7 @@ export class LastMedicalRecordController {
       const {
         consultation_date_time,
         doctor_name,
-        poly,
+        polyclinic,
         clinic_name,
         condition,
       } = lastmedicalrecordDto;
@@ -57,7 +46,7 @@ export class LastMedicalRecordController {
       const medicalRecord = {
         consultation_date_time: consultation_date_time,
         doctor_name: doctor_name,
-        poly: poly,
+        polyclinic: polyclinic,
         clinic_name: clinic_name,
         condition: condition,
       };

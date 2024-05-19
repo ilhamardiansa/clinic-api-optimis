@@ -10,6 +10,8 @@ import { DistrictModule } from './modules/district.module';
 import { DoctorModule } from './modules/doctor.module';
 import { DocumentModule } from './modules/document.module';
 import { DrugModule } from './modules/drug.module';
+import { LastMedicalRecordModule } from './modules/latest/last.medical.record.module';
+import { LastRedeemModule } from './modules/latest/last.redeem.module';
 import { MedicalRecordDrugModule } from './modules/medical_record_drug.module';
 import { MenuModule } from './modules/menu.module';
 import { PaymentModule } from './modules/payment.module';
@@ -48,7 +50,9 @@ import * as path from 'path';
       entities: DATABASE_ENTITIES,
       timezone: 'Asia/Jakarta',
       ssl: {
-        ca: fs.readFileSync(path.join(__dirname, '..', 'certs', 'ca_aivenclinic.pem')),
+        ca: fs.readFileSync(
+          path.join(__dirname, '..', 'certs', 'ca_aivenclinic.pem'),
+        ),
       },
       synchronize: true,
     }),
@@ -65,7 +69,7 @@ import * as path from 'path';
           user: process.env.SMTP_USERNAME,
           pass: process.env.SMTP_PASSWORD,
         },
-        secure: true
+        secure: true,
       },
       template: {
         dir: join(__dirname, '..', 'src', 'template'),
@@ -84,6 +88,8 @@ import * as path from 'path';
     DoctorModule,
     DocumentModule,
     DrugModule,
+    LastMedicalRecordModule,
+    LastRedeemModule,
     MedicalRecordDrugModule,
     MenuModule,
     PaymentModule,

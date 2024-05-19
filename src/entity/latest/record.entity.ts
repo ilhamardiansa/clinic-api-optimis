@@ -7,6 +7,15 @@ export class Record {
   id: number;
 
   @Column()
+  date_and_time_consultation: Date;
+
+  @Column()
+  polyclinic: string;
+
+  @Column()
+  clinic_name: string;
+
+  @Column()
   way_to_come: string;
 
   @Column()

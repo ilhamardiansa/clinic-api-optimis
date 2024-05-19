@@ -1,4 +1,4 @@
-import { Record } from 'src/entity/record.entity';
+import { Record } from 'src/entity/latest/record.entity';
 import { Room } from 'src/entity/room.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 

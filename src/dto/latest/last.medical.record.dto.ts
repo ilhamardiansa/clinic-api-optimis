@@ -8,7 +8,7 @@ export class LastMedicalRecordDto {
   doctor_name: string;
 
   @IsString()
-  poly: string;
+  polyclinic: string;
 
   @IsString()
   clinic_name: string;
