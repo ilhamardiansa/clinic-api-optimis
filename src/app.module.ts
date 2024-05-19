@@ -30,6 +30,8 @@ import { Authmodule } from './modules/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -45,6 +47,9 @@ import { join } from 'path';
       database: process.env.DATABASE_NAME,
       entities: DATABASE_ENTITIES,
       timezone: 'Asia/Jakarta',
+      ssl: {
+        ca: fs.readFileSync(path.join(__dirname, '..', 'certs', 'ca_aivenclinic.pem')),
+      },
       synchronize: true,
     }),
     JwtModule.register({
