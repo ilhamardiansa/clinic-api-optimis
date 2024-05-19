@@ -47,7 +47,7 @@ export class LastRedeemService {
 
         if (!lastRedeem) {
           lastRedeem = new LastRedeem();
-          lastRedeem.user_id = userId; // Ensure user_id is set for new records
+          lastRedeem.user_id = userId; 
         }
 
         Object.assign(lastRedeem, updateRedeemDto);
