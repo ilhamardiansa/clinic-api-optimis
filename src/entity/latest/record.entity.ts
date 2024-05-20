@@ -7,7 +7,7 @@ export class Record {
   id: number;
 
   @Column()
-  date_and_time_consultation: Date;
+  consultation_date_time: Date;
 
   @Column()
   polyclinic: string;

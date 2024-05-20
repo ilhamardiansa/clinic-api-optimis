@@ -10,7 +10,7 @@ import { UserModule } from '../user.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([LastRedeem, User]),
-    UserModule, // Pastikan untuk mengimpor UserModule
+    UserModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1d' },

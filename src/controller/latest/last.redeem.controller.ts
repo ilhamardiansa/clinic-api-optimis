@@ -1,20 +1,16 @@
-import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { LastRedeemService } from 'src/service/latest/last.redeem.service';
-import { LastRedeemDto } from 'src/dto/latest/last.redeem.dto';
 import { format_json } from 'src/env';
 
 @Controller('api/user')
 export class LastRedeemController {
   constructor(private readonly lastRedeemService: LastRedeemService) {}
 
-  @Post('last-redeem')
+  @Get('last-redeem')
   @UseGuards(AuthGuard('jwt'))
-  async updateLastRedeem(
-    @Body() updateRedeemDto: LastRedeemDto,
-    @Req() req: Request,
-  ) {
+  async getLastRedeem(@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
@@ -34,17 +30,14 @@ export class LastRedeemController {
         return format_json(false, null, null, 'Bearer token is missing', null);
       }
 
-      const updateRedeemResult = await this.lastRedeemService.updateLastRedeem(
-        token,
-        updateRedeemDto,
-      );
+      const getRedeemResult = await this.lastRedeemService.getLastRedeem(token);
 
-      if (updateRedeemResult.status) {
-        return format_json(true, null, null, updateRedeemResult.message, {
-          redeem: updateRedeemResult.data,
+      if (getRedeemResult.status) {
+        return format_json(true, null, null, getRedeemResult.message, {
+          redeem: getRedeemResult.data,
         });
       } else {
-        return format_json(false, null, null, updateRedeemResult.message, null);
+        return format_json(false, null, null, getRedeemResult.message, null);
       }
     } catch (error) {
       return format_json(false, true, null, 'Server Error', error);

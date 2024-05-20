@@ -1,76 +1,75 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import * as jwt from 'jsonwebtoken';
 import { LastRedeemDto } from 'src/dto/latest/last.redeem.dto';
 import { LastRedeem } from 'src/entity/latest/last.redeem.entity';
-import { User } from 'src/entity/profile/user.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class LastRedeemService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
     @InjectRepository(LastRedeem)
     private readonly lastRedeemRepository: Repository<LastRedeem>,
     private readonly jwtService: JwtService,
   ) {}
 
-  async updateLastRedeem(
-    token: string,
-    updateRedeemDto: LastRedeemDto,
-  ): Promise<{ status: boolean; message: string; data: any }> {
-    try {
-      const extracttoken = this.jwtService.verify(token, {
-        secret: process.env.JWT_SECRET,
+  async getLastRedeem(token: string) {
+    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+      const userId = extracttoken.userId;
+
+      const redeem = await this.lastRedeemRepository.findOne({
+        where: { user_id: userId },
+        order: { redemption_date_and_time: 'DESC' },
       });
 
-      if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
-        const userId = extracttoken.userId;
-
-        const user = await this.userRepository.findOne({
-          where: { id: userId },
-        });
-
-        if (!user) {
-          return {
-            status: false,
-            message: 'User not found',
-            data: null,
-          };
-        }
-
-        let lastRedeem = await this.lastRedeemRepository.findOne({
-          where: { user_id: userId },
-          order: { redemption_date_and_time: 'DESC' },
-        });
-
-        if (!lastRedeem) {
-          lastRedeem = new LastRedeem();
-          lastRedeem.user_id = userId; 
-        }
-
-        Object.assign(lastRedeem, updateRedeemDto);
-
-        await this.lastRedeemRepository.save(lastRedeem);
-
+      if (redeem) {
         return {
           status: true,
-          message: 'Last redeem record updated successfully',
-          data: lastRedeem,
+          message: 'Last redeem record retrieved successfully',
+          data: redeem,
         };
       } else {
         return {
           status: false,
-          message: 'Invalid Payload',
+          message: 'No redeem records found for this user',
           data: null,
         };
       }
-    } catch (error) {
+    } else {
       return {
         status: false,
-        message: 'Error updating last redeem record',
-        data: error,
+        message: 'Invalid token',
+        data: null,
+      };
+    }
+  }
+
+  async updateLastRedeem(token: string, updateRedeemDto: LastRedeemDto) {
+    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+      const userId = extracttoken.userId;
+
+      const newRedeem = this.lastRedeemRepository.create({
+        ...updateRedeemDto,
+        user_id: userId,
+      });
+
+      await this.lastRedeemRepository.save(newRedeem);
+
+      return {
+        status: true,
+        message: 'Redeem record created successfully',
+        data: newRedeem,
+      };
+    } else {
+      return {
+        status: false,
+        message: 'Invalid token',
+        data: null,
       };
     }
   }
