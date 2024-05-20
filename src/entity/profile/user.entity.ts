@@ -6,11 +6,11 @@ import {
   OneToOne,
   OneToMany,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { Profile } from 'src/entity/profile/profile.entity';
 import { Schedule } from 'src/entity/schedule.entity';
-import { Record } from 'src/entity/record.entity';
+import { Record } from 'src/entity/latest/record.entity';
 import { Review } from 'src/entity/review.entity';
 import { Reply } from 'src/entity/reply.entity';
 

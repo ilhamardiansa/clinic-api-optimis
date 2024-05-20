@@ -10,6 +10,8 @@ import { DistrictModule } from './modules/district.module';
 import { DoctorModule } from './modules/doctor.module';
 import { DocumentModule } from './modules/document.module';
 import { DrugModule } from './modules/drug.module';
+import { LastMedicalRecordModule } from './modules/latest/last.medical.record.module';
+import { LastRedeemModule } from './modules/latest/last.redeem.module';
 import { MedicalRecordDrugModule } from './modules/medical_record_drug.module';
 import { MenuModule } from './modules/menu.module';
 import { PaymentModule } from './modules/payment.module';
@@ -30,6 +32,8 @@ import { Authmodule } from './modules/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -45,6 +49,11 @@ import { join } from 'path';
       database: process.env.DATABASE_NAME,
       entities: DATABASE_ENTITIES,
       timezone: 'Asia/Jakarta',
+      ssl: {
+        ca: fs.readFileSync(
+          path.join(__dirname, '..', 'certs', 'ca_aivenclinic.pem'),
+        ),
+      },
       synchronize: true,
     }),
     JwtModule.register({
@@ -60,7 +69,7 @@ import { join } from 'path';
           user: process.env.SMTP_USERNAME,
           pass: process.env.SMTP_PASSWORD,
         },
-        secure: true
+        secure: true,
       },
       template: {
         dir: join(__dirname, '..', 'src', 'template'),
@@ -79,6 +88,8 @@ import { join } from 'path';
     DoctorModule,
     DocumentModule,
     DrugModule,
+    LastMedicalRecordModule,
+    LastRedeemModule,
     MedicalRecordDrugModule,
     MenuModule,
     PaymentModule,

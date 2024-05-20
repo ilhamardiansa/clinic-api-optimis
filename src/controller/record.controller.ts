@@ -7,7 +7,7 @@ import {
   Param,
   Body,
 } from '@nestjs/common';
-import { Record } from '../entity/record.entity';
+import { Record } from '../entity/latest/record.entity';
 import { RecordService } from '../service/record.service';
 
 @Controller('records')

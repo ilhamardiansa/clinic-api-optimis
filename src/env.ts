@@ -8,11 +8,12 @@ import { District } from './entity/district.entity';
 import { Doctor } from './entity/doctor.entity';
 import { Document } from './entity/document.entity';
 import { Drug } from './entity/drug.entity';
+import { LastRedeem } from './entity/latest/last.redeem.entity';
 import { MedicalRecordDrug } from './entity/medical_record_drug.entity';
 import { Menu } from './entity/menu.entity';
 import { Payment } from './entity/payment.entity';
 import { Profile } from './entity/profile/profile.entity';
-import { Record } from './entity/record.entity';
+import { Record } from './entity/latest/record.entity';
 import { Region } from './entity/region.entity';
 import { Reply } from './entity/reply.entity';
 import { Review } from './entity/review.entity';
@@ -34,6 +35,7 @@ export const DATABASE_ENTITIES = [
   Doctor,
   Document,
   Drug,
+  LastRedeem,
   MedicalRecordDrug,
   Menu,
   Payment,
@@ -48,14 +50,19 @@ export const DATABASE_ENTITIES = [
   Transaction,
   User,
   Village,
-  Otp
+  Otp,
 ];
 
-
-export const format_json = (status: boolean, error:any, meta:any, message: any, data: any) => ({
+export const format_json = (
+  status: boolean,
+  error: any,
+  meta: any,
+  message: any,
+  data: any,
+) => ({
   success: status,
   errors: error,
   meta: meta,
   message: message,
-  data: data
+  data: data,
 });

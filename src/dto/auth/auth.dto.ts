@@ -11,10 +11,6 @@ export class AuthDTO {
   @IsPhoneNumber('ID')
   phone_number: string;
 
-  @IsStrongPassword()
+  @IsStrongPassword({minUppercase: 1, minNumbers: 1,minSymbols: 1})
   password: string;
-
-  created_at: Date;
-
-  update_at: Date;
 }
