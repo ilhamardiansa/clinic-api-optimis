@@ -17,6 +17,9 @@ export class Profile {
   @Column()
   fullname: string;
 
+  @Column()
+  phone_number: string;
+
   @Column({ nullable: true })
   profil_image: string;
 

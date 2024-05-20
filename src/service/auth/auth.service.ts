@@ -209,6 +209,7 @@ export class AuthService {
 
     const profile = this.profileRepository.create({
       fullname: fullnames,
+      phone_number:phone_number,
       profil_image: null,
       no_identity: null,
       birth_date: null,

@@ -264,6 +264,7 @@ export class AuthController {
 
       const {
         fullname,
+        phone_number,
         profil_image,
         no_identity,
         birth_date,
@@ -287,6 +288,7 @@ export class AuthController {
 
       const profile = {
         fullname: fullname,
+        phone_number:phone_number,
         profil_image: profil_image,
         no_identity: no_identity,
         birth_date: birth_date,

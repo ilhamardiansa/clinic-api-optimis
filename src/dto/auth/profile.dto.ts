@@ -1,10 +1,13 @@
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsOptional, IsString, MaxLength, IsPhoneNumber } from 'class-validator';
 
 export class ProfileDto {
     @IsOptional()
     @IsString()
     @MaxLength(64)
     fullname: string;
+
+    @IsPhoneNumber('ID')
+    phone_number: string;
 
     @IsOptional()
     profil_image: string;
