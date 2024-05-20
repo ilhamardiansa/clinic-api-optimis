@@ -257,9 +257,6 @@ export class AuthService {
     fullname: any;
   }> {
     const user = await this.authRepository.findOne({ where: { email } });
-    const profile = await this.profileRepository.findOne({
-      where: { user_id: user.id },
-    });
 
     if (!user) {
       return {
@@ -270,6 +267,10 @@ export class AuthService {
         fullname: null,
       };
     }
+
+    const profile = await this.profileRepository.findOne({
+      where: { user_id: user.id },
+    });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
