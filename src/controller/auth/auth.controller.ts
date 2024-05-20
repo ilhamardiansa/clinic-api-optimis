@@ -19,6 +19,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
+import { ChangePassDTO } from 'src/dto/auth/change.pass.dto';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -324,6 +325,44 @@ export class AuthController {
           (await updateProfile).message,
           null,
         );
+      }
+    } catch (error) {
+      return format_json(false, true, null, 'Server Error', error);
+    }
+  }
+
+  @Post('users/change-password')
+  @UseGuards(AuthGuard('jwt'))
+  async change_password(@Body() ChangePassDTO: ChangePassDTO,@Req() req: Request) {
+    try {
+      const authorizationHeader = req.headers['authorization'];
+
+      if (!authorizationHeader) {
+        return format_json(
+          false,
+          null,
+          null,
+          'Authorization header is missing',
+          null,
+        );
+      }
+
+      const token = authorizationHeader.split(' ')[1];
+
+      if (!token) {
+        return format_json(false, null, null, 'Bearer token is missing', null);
+      }
+
+      const { password, confirmPassword } = ChangePassDTO;
+
+      const change_password = this.authService.change_pass(token, password);
+
+      if ((await change_password).status === true) {
+        return format_json(true, null, null, (await change_password).message, {
+          user: (await change_password).data,
+        });
+      } else {
+        return format_json(false, null, null, (await change_password).message, null);
       }
     } catch (error) {
       return format_json(false, true, null, 'Server Error', error);

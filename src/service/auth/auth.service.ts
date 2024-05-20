@@ -390,4 +390,52 @@ export class AuthService {
     }
   }
 
+  async change_pass(
+    token: string,
+    password: string
+  ): Promise<{ status: boolean; message: string; data: any }> {
+    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+      const userId = extracttoken.userId;
+
+      const CheckUser = await this.authRepository.findOne({
+        where: { id: userId },
+      });
+      if (!CheckUser) {
+        return {
+          status: false,
+          message: 'User tidak di temukan',
+          data: null,
+        };
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, CheckUser.password);
+
+      if (isPasswordValid) {
+        return {
+          status: false,
+          message: 'Kata sandi sama seperti yang lama',
+          data: null,
+        };
+      }
+
+      const newpassword = await bcrypt.hash(password, 10);
+      CheckUser.password = newpassword;
+      await this.authRepository.save(CheckUser);
+
+      return {
+        status: true,
+        message: 'Berhasil ubah kata sandi',
+        data: CheckUser,
+      };
+    } else {
+      return {
+        status: false,
+        message: 'Invalid Payload',
+        data: null,
+      };
+    }
+  }
+
 }

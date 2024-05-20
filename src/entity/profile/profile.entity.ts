@@ -30,7 +30,7 @@ export class Profile {
   birth_date: Date;
 
   @Column({ nullable: true })
-  birth_place: string;
+  birth_place: number;
 
   @Column({ nullable: true })
   address: string;

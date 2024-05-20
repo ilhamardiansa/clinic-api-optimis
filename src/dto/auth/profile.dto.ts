@@ -17,7 +17,7 @@ export class ProfileDto {
     birth_date: Date;
 
     @IsString()
-    birth_place: string;
+    birth_place: number;
 
     @IsString()
     address: string;
