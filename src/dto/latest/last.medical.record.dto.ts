@@ -14,5 +14,5 @@ export class LastMedicalRecordDto {
   clinic_name: string;
 
   @IsString()
-  condition: string;
+  conditions: string;
 }

@@ -1,13 +1,13 @@
 import { District } from 'src/entity/district.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
-@Entity()
+@Entity('reg_villages')
 export class Village {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  village_name: string;
+  name: string;
 
   @Column()
   district_id: number;

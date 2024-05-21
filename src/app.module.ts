@@ -3,21 +3,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DATABASE_ENTITIES } from './env';
 import { BankModule } from './modules/bank.module';
 import { CategoryModule } from './modules/category.module';
-import { CityModule } from './modules/city.module';
+import { CityModule } from './modules/location/city.module';
 import { ClinicModule } from './modules/clinic.module';
-import { CountryModule } from './modules/country.module';
-import { DistrictModule } from './modules/district.module';
+import { CountryModule } from './modules/location/country.module';
+import { DistrictModule } from './modules/location/district.module';
 import { DoctorModule } from './modules/doctor.module';
 import { DocumentModule } from './modules/document.module';
 import { DrugModule } from './modules/drug.module';
 import { LastMedicalRecordModule } from './modules/latest/last.medical.record.module';
 import { LastRedeemModule } from './modules/latest/last.redeem.module';
+import { LocationModule } from './modules/location/location.module';
 import { MedicalRecordDrugModule } from './modules/medical_record_drug.module';
 import { MenuModule } from './modules/menu.module';
 import { PaymentModule } from './modules/payment.module';
 import { ProfileModule } from './modules/profile.module';
 import { RecordModule } from './modules/record.module';
-import { RegionModule } from './modules/region.module';
+import { RegionModule } from './modules/location/region.module';
 import { ReplyModule } from './modules/reply.module';
 import { ReviewModule } from './modules/review.module';
 import { RoleModule } from './modules/role.module';
@@ -25,7 +26,7 @@ import { RoomModule } from './modules/room.module';
 import { ScheduleModule } from './modules/schedule.module';
 import { TransactionModule } from './modules/transaction.module';
 import { UserModule } from './modules/user.module';
-import { VillageModule } from './modules/village.module';
+import { VillageModule } from './modules/location/village.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Authmodule } from './modules/auth/auth.module';
@@ -90,6 +91,7 @@ import * as path from 'path';
     DrugModule,
     LastMedicalRecordModule,
     LastRedeemModule,
+    LocationModule,
     MedicalRecordDrugModule,
     MenuModule,
     PaymentModule,

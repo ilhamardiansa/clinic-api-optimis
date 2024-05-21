@@ -4,7 +4,7 @@ import { Request } from 'express';
 import { LastRedeemService } from 'src/service/latest/last.redeem.service';
 import { format_json } from 'src/env';
 
-@Controller('api/user')
+@Controller('api/users')
 export class LastRedeemController {
   constructor(private readonly lastRedeemService: LastRedeemService) {}
 

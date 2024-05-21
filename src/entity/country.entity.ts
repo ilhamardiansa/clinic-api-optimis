@@ -29,6 +29,6 @@ export class Country {
   @OneToMany((type) => Profile, (profile) => profile.country_id)
   profile: Profile;
 
-  @OneToMany((type) => Region, (region) => region.country_id)
-  region: Region;
+  @OneToMany((type) => Region, (region) => region.country)
+  regions: Region;
 }
