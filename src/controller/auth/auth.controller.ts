@@ -58,14 +58,21 @@ export class AuthController {
           fullname,
         );
         const saveotp = await this.authService.saveOtp(otp, user.users.id, 0);
-        return format_json(200,true, false, null, 'User signed up successfully', {
-          user: user,
-        });
+        return format_json(
+          200,
+          true,
+          false,
+          null,
+          'User signed up successfully',
+          {
+            user: user,
+          },
+        );
       } else {
-        return format_json(400,false, true, null, user.message, null);
+        return format_json(400, false, true, null, user.message, null);
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
+      return format_json(400, false, true, null, 'Server Error', error);
     }
   }
 
@@ -133,18 +140,25 @@ export class AuthController {
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(400,false, null, null, 'Bearer token is missing', null);
+        return format_json(
+          400,
+          false,
+          null,
+          null,
+          'Bearer token is missing',
+          null,
+        );
       }
       const verifikasiotp = await this.authService.verifikasi(kode_otp, token);
       if (verifikasiotp.status == true) {
-        return format_json(200,true, null, null, verifikasiotp.message, {
+        return format_json(200, true, null, null, verifikasiotp.message, {
           user: verifikasiotp.users,
         });
       } else {
-        return format_json(400,false, null, null, verifikasiotp.message, null);
+        return format_json(400, false, null, null, verifikasiotp.message, null);
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
+      return format_json(400, false, true, null, 'Server Error', error);
     }
   }
 
@@ -168,7 +182,14 @@ export class AuthController {
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(400,false, null, null, 'Bearer token is missing', null);
+        return format_json(
+          400,
+          false,
+          null,
+          null,
+          'Bearer token is missing',
+          null,
+        );
       }
 
       const code = generateRandomNumber(100000, 999999);
@@ -182,14 +203,14 @@ export class AuthController {
 
       const resendotp = await this.authService.resendotp(token, otp);
       if (resendotp.status == true) {
-        return format_json(200,true, null, null, resendotp.message, {
+        return format_json(200, true, null, null, resendotp.message, {
           user: resendotp.users,
         });
       } else {
-        return format_json(400,false, null, null, resendotp.message, null);
+        return format_json(400, false, null, null, resendotp.message, null);
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
+      return format_json(400, false, true, null, 'Server Error', error);
     }
   }
 
@@ -213,20 +234,34 @@ export class AuthController {
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(400,false, null, null, 'Bearer token is missing', null);
+        return format_json(
+          400,
+          false,
+          null,
+          null,
+          'Bearer token is missing',
+          null,
+        );
       }
 
       const getprofile = this.authService.profile(token);
 
       if ((await getprofile).status === true) {
-        return format_json(200,true, null, null, (await getprofile).message, {
+        return format_json(200, true, null, null, (await getprofile).message, {
           user: (await getprofile).users,
         });
       } else {
-        return format_json(400,false, null, null, (await getprofile).message, null);
+        return format_json(
+          400,
+          false,
+          null,
+          null,
+          (await getprofile).message,
+          null,
+        );
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
+      return format_json(400, false, true, null, 'Server Error', error);
     }
   }
 
@@ -266,7 +301,14 @@ export class AuthController {
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(400,false, null, null, 'Bearer token is missing', null);
+        return format_json(
+          400,
+          false,
+          null,
+          null,
+          'Bearer token is missing',
+          null,
+        );
       }
 
       const {
@@ -295,7 +337,7 @@ export class AuthController {
 
       const profile = {
         fullname: fullname,
-        phone_number:phone_number,
+        phone_number: phone_number,
         profil_image: profil_image,
         no_identity: no_identity,
         birth_date: birth_date,
@@ -320,9 +362,16 @@ export class AuthController {
       const updateProfile = this.authService.update_profile(token, profile);
 
       if ((await updateProfile).status == true) {
-        return format_json(200,true, null, null, (await updateProfile).message, {
-          user: (await updateProfile).users,
-        });
+        return format_json(
+          200,
+          true,
+          null,
+          null,
+          (await updateProfile).message,
+          {
+            user: (await updateProfile).users,
+          },
+        );
       } else {
         return format_json(
           400,
@@ -334,13 +383,16 @@ export class AuthController {
         );
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
+      return format_json(400, false, true, null, 'Server Error', error);
     }
   }
 
   @Post('users/change-password')
   @UseGuards(AuthGuard('jwt'))
-  async change_password(@Body() ChangePassDTO: ChangePassDTO,@Req() req: Request) {
+  async change_password(
+    @Body() ChangePassDTO: ChangePassDTO,
+    @Req() req: Request,
+  ) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
@@ -358,7 +410,14 @@ export class AuthController {
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(400,false, null, null, 'Bearer token is missing', null);
+        return format_json(
+          400,
+          false,
+          null,
+          null,
+          'Bearer token is missing',
+          null,
+        );
       }
 
       const { password, confirmPassword } = ChangePassDTO;
@@ -366,14 +425,28 @@ export class AuthController {
       const change_password = this.authService.change_pass(token, password);
 
       if ((await change_password).status === true) {
-        return format_json(200,true, null, null, (await change_password).message, {
-          user: (await change_password).users,
-        });
+        return format_json(
+          200,
+          true,
+          null,
+          null,
+          (await change_password).message,
+          {
+            user: (await change_password).users,
+          },
+        );
       } else {
-        return format_json(400,false, null, null, (await change_password).message, null);
+        return format_json(
+          400,
+          false,
+          null,
+          null,
+          (await change_password).message,
+          null,
+        );
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
+      return format_json(400, false, true, null, 'Server Error', error);
     }
   }
 }
