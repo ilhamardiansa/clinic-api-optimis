@@ -18,10 +18,4 @@ export class Region {
 
   @Column()
   country_id: number;
-
-  @OneToMany((type) => City, (city) => city.region_id)
-  city: City[];
-
-  @ManyToOne((type) => Country, (country) => country.regions)
-  country: Country[];
 }

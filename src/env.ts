@@ -1,10 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Bank } from './entity/bank.entity';
 import { Category } from './entity/category.entity';
-import { City } from './entity/city.entity';
 import { Clinic } from './entity/clinic.entity';
-import { Country } from './entity/country.entity';
-import { District } from './entity/district.entity';
 import { Doctor } from './entity/doctor.entity';
 import { Document } from './entity/document.entity';
 import { Drug } from './entity/drug.entity';
@@ -14,7 +11,6 @@ import { Menu } from './entity/menu.entity';
 import { Payment } from './entity/payment.entity';
 import { Profile } from './entity/profile/profile.entity';
 import { Record } from './entity/latest/record.entity';
-import { Region } from './entity/region.entity';
 import { Reply } from './entity/reply.entity';
 import { Review } from './entity/review.entity';
 import { Role } from './entity/role.entity';
@@ -22,16 +18,13 @@ import { Room } from './entity/room.entity';
 import { Schedule } from './entity/schedule.entity';
 import { Transaction } from './entity/transaction.entity';
 import { User } from './entity/profile/user.entity';
-import { Village } from './entity/village.entity';
 import { Otp } from './entity/otp.entity';
+import { LocationModule } from './modules/location/location.module';
 
 export const DATABASE_ENTITIES = [
   Bank,
   Category,
-  City,
   Clinic,
-  Country,
-  District,
   Doctor,
   Document,
   Drug,
@@ -41,7 +34,6 @@ export const DATABASE_ENTITIES = [
   Payment,
   Profile,
   Record,
-  Region,
   Reply,
   Review,
   Role,
@@ -49,8 +41,8 @@ export const DATABASE_ENTITIES = [
   Schedule,
   Transaction,
   User,
-  Village,
   Otp,
+  LocationModule
 ];
 
 export const format_json = (

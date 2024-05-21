@@ -25,10 +25,4 @@ export class Country {
     default: () => 'CURRENT_TIMESTAMP',
   })
   deletedAt: string;
-
-  @OneToMany((type) => Profile, (profile) => profile.country_id)
-  profile: Profile;
-
-  @OneToMany((type) => Region, (region) => region.country)
-  regions: Region;
 }

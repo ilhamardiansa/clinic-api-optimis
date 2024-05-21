@@ -128,7 +128,7 @@ export class LocationController {
   }
 
   @Get('villages/:id')
-  async getVillageById(@Param('id') id: number) {
+  async getVillageById(@Param('id') id: string) {
     const village = await this.locationService.getVillageById(id);
     if (village) {
       return {

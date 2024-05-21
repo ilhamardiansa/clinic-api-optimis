@@ -18,10 +18,4 @@ export class District {
 
   @Column()
   city_id: number;
-
-  @OneToMany((type) => Village, (village) => village.district_id)
-  village: Village[];
-
-  @ManyToOne((type) => City, (city) => city.id)
-  city: City[];
 }

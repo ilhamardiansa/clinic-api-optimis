@@ -70,7 +70,7 @@ export class LocationService {
     return this.villageRepository.find({ relations: ['district'] });
   }
 
-  async getVillageById(id: number): Promise<Village> {
+  async getVillageById(id: string): Promise<Village> {
     return this.villageRepository.findOne({
       where: { id },
       relations: ['district'],

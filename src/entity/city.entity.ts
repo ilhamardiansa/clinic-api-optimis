@@ -16,18 +16,15 @@ export class City {
   @Column()
   city_name: string;
 
-  @Column()
+  @Column('int')
   region_id: number;
 
-  @Column()
+  @Column('int')
   latitude: number;
 
-  @Column()
+  @Column('int')
   longitude: number;
 
-  @OneToMany((type) => District, (district) => district.city_id)
-  district: District[];
-
-  @ManyToOne((type) => Region, (region) => region.id)
-  region: Region[];
+  @Column('int')
+  regionId: number;
 }
