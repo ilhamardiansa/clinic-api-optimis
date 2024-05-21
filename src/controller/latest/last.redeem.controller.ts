@@ -16,6 +16,7 @@ export class LastRedeemController {
 
       if (!authorizationHeader) {
         return format_json(
+          400,
           false,
           null,
           null,
@@ -27,20 +28,20 @@ export class LastRedeemController {
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(false, null, null, 'Bearer token is missing', null);
+        return format_json(400,false, null, null, 'Bearer token is missing', null);
       }
 
       const getRedeemResult = await this.lastRedeemService.getLastRedeem(token);
 
       if (getRedeemResult.status) {
-        return format_json(true, null, null, getRedeemResult.message, {
+        return format_json(200,true, null, null, getRedeemResult.message, {
           redeem: getRedeemResult.data,
         });
       } else {
-        return format_json(false, null, null, getRedeemResult.message, null);
+        return format_json(400,false, null, null, getRedeemResult.message, null);
       }
     } catch (error) {
-      return format_json(false, true, null, 'Server Error', error);
+      return format_json(400,false, true, null, 'Server Error', error);
     }
   }
 }

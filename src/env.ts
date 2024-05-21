@@ -42,7 +42,6 @@ export const DATABASE_ENTITIES = [
   Transaction,
   User,
   Otp,
-  Village
 ];
 
 export const format_json = (
