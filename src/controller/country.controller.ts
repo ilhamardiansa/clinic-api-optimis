@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+} from '@nestjs/common';
 import { Country } from '../entity/country.entity';
 import { CountryService } from '../service/country.service';
 
@@ -22,7 +30,10 @@ export class CountryController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() country: Country): Promise<Country> {
+  async update(
+    @Param('id') id: string,
+    @Body() country: Country,
+  ): Promise<Country> {
     return this.countryService.update(parseInt(id, 10), country);
   }
 
