@@ -103,6 +103,7 @@ import * as path from 'path';
     UserModule,
     VillageModule,
     Authmodule,
+    LocationModule
   ],
 })
 export class AppModule {}

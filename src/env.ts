@@ -19,7 +19,6 @@ import { Schedule } from './entity/schedule.entity';
 import { Transaction } from './entity/transaction.entity';
 import { User } from './entity/profile/user.entity';
 import { Otp } from './entity/otp.entity';
-import { LocationModule } from './modules/location/location.module';
 
 export const DATABASE_ENTITIES = [
   Bank,
@@ -41,8 +40,7 @@ export const DATABASE_ENTITIES = [
   Schedule,
   Transaction,
   User,
-  Otp,
-  LocationModule
+  Otp
 ];
 
 export const format_json = (
