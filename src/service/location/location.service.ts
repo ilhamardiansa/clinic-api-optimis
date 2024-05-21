@@ -67,7 +67,7 @@ export class LocationService {
   }
 
   async getAllVillages(): Promise<Village[]> {
-    return this.villageRepository.find({ relations: ['district'] });
+    return this.villageRepository.find();
   }
 
   async getVillageById(id: string): Promise<Village> {

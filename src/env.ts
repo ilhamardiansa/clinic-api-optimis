@@ -19,6 +19,7 @@ import { Schedule } from './entity/schedule.entity';
 import { Transaction } from './entity/transaction.entity';
 import { User } from './entity/profile/user.entity';
 import { Otp } from './entity/otp.entity';
+import { Village } from './entity/village.entity';
 
 export const DATABASE_ENTITIES = [
   Bank,
@@ -40,17 +41,20 @@ export const DATABASE_ENTITIES = [
   Schedule,
   Transaction,
   User,
-  Otp
+  Otp,
+  Village
 ];
 
 export const format_json = (
-  status: boolean,
+  status: number,
+  success: boolean,
   error: any,
   meta: any,
   message: any,
   data: any,
 ) => ({
-  success: status,
+  status: status,
+  success: success,
   errors: error,
   meta: meta,
   message: message,

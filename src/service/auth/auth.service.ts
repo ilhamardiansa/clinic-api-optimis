@@ -10,6 +10,7 @@ import { mailService } from '../mailer/mailer.service';
 import * as moment from 'moment-timezone';
 import { Profile } from '../../entity/profile/profile.entity';
 import { promises } from 'dns';
+import { Json } from 'mailgun.js';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -79,7 +80,7 @@ export class AuthService {
   async verifikasi(
     kode_otp: number,
     token: string,
-  ): Promise<{ status: boolean; message: string; token: string }> {
+  ): Promise<{ status: boolean; message: string; users: Json }> {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
     if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
@@ -92,15 +93,31 @@ export class AuthService {
         return {
           status: false,
           message: 'Email tidak valid',
-          token: null,
+          users: {
+            full_name: null,
+            image: null,
+            email: CheckUser.email,
+            phone_number: CheckUser.phone_number,
+            token: null
+          }
         };
       }
+
+      const profile = await this.profileRepository.findOne({
+        where: { user_id: CheckUser.id },
+      });
 
       if (CheckUser.verifed == 1) {
         return {
           status: false,
-          message: 'Email telah terverifikasi',
-          token: null,
+          message: 'Akun telah di verifikasi',
+          users: {
+            full_name: profile.fullname,
+            image: profile.profil_image,
+            email: CheckUser.email,
+            phone_number: CheckUser.phone_number,
+            token: null
+          }
         };
       }
 
@@ -110,8 +127,14 @@ export class AuthService {
       if (!otpExists) {
         return {
           status: false,
-          message: 'Kode OTP Tidak valid',
-          token: null,
+          message: 'OTP Salah',
+          users: {
+            full_name: profile.fullname,
+            image: profile.profil_image,
+            email: CheckUser.email,
+            phone_number: CheckUser.phone_number,
+            token: null
+          }
         };
       }
 
@@ -125,15 +148,27 @@ export class AuthService {
       });
 
       return {
-        status: true,
-        message: 'Akun telah berhasil di verifikasi',
-        token: token,
+        status: false,
+        message: 'OTP Salah',
+        users: {
+          full_name: profile.fullname,
+          image: profile.profil_image,
+          email: CheckUser.email,
+          phone_number: CheckUser.phone_number,
+          token: token
+        }
       };
     } else {
       return {
         status: false,
-        message: 'Invalid Payload',
-        token: null,
+        message: 'OTP Salah',
+        users: {
+          full_name: null,
+          image: null,
+          email: null,
+          phone_number: null,
+          token: null
+        }
       };
     }
   }

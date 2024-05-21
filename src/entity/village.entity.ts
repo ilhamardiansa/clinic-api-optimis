@@ -1,11 +1,11 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('reg_villages')
 export class Village {
   @PrimaryColumn({ type: 'char', length: 255 }) 
   id: string;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Column()

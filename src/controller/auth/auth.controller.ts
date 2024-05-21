@@ -119,6 +119,7 @@ export class AuthController {
 
       if (!authorizationHeader) {
         return format_json(
+          400,
           false,
           null,
           null,
@@ -130,18 +131,18 @@ export class AuthController {
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(false, null, null, 'Bearer token is missing', null);
+        return format_json(400,false, null, null, 'Bearer token is missing', null);
       }
       const verifikasiotp = await this.authService.verifikasi(kode_otp, token);
       if (verifikasiotp.status == true) {
-        return format_json(true, null, null, verifikasiotp.message, {
-          user: verifikasiotp,
+        return format_json(200,true, null, null, verifikasiotp.message, {
+          user: verifikasiotp.users,
         });
       } else {
-        return format_json(false, null, null, verifikasiotp.message, null);
+        return format_json(400,false, null, null, verifikasiotp.message, null);
       }
     } catch (error) {
-      return format_json(false, true, null, 'Server Error', error);
+      return format_json(400,false, true, null, 'Server Error', error);
     }
   }
 
