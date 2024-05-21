@@ -18,15 +18,24 @@ import { AuthGuard } from '@nestjs/passport';
 import { ProfileDto } from 'src/dto/auth/profile.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator';
-import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { ChangePassDTO } from 'src/dto/auth/change.pass.dto';
 import { v2 as cloudinary } from 'cloudinary';
-import path from 'path';
+import path, { basename, extname } from 'path';
+import { diskStorage } from 'multer';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+const storage = diskStorage({
+  destination: './uploads', // specify your desired path
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + extname(file.originalname));
+  },
+});
+
 
 @Controller('api')
 export class AuthController {
@@ -270,9 +279,11 @@ export class AuthController {
 
   @Put('users/update/profiles')
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('file', { storage }))
   async update_profile(
     @Body() profileDTO: ProfileDto,
     @Req() req: Request,
+    @UploadedFile() profil_image: Express.Multer.File
   ) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -304,7 +315,6 @@ export class AuthController {
       const {
         fullname,
         phone_number,
-        profil_image,
         no_identity,
         birth_date,
         birth_place,
@@ -332,12 +342,13 @@ export class AuthController {
     });
     
     try {
-      const publicId = uuidv4().replace(/-/g, '');
-      const uploadResult = await cloudinary.uploader.upload(profil_image, { public_id: publicId });
+      const get_name_file = basename(profil_image.filename, extname(profil_image.filename));
+      const uploadResult = await cloudinary.uploader.upload(profil_image.path, { public_id: get_name_file });
       var get_url_profile = uploadResult.secure_url;
   } catch (error) {
-      console.error("Error uploading file to Cloudinary:", error);
-      console.error("imgae", profil_image);
+      console.error(error);
+      console.error(profil_image);
+      console.error(profil_image.path);
       const publicId = uuidv4().replace(/-/g, '');
       get_url_profile = 'https://api.dicebear.com/8.x/adventurer/svg?seed=' + publicId;
   }

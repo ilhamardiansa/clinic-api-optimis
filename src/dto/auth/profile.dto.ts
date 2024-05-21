@@ -8,9 +8,6 @@ export class ProfileDto {
   @IsOptional()
   @IsPhoneNumber('ID')
   phone_number: string;
-
-  @IsMimeType()
-  profil_image: any;
   
   no_identity: number;
 
