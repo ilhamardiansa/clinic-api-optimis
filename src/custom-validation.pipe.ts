@@ -13,7 +13,7 @@ export class CustomValidationPipe extends ValidationPipe {
     if (errors.length > 0) {
       const formattedErrors = this.formatErrors(errors);
       throw new BadRequestException(
-        format_json(false, formattedErrors, null, 'Validation failed', null),
+        format_json(400,false, formattedErrors, null, 'Validation failed', null),
       );
     }
 

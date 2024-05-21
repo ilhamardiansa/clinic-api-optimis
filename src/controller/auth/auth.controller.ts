@@ -6,6 +6,7 @@ import {
   UseGuards,
   UploadedFile,
   Get,
+  Put,
 } from '@nestjs/common';
 import { AuthDTO } from 'src/dto/auth/auth.dto';
 import { SignInDto } from 'src/dto/auth/signin.dto';
@@ -20,6 +21,8 @@ import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { ChangePassDTO } from 'src/dto/auth/change.pass.dto';
+import { v2 as cloudinary } from 'cloudinary';
+import path from 'path';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -265,24 +268,11 @@ export class AuthController {
     }
   }
 
-  @Post('users/update/profiles')
+  @Put('users/update/profiles')
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const randomName = uuidv4();
-          const extension = file.originalname.split('.').pop();
-          cb(null, `${randomName}.${extension}`);
-        },
-      }),
-    }),
-  )
   async update_profile(
     @Body() profileDTO: ProfileDto,
     @Req() req: Request,
-    @UploadedFile() file: Express.Multer.File,
   ) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -333,12 +323,29 @@ export class AuthController {
         neighborhood_no,
         citizen_no,
         area_code,
-      } = profileDTO;
-
-      const profile = {
+    } = profileDTO;
+    
+    cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+    
+    try {
+      const publicId = uuidv4().replace(/-/g, '');
+      const uploadResult = await cloudinary.uploader.upload(profil_image, { public_id: publicId });
+      var get_url_profile = uploadResult.secure_url;
+  } catch (error) {
+      console.error("Error uploading file to Cloudinary:", error);
+      console.error("imgae", profil_image);
+      const publicId = uuidv4().replace(/-/g, '');
+      get_url_profile = 'https://api.dicebear.com/8.x/adventurer/svg?seed=' + publicId;
+  }
+    
+    const profile = {
         fullname: fullname,
         phone_number: phone_number,
-        profil_image: profil_image,
+        profil_image: get_url_profile,
         no_identity: no_identity,
         birth_date: birth_date,
         birth_place: birth_place,
@@ -357,7 +364,7 @@ export class AuthController {
         neighborhood_no: neighborhood_no,
         citizen_no: citizen_no,
         area_code: area_code,
-      };
+    };
 
       const updateProfile = this.authService.update_profile(token, profile);
 

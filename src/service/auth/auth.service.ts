@@ -390,8 +390,8 @@ export class AuthService {
           token: token_verifikasi
         }
       };
-
     }
+    
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
@@ -404,7 +404,7 @@ export class AuthService {
           image: profile.profil_image,
           email: user.email,
           phone_number: user.phone_number,
-          verifikasi: false,
+          verifikasi: true,
           token: token
         }
       };
