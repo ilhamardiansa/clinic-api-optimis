@@ -99,7 +99,7 @@ export class AuthController {
         false,
         null,
         'User signed in successfully',
-        token,
+        token.users,
       );
     } else {
       const code = generateRandomNumber(100000, 999999);
@@ -123,7 +123,7 @@ export class AuthController {
         false,
         null,
         'Silakan verifikasi email anda',
-        token,
+        token.users,
       );
     }
   }
