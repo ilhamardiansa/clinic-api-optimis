@@ -172,7 +172,7 @@ export class AuthService {
       await this.otpRepository.save(otpExists);
       await this.authRepository.save(CheckUser);
 
-      const token = jwt.sign({ userId: CheckUser.id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ userId: CheckUser.id, verifikasi: true }, process.env.JWT_SECRET, {
         expiresIn: '1h',
       });
 
@@ -306,7 +306,7 @@ export class AuthService {
 
     const saveprofile = await this.profileRepository.save(profile);
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user.id, verifikasi: false }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
     return {
@@ -372,7 +372,7 @@ export class AuthService {
     }
     if (user.verifed == 0) {
       const token_verifikasi = jwt.sign(
-        { userId: user.id },
+        { userId: user.id, verifikasi: false },
         process.env.JWT_SECRET,
         { expiresIn: '1h' },
       );
@@ -392,7 +392,7 @@ export class AuthService {
       };
     }
     
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user.id, verifikasi: true }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
      return {
@@ -416,8 +416,24 @@ export class AuthService {
   ): Promise<{ status: boolean; message: string; users: any }> {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+    if (typeof extracttoken !== 'string' && 'userId' in extracttoken && 'verifikasi' in extracttoken) {
       const userId = extracttoken.userId;
+      const userVerifikasi = extracttoken.verifikasi;
+
+      if(userVerifikasi == false){
+        return {
+          status: false,
+          message: 'Silakan verifikasi akun anda',
+          users: {
+            id: null,
+            full_name: null,
+            image: null,
+            email: null,
+            phone_number: null,
+            token: null
+          }
+        };
+      }
 
       const CheckUser = await this.authRepository.findOne({
         where: { id: userId },
@@ -478,8 +494,24 @@ export class AuthService {
   ): Promise<{ status: boolean; message: string; users: any }> {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+    if (typeof extracttoken !== 'string' && 'userId' in extracttoken && 'verifikasi' in extracttoken) {
       const userId = extracttoken.userId;
+      const userVerifikasi = extracttoken.verifikasi;
+
+      if(userVerifikasi == false){
+        return {
+          status: false,
+          message: 'Silakan verifikasi akun anda',
+          users: {
+            id: null,
+            full_name: null,
+            image: null,
+            email: null,
+            phone_number: null,
+            token: null
+          }
+        };
+      }
 
       const CheckUser = await this.authRepository.findOne({
         where: { id: userId },
@@ -537,8 +569,24 @@ export class AuthService {
   ): Promise<{ status: boolean; message: string; users: any }> {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+    if (typeof extracttoken !== 'string' && 'userId' in extracttoken && 'verifikasi' in extracttoken) {
       const userId = extracttoken.userId;
+      const userVerifikasi = extracttoken.verifikasi;
+
+      if(userVerifikasi == false){
+        return {
+          status: false,
+          message: 'Silakan verifikasi akun anda',
+          users: {
+            id: null,
+            full_name: null,
+            image: null,
+            email: null,
+            phone_number: null,
+            token: null
+          }
+        };
+      }
 
       const CheckUser = await this.authRepository.findOne({
         where: { id: userId },
