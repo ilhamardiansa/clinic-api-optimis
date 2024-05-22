@@ -18,4 +18,7 @@ export class District {
 
   @Column()
   city_id: number;
+
+  @OneToMany(() => Village, (village) => village.district)
+  villages: Village[];
 }

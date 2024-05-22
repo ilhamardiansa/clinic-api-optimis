@@ -20,6 +20,8 @@ import { Transaction } from './entity/transaction.entity';
 import { User } from './entity/profile/user.entity';
 import { Otp } from './entity/otp.entity';
 import { Village } from './entity/village.entity';
+import { ProfileConfiguration } from './entity/profile_config/profile.config.entity';
+import { District } from './entity/district.entity';
 
 export const DATABASE_ENTITIES = [
   Bank,
@@ -27,12 +29,14 @@ export const DATABASE_ENTITIES = [
   Clinic,
   Doctor,
   Document,
+  District,
   Drug,
   LastRedeem,
   MedicalRecordDrug,
   Menu,
   Payment,
   Profile,
+  ProfileConfiguration,
   Record,
   Reply,
   Review,
@@ -40,6 +44,7 @@ export const DATABASE_ENTITIES = [
   Room,
   Schedule,
   Transaction,
+  Village,
   User,
   Otp,
 ];
