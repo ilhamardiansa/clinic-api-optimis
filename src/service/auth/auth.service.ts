@@ -177,8 +177,8 @@ export class AuthService {
       });
 
       return {
-        status: false,
-        message: 'OTP Salah',
+        status: true,
+        message: 'Akun telah berhasil di verifikasi',
         users: {
           full_name: profile.fullname,
           image: profile.profil_image,
