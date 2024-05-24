@@ -42,7 +42,6 @@ export const DATABASE_ENTITIES = [
   Room,
   Schedule,
   Transaction,
-  Village,
   User,
   Otp,
 ];

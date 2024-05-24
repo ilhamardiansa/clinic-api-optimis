@@ -96,9 +96,7 @@ import * as path from 'path';
     ScheduleModule,
     TransactionModule,
     UserModule,
-    VillageModule,
     Authmodule,
-    LocationModule
   ],
 })
 export class AppModule {}
