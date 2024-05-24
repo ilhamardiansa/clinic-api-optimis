@@ -21,6 +21,7 @@ import { User } from './entity/profile/user.entity';
 import { Otp } from './entity/otp.entity';
 import { Village } from './entity/village.entity';
 import { ProfileConfiguration } from './entity/profile_config/profile.config.entity';
+import { Wilayah } from './entity/wilayah.entity';
 
 export const DATABASE_ENTITIES = [
   Bank,
@@ -42,6 +43,7 @@ export const DATABASE_ENTITIES = [
   Room,
   Schedule,
   Transaction,
+  Wilayah,
   User,
   Otp,
 ];

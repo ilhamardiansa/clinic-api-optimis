@@ -1,79 +1,23 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { LocationService } from 'src/service/location/location.service';
+import { WilayahService } from 'src/service/location/location.service';
 
-@Controller('api')
-export class LocationController {
-  constructor(private readonly locationService: LocationService) {}
+@Controller('api/wilayah')
+export class WilayahController {
+  constructor(private readonly wilayahService: WilayahService) {}
 
-  private formatJson(
-    status: number,
-    success: boolean,
-    error: any,
-    meta: any,
-    message: any,
-    data: any,
-  ) {
-    return { status, success, errors: error, meta, message, data };
-  }
-
-
-
-  @Get('villages')
-  async getAllVillages() {
+  @Get('provinsi/:namaProvinsi')
+  async getByProvinsi(@Param('namaProvinsi') namaProvinsi: string) {
     try {
-      const villages = await this.locationService.getAllVillages();
-      return this.formatJson(
-        200,
-        true,
-        null,
-        null,
-        'Villages retrieved successfully',
-        villages,
-      );
+      const wilayah = await this.wilayahService.getByProvinsi(namaProvinsi);
+      return {
+        message: 'Wilayah berhasil diambil berdasarkan provinsi',
+        data: wilayah,
+      };
     } catch (error) {
-      return this.formatJson(
-        500,
-        false,
-        error,
-        null,
-        'Failed to retrieve villages',
-        null,
-      );
-    }
-  }
-
-  @Get('villages/:id')
-  async getVillageById(@Param('id') id: string) {
-    try {
-      const village = await this.locationService.getVillageById(id);
-      if (village) {
-        return this.formatJson(
-          200,
-          true,
-          null,
-          null,
-          'Village retrieved successfully',
-          village,
-        );
-      } else {
-        return this.formatJson(
-          404,
-          false,
-          null,
-          null,
-          'Village not found',
-          null,
-        );
-      }
-    } catch (error) {
-      return this.formatJson(
-        500,
-        false,
-        error,
-        null,
-        'Failed to retrieve village',
-        null,
-      );
+      return {
+        message: 'Gagal mengambil wilayah berdasarkan provinsi',
+        error: error.message,
+      };
     }
   }
 }

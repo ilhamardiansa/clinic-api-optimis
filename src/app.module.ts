@@ -95,6 +95,7 @@ import * as path from 'path';
     RoomModule,
     ScheduleModule,
     TransactionModule,
+    LocationModule,
     UserModule,
     Authmodule,
   ],
