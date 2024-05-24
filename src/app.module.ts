@@ -3,10 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DATABASE_ENTITIES } from './env';
 import { BankModule } from './modules/bank.module';
 import { CategoryModule } from './modules/category.module';
-import { CityModule } from './modules/location/city.module';
 import { ClinicModule } from './modules/clinic.module';
-import { CountryModule } from './modules/location/country.module';
-import { DistrictModule } from './modules/location/district.module';
 import { DoctorModule } from './modules/doctor.module';
 import { DocumentModule } from './modules/document.module';
 import { DrugModule } from './modules/drug.module';
@@ -18,7 +15,6 @@ import { MenuModule } from './modules/menu.module';
 import { PaymentModule } from './modules/payment.module';
 import { ProfileModule } from './modules/profile.module';
 import { RecordModule } from './modules/record.module';
-import { RegionModule } from './modules/location/region.module';
 import { ReplyModule } from './modules/reply.module';
 import { ReviewModule } from './modules/review.module';
 import { RoleModule } from './modules/role.module';
@@ -83,7 +79,6 @@ import * as path from 'path';
     BankModule,
     CategoryModule,
     ClinicModule,
-    DistrictModule,
     DoctorModule,
     DocumentModule,
     DrugModule,

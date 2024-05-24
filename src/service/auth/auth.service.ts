@@ -190,7 +190,7 @@ export class AuthService {
     } else {
       return {
         status: false,
-        message: 'OTP Salah',
+        message: 'Invalid payload',
         users: {
           full_name: null,
           image: null,
@@ -464,6 +464,85 @@ export class AuthService {
       return {
         status: true,
         message: 'Data profiles berhasil di ubah',
+        users: {
+          id: CheckUser.id,
+          full_name: checkprofile.fullname,
+          image: checkprofile.profil_image,
+          email: CheckUser.email,
+          phone_number: CheckUser.phone_number,
+          token: null
+        }
+      };
+    } else {
+      return {
+        status: false,
+        message: 'Invalid Payload',
+        users: {
+          id: null,
+          full_name: null,
+          image: null,
+          email: null,
+          phone_number: null,
+          token: null
+        }
+      };
+    }
+  }
+
+  async update_avatar(
+    token: string,
+    image: string,
+  ): Promise<{ status: boolean; message: string; users: any }> {
+    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (typeof extracttoken !== 'string' && 'userId' in extracttoken && 'verifikasi' in extracttoken) {
+      const userId = extracttoken.userId;
+      const userVerifikasi = extracttoken.verifikasi;
+
+      if(userVerifikasi == false){
+        return {
+          status: false,
+          message: 'Silakan verifikasi akun anda',
+          users: {
+            id: null,
+            full_name: null,
+            image: null,
+            email: null,
+            phone_number: null,
+            token: null
+          }
+        };
+      }
+
+      const CheckUser = await this.authRepository.findOne({
+        where: { id: userId },
+      });
+      if (!CheckUser) {
+        return {
+          status: false,
+          message: 'User tidak di temukan',
+          users: {
+            id: null,
+            full_name: null,
+            image: null,
+            email: null,
+            phone_number: null,
+            token: null
+          }
+        };
+      }
+
+      const checkprofile = await this.profileRepository.findOne({
+        where: { user_id: CheckUser.id },
+      });
+
+      checkprofile.profil_image = image;
+
+      await this.profileRepository.save(checkprofile);
+
+      return {
+        status: true,
+        message: 'Avatar berhasil di ubah',
         users: {
           id: CheckUser.id,
           full_name: checkprofile.fullname,

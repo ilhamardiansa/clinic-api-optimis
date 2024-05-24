@@ -1,25 +1,17 @@
 import {
   Entity,
   Column,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
+  PrimaryColumn
 } from 'typeorm';
-import { District } from './district.entity';
 
 @Entity('reg_villages')
 export class Village {
   @PrimaryColumn({ type: 'char', length: 255 })
   id: string;
 
-  @Column({ unique: true })
-  name: string;
+  @Column({ type: 'char', length: 6 })
+  district_id: string;
 
-  @Column()
-  district_id: number;
-
-  @ManyToOne(() => District, (district) => district.villages)
-  @JoinColumn({ name: 'district_id' })
-  district: District;
+  @Column({ type: 'varchar', length: 255 })
+  village_name: string;
 }

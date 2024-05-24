@@ -7,7 +7,6 @@ import {
   IsNull,
 } from 'typeorm';
 import { User } from 'src/entity/profile/user.entity';
-import { Country } from 'src/entity/country.entity';
 
 @Entity()
 export class Profile {

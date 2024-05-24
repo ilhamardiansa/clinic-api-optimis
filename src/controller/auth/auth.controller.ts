@@ -277,9 +277,89 @@ export class AuthController {
     }
   }
 
-  @Put('users/update/profiles')
+  @Put('users/update/avatar')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('file', { storage }))
+  async update_avatar(
+    @Req() req: Request,
+    @UploadedFile() profil_image: Express.Multer.File
+  ) {
+    try {
+      const authorizationHeader = req.headers['authorization'];
+
+      if (!authorizationHeader) {
+        return format_json(
+          400,
+          false,
+          null,
+          null,
+          'Authorization header is missing',
+          null,
+        );
+      }
+
+      const token = authorizationHeader.split(' ')[1];
+
+      if (!token) {
+        return format_json(
+          400,
+          false,
+          null,
+          null,
+          'Bearer token is missing',
+          null,
+        );
+      }
+
+    cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+    
+    try {
+      const get_name_file = basename(profil_image.filename, extname(profil_image.filename));
+      const uploadResult = await cloudinary.uploader.upload(profil_image.path, { public_id: get_name_file });
+      var get_url_profile = uploadResult.secure_url;
+  } catch (error) {
+      console.error(error);
+      console.error(profil_image);
+      console.error(profil_image.path);
+      const publicId = uuidv4().replace(/-/g, '');
+      get_url_profile = 'https://api.dicebear.com/8.x/adventurer/svg?seed=' + publicId;
+  }
+    
+  
+      const updateProfile = this.authService.update_avatar(token, get_url_profile);
+
+      if ((await updateProfile).status == true) {
+        return format_json(
+          200,
+          true,
+          null,
+          null,
+          (await updateProfile).message,
+          {
+            user: (await updateProfile).users,
+          },
+        );
+      } else {
+        return format_json(
+          400,
+          false,
+          null,
+          null,
+          (await updateProfile).message,
+          null,
+        );
+      }
+    } catch (error) {
+      return format_json(400, false, true, null, 'Server Error', error);
+    }
+  }
+
+  @Put('users/update/profiles')
+  @UseGuards(AuthGuard('jwt'))
   async update_profile(
     @Body() profileDTO: ProfileDto,
     @Req() req: Request,
