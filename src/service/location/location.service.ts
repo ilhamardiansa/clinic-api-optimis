@@ -1,16 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cities } from 'src/entity/location/cities';
 import { Repository } from 'typeorm';
-import { Wilayah } from 'src/entity/wilayah.entity';
 
 @Injectable()
-export class WilayahService {
+export class CitiesService {
   constructor(
-    @InjectRepository(Wilayah)
-    private readonly wilayahRepository: Repository<Wilayah>,
+    @InjectRepository(Cities)
+    private readonly citiesRepository: Repository<Cities>,
   ) {}
 
-  async getByProvinsi(namaProvinsi: string): Promise<Wilayah[]> {
-    return this.wilayahRepository.find({ where: { provinsi: namaProvinsi } });
+  async getByProvinsi(namaProvinsi: string): Promise<Cities[]> {
+    return this.citiesRepository.find({ where: { provinsi: namaProvinsi } });
+  }
+
+  async getAllcities(): Promise<Cities[]> {
+    return this.citiesRepository.find();
   }
 }

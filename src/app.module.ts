@@ -31,6 +31,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { join } from 'path';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ProfileConfigurationModule } from './modules/profile_config/profile.config.module';
+import { UserProfileModule } from './modules/profile_config/user.profile.config.module';
 
 @Module({
   imports: [
@@ -87,6 +89,7 @@ import * as path from 'path';
     MedicalRecordDrugModule,
     MenuModule,
     PaymentModule,
+    ProfileConfigurationModule,
     ProfileModule,
     RecordModule,
     ReplyModule,
@@ -97,6 +100,7 @@ import * as path from 'path';
     TransactionModule,
     LocationModule,
     UserModule,
+    UserProfileModule,
     Authmodule,
   ],
 })

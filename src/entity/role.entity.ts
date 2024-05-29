@@ -10,7 +10,7 @@ export class Role {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @OneToMany((type) => Menu, (menu) => menu.role_id)

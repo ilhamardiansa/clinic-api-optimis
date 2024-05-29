@@ -1,37 +1,49 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProfileConfiguration } from 'src/entity/profile_config/profile.config.entity';
 import { Repository } from 'typeorm';
+import { User } from 'src/entity/profile/user.entity';
+import { ProfileConfiguration } from 'src/entity/profile_config/profile.config.entity';
 
 @Injectable()
 export class ProfileConfigurationService {
   constructor(
     @InjectRepository(ProfileConfiguration)
     private readonly profileConfigRepository: Repository<ProfileConfiguration>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  findByUserId(userId: number): Promise<ProfileConfiguration> {
-    return this.profileConfigRepository.findOne({
+  async createOrUpdateProfileConfig(
+    userId: number,
+    config: Partial<ProfileConfiguration>,
+  ): Promise<ProfileConfiguration> {
+    let profileConfig = await this.profileConfigRepository.findOne({
       where: { user: { id: userId } },
     });
-  }
 
-  async create(
-    profileConfig: Partial<ProfileConfiguration>,
-  ): Promise<ProfileConfiguration> {
-    const newConfig = this.profileConfigRepository.create(profileConfig);
-    return this.profileConfigRepository.save(newConfig);
-  }
+    if (!profileConfig) {
+      const user = await this.userRepository.findOne({ where: { id: userId } });
+      if (!user) {
+        throw new Error('User not found');
+      }
 
-  async update(
-    userId: number,
-    updateData: Partial<ProfileConfiguration>,
-  ): Promise<ProfileConfiguration> {
-    const config = await this.findByUserId(userId);
-    if (!config) {
-      throw new NotFoundException('Profile configuration not found');
+      profileConfig = this.profileConfigRepository.create({ ...config, user });
+    } else {
+      profileConfig = this.profileConfigRepository.merge(profileConfig, config);
     }
-    Object.assign(config, updateData);
-    return this.profileConfigRepository.save(config);
+
+    return this.profileConfigRepository.save(profileConfig);
+  }
+
+  async getProfileConfigByUserId(
+    userId: number,
+  ): Promise<ProfileConfiguration> {
+    const profileConfig = await this.profileConfigRepository.findOne({
+      where: { user: { id: userId } },
+    });
+    if (!profileConfig) {
+      throw new Error('Profile configuration not found for the user');
+    }
+    return profileConfig;
   }
 }

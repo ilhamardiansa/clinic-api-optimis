@@ -8,7 +8,7 @@ export class Room {
   @Column()
   room_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @Column()

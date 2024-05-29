@@ -29,6 +29,9 @@ export class User {
   @Column()
   password: string;
 
+  @Column()
+  roles: string;
+
   @Column({ default: 1 })
   role_id: number;
 

@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Wilayah } from 'src/entity/wilayah.entity'; // Sesuaikan path-nya
-import { Village } from 'src/entity/village.entity'; // Sesuaikan path-nya
-import { WilayahController } from 'src/controller/location/location.controller';
-import { WilayahService } from 'src/service/location/location.service';
+import { Village } from 'src/entity/village.entity';
+import { Cities } from 'src/entity/location/cities';
+import { citiesController } from 'src/controller/location/location.controller';
+import { CitiesService } from 'src/service/location/location.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Wilayah])],
-  controllers: [WilayahController],
-  providers: [WilayahService],
+  imports: [TypeOrmModule.forFeature([Cities])],
+  controllers: [citiesController],
+  providers: [CitiesService],
 })
 export class LocationModule {}

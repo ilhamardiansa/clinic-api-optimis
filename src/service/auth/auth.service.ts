@@ -10,6 +10,7 @@ import { mailService } from '../mailer/mailer.service';
 import * as moment from 'moment-timezone';
 import { Profile } from '../../entity/profile/profile.entity';
 import { promises } from 'dns';
+import { UserService } from '../user.service';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -30,7 +31,7 @@ export class AuthService {
   async resendotp(
     token: string,
     otp: number,
-  ): Promise<{ status: boolean; message: string, users: any }> {
+  ): Promise<{ status: boolean; message: string; users: any }> {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
     if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
@@ -49,8 +50,8 @@ export class AuthService {
             image: null,
             email: CheckUser.email,
             phone_number: CheckUser.phone_number,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -67,8 +68,8 @@ export class AuthService {
             image: get_profile.profil_image,
             email: CheckUser.email,
             phone_number: CheckUser.phone_number,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -88,8 +89,8 @@ export class AuthService {
           image: get_profile.profil_image,
           email: CheckUser.email,
           phone_number: CheckUser.phone_number,
-          token: null
-        }
+          token: null,
+        },
       };
     } else {
       return {
@@ -100,8 +101,8 @@ export class AuthService {
           image: null,
           email: null,
           phone_number: null,
-          token: null
-        }
+          token: null,
+        },
       };
     }
   }
@@ -127,8 +128,8 @@ export class AuthService {
             image: null,
             email: CheckUser.email,
             phone_number: CheckUser.phone_number,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -145,8 +146,8 @@ export class AuthService {
             image: profile.profil_image,
             email: CheckUser.email,
             phone_number: CheckUser.phone_number,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -162,8 +163,8 @@ export class AuthService {
             image: profile.profil_image,
             email: CheckUser.email,
             phone_number: CheckUser.phone_number,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -172,9 +173,13 @@ export class AuthService {
       await this.otpRepository.save(otpExists);
       await this.authRepository.save(CheckUser);
 
-      const token = jwt.sign({ userId: CheckUser.id, verifikasi: true }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
+      const token = jwt.sign(
+        { userId: CheckUser.id, verifikasi: true },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: '1h',
+        },
+      );
 
       return {
         status: true,
@@ -184,8 +189,8 @@ export class AuthService {
           image: profile.profil_image,
           email: CheckUser.email,
           phone_number: CheckUser.phone_number,
-          token: token
-        }
+          token: token,
+        },
       };
     } else {
       return {
@@ -196,8 +201,8 @@ export class AuthService {
           image: null,
           email: null,
           phone_number: null,
-          token: null
-        }
+          token: null,
+        },
       };
     }
   }
@@ -245,8 +250,8 @@ export class AuthService {
           image: null,
           email: null,
           phone_number: null,
-          token: null
-        }
+          token: null,
+        },
       };
     }
 
@@ -263,8 +268,8 @@ export class AuthService {
           image: null,
           email: null,
           phone_number: null,
-          token: null
-        }
+          token: null,
+        },
       };
     }
 
@@ -281,8 +286,9 @@ export class AuthService {
 
     const profile = this.profileRepository.create({
       fullname: fullnames,
-      phone_number:phone_number,
-      profil_image: 'https://api.dicebear.com/8.x/adventurer/svg?seed='+fullnames,
+      phone_number: phone_number,
+      profil_image:
+        'https://api.dicebear.com/8.x/adventurer/svg?seed=' + fullnames,
       no_identity: null,
       birth_date: null,
       birth_place: null,
@@ -306,9 +312,13 @@ export class AuthService {
 
     const saveprofile = await this.profileRepository.save(profile);
 
-    const token = jwt.sign({ userId: user.id, verifikasi: false }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign(
+      { userId: user.id, verifikasi: false },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '1h',
+      },
+    );
     return {
       status: true,
       message: 'Berhasil',
@@ -318,8 +328,8 @@ export class AuthService {
         image: saveprofile.profil_image,
         email: save.email,
         phone_number: save.phone_number,
-        token: token
-      }
+        token: token,
+      },
     };
   }
 
@@ -344,8 +354,8 @@ export class AuthService {
           email: null,
           phone_number: null,
           verifikasi: false,
-          token: null
-        }
+          token: null,
+        },
       };
     }
 
@@ -366,8 +376,8 @@ export class AuthService {
           email: null,
           phone_number: null,
           verifikasi: false,
-          token: null
-        }
+          token: null,
+        },
       };
     }
     if (user.verifed == 0) {
@@ -387,27 +397,31 @@ export class AuthService {
           email: user.email,
           phone_number: user.phone_number,
           verifikasi: false,
-          token: token_verifikasi
-        }
+          token: token_verifikasi,
+        },
       };
     }
-    
-    const token = jwt.sign({ userId: user.id, verifikasi: true }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
-     return {
-        status: true,
-        message: 'Berhasil login',
-        users: {
-          id: user.id,
-          full_name: profile.fullname,
-          image: profile.profil_image,
-          email: user.email,
-          phone_number: user.phone_number,
-          verifikasi: true,
-          token: token
-        }
-      };
+
+    const token = jwt.sign(
+      { userId: user.id, verifikasi: true },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '1h',
+      },
+    );
+    return {
+      status: true,
+      message: 'Berhasil login',
+      users: {
+        id: user.id,
+        full_name: profile.fullname,
+        image: profile.profil_image,
+        email: user.email,
+        phone_number: user.phone_number,
+        verifikasi: true,
+        token: token,
+      },
+    };
   }
 
   async update_profile(
@@ -416,11 +430,15 @@ export class AuthService {
   ): Promise<{ status: boolean; message: string; users: any }> {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (typeof extracttoken !== 'string' && 'userId' in extracttoken && 'verifikasi' in extracttoken) {
+    if (
+      typeof extracttoken !== 'string' &&
+      'userId' in extracttoken &&
+      'verifikasi' in extracttoken
+    ) {
       const userId = extracttoken.userId;
       const userVerifikasi = extracttoken.verifikasi;
 
-      if(userVerifikasi == false){
+      if (userVerifikasi == false) {
         return {
           status: false,
           message: 'Silakan verifikasi akun anda',
@@ -430,8 +448,8 @@ export class AuthService {
             image: null,
             email: null,
             phone_number: null,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -448,8 +466,8 @@ export class AuthService {
             image: null,
             email: null,
             phone_number: null,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -470,8 +488,8 @@ export class AuthService {
           image: checkprofile.profil_image,
           email: CheckUser.email,
           phone_number: CheckUser.phone_number,
-          token: null
-        }
+          token: null,
+        },
       };
     } else {
       return {
@@ -483,8 +501,8 @@ export class AuthService {
           image: null,
           email: null,
           phone_number: null,
-          token: null
-        }
+          token: null,
+        },
       };
     }
   }
@@ -495,11 +513,15 @@ export class AuthService {
   ): Promise<{ status: boolean; message: string; users: any }> {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (typeof extracttoken !== 'string' && 'userId' in extracttoken && 'verifikasi' in extracttoken) {
+    if (
+      typeof extracttoken !== 'string' &&
+      'userId' in extracttoken &&
+      'verifikasi' in extracttoken
+    ) {
       const userId = extracttoken.userId;
       const userVerifikasi = extracttoken.verifikasi;
 
-      if(userVerifikasi == false){
+      if (userVerifikasi == false) {
         return {
           status: false,
           message: 'Silakan verifikasi akun anda',
@@ -509,8 +531,8 @@ export class AuthService {
             image: null,
             email: null,
             phone_number: null,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -527,8 +549,8 @@ export class AuthService {
             image: null,
             email: null,
             phone_number: null,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -549,8 +571,8 @@ export class AuthService {
           image: checkprofile.profil_image,
           email: CheckUser.email,
           phone_number: CheckUser.phone_number,
-          token: null
-        }
+          token: null,
+        },
       };
     } else {
       return {
@@ -562,8 +584,8 @@ export class AuthService {
           image: null,
           email: null,
           phone_number: null,
-          token: null
-        }
+          token: null,
+        },
       };
     }
   }
@@ -573,11 +595,15 @@ export class AuthService {
   ): Promise<{ status: boolean; message: string; users: any }> {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (typeof extracttoken !== 'string' && 'userId' in extracttoken && 'verifikasi' in extracttoken) {
+    if (
+      typeof extracttoken !== 'string' &&
+      'userId' in extracttoken &&
+      'verifikasi' in extracttoken
+    ) {
       const userId = extracttoken.userId;
       const userVerifikasi = extracttoken.verifikasi;
 
-      if(userVerifikasi == false){
+      if (userVerifikasi == false) {
         return {
           status: false,
           message: 'Silakan verifikasi akun anda',
@@ -587,8 +613,8 @@ export class AuthService {
             image: null,
             email: null,
             phone_number: null,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -605,8 +631,8 @@ export class AuthService {
             image: null,
             email: null,
             phone_number: null,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -623,8 +649,8 @@ export class AuthService {
           image: checkprofile.profil_image,
           email: CheckUser.email,
           phone_number: CheckUser.phone_number,
-          token: null
-        }
+          token: null,
+        },
       };
     } else {
       return {
@@ -636,23 +662,27 @@ export class AuthService {
           image: null,
           email: null,
           phone_number: null,
-          token: null
-        }
+          token: null,
+        },
       };
     }
   }
 
   async change_pass(
     token: string,
-    password: string
+    password: string,
   ): Promise<{ status: boolean; message: string; users: any }> {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (typeof extracttoken !== 'string' && 'userId' in extracttoken && 'verifikasi' in extracttoken) {
+    if (
+      typeof extracttoken !== 'string' &&
+      'userId' in extracttoken &&
+      'verifikasi' in extracttoken
+    ) {
       const userId = extracttoken.userId;
       const userVerifikasi = extracttoken.verifikasi;
 
-      if(userVerifikasi == false){
+      if (userVerifikasi == false) {
         return {
           status: false,
           message: 'Silakan verifikasi akun anda',
@@ -662,8 +692,8 @@ export class AuthService {
             image: null,
             email: null,
             phone_number: null,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -680,8 +710,8 @@ export class AuthService {
             image: null,
             email: null,
             phone_number: null,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -689,7 +719,10 @@ export class AuthService {
         where: { user_id: CheckUser.id },
       });
 
-      const isPasswordValid = await bcrypt.compare(password, CheckUser.password);
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        CheckUser.password,
+      );
 
       if (isPasswordValid) {
         return {
@@ -701,8 +734,8 @@ export class AuthService {
             image: checkprofile.profil_image,
             email: CheckUser.email,
             phone_number: CheckUser.phone_number,
-            token: null
-          }
+            token: null,
+          },
         };
       }
 
@@ -719,8 +752,8 @@ export class AuthService {
           image: null,
           email: null,
           phone_number: null,
-          token: null
-        }
+          token: null,
+        },
       };
     } else {
       return {
@@ -732,10 +765,14 @@ export class AuthService {
           image: null,
           email: null,
           phone_number: null,
-          token: null
-        }
+          token: null,
+        },
       };
     }
   }
 
+  async validateUser(payload: any): Promise<User | null> {
+    const user: User | null = await UserService.findById(payload.userId);
+    return user;
+  }
 }
