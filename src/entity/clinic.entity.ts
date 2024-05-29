@@ -7,11 +7,26 @@ export class Clinic {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 64 })
   clinic_name: string;
 
-  @Column()
+  @Column('text')
+  description: string;
+
+  @Column({ length: 64 })
   address: string;
+
+  @Column()
+  city_id: number;
+
+  @Column({ length: 10 })
+  post_code: string;
+
+  @Column('double')
+  latitude: number;
+
+  @Column('double')
+  longitude: number;
 
   @OneToMany((type) => Room, (room) => room.clinic_id)
   room: Room[];

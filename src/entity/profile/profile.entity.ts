@@ -7,7 +7,6 @@ import {
   IsNull,
 } from 'typeorm';
 import { User } from 'src/entity/profile/user.entity';
-import { Country } from 'src/entity/country.entity';
 
 @Entity()
 export class Profile {
@@ -16,6 +15,9 @@ export class Profile {
 
   @Column()
   fullname: string;
+
+  @Column()
+  phone_number: string;
 
   @Column({ nullable: true })
   profil_image: string;
@@ -27,7 +29,7 @@ export class Profile {
   birth_date: Date;
 
   @Column({ nullable: true })
-  birth_place: string;
+  birth_place: number;
 
   @Column({ nullable: true })
   address: string;

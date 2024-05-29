@@ -1,17 +1,17 @@
-import { District } from 'src/entity/district.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryColumn
+} from 'typeorm';
 
-@Entity()
+@Entity('reg_villages')
 export class Village {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn({ type: 'char', length: 255 })
+  id: string;
 
-  @Column()
+  @Column({ type: 'char', length: 6 })
+  district_id: string;
+
+  @Column({ type: 'varchar', length: 255 })
   village_name: string;
-
-  @Column()
-  district_id: number;
-
-  @ManyToOne((type) => District, (district) => district.id)
-  district: District[];
 }

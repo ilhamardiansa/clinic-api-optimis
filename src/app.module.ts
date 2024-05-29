@@ -3,21 +3,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DATABASE_ENTITIES } from './env';
 import { BankModule } from './modules/bank.module';
 import { CategoryModule } from './modules/category.module';
-import { CityModule } from './modules/city.module';
 import { ClinicModule } from './modules/clinic.module';
-import { CountryModule } from './modules/country.module';
-import { DistrictModule } from './modules/district.module';
 import { DoctorModule } from './modules/doctor.module';
 import { DocumentModule } from './modules/document.module';
 import { DrugModule } from './modules/drug.module';
 import { LastMedicalRecordModule } from './modules/latest/last.medical.record.module';
 import { LastRedeemModule } from './modules/latest/last.redeem.module';
+import { LocationModule } from './modules/location/location.module';
 import { MedicalRecordDrugModule } from './modules/medical_record_drug.module';
 import { MenuModule } from './modules/menu.module';
 import { PaymentModule } from './modules/payment.module';
 import { ProfileModule } from './modules/profile.module';
 import { RecordModule } from './modules/record.module';
-import { RegionModule } from './modules/region.module';
 import { ReplyModule } from './modules/reply.module';
 import { ReviewModule } from './modules/review.module';
 import { RoleModule } from './modules/role.module';
@@ -25,7 +22,7 @@ import { RoomModule } from './modules/room.module';
 import { ScheduleModule } from './modules/schedule.module';
 import { TransactionModule } from './modules/transaction.module';
 import { UserModule } from './modules/user.module';
-import { VillageModule } from './modules/village.module';
+import { VillageModule } from './modules/location/village.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Authmodule } from './modules/auth/auth.module';
@@ -34,6 +31,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { join } from 'path';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ProfileConfigurationModule } from './modules/profile_config/profile.config.module';
+import { UserProfileModule } from './modules/profile_config/user.profile.config.module';
 
 @Module({
   imports: [
@@ -81,10 +80,7 @@ import * as path from 'path';
     }),
     BankModule,
     CategoryModule,
-    CityModule,
     ClinicModule,
-    CountryModule,
-    DistrictModule,
     DoctorModule,
     DocumentModule,
     DrugModule,
@@ -93,17 +89,18 @@ import * as path from 'path';
     MedicalRecordDrugModule,
     MenuModule,
     PaymentModule,
+    ProfileConfigurationModule,
     ProfileModule,
     RecordModule,
-    RegionModule,
     ReplyModule,
     ReviewModule,
     RoleModule,
     RoomModule,
     ScheduleModule,
     TransactionModule,
+    LocationModule,
     UserModule,
-    VillageModule,
+    UserProfileModule,
     Authmodule,
   ],
 })

@@ -13,6 +13,7 @@ import { Schedule } from 'src/entity/schedule.entity';
 import { Record } from 'src/entity/latest/record.entity';
 import { Review } from 'src/entity/review.entity';
 import { Reply } from 'src/entity/reply.entity';
+import { ProfileConfiguration } from '../profile_config/profile.config.entity';
 
 @Entity()
 export class User {
@@ -27,6 +28,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column()
+  roles: string;
 
   @Column({ default: 1 })
   role_id: number;
@@ -54,4 +58,7 @@ export class User {
 
   @OneToMany((type) => Reply, (reply) => reply.user_id)
   reply: Reply[];
+
+  @OneToMany(() => ProfileConfiguration, (config) => config.user)
+  profileConfigurations: ProfileConfiguration[];
 }

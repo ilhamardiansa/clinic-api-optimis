@@ -16,6 +16,9 @@ export class Record {
   clinic_name: string;
 
   @Column()
+  doctor_name: string;
+
+  @Column()
   way_to_come: string;
 
   @Column()

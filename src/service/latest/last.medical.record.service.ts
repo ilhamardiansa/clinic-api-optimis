@@ -23,6 +23,13 @@ export class LastMedicalRecordService {
       const record = await this.lastMedicalRecordRepository.findOne({
         where: { user_id: userId },
         order: { consultation_date_time: 'DESC' },
+        select: [
+          'consultation_date_time',
+          'doctor_name',
+          'polyclinic',
+          'clinic_name',
+          'conditions',
+        ],
       });
 
       if (record) {

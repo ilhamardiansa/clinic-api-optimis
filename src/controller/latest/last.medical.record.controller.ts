@@ -18,6 +18,7 @@ export class LastMedicalRecordController {
 
       if (!authorizationHeader) {
         return format_json(
+          400,
           false,
           null,
           null,
@@ -29,21 +30,21 @@ export class LastMedicalRecordController {
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(false, null, null, 'Bearer token is missing', null);
+        return format_json(400,false, null, null, 'Bearer token is missing', null);
       }
 
       const lastMedicalRecord =
         await this.lastMedicalRecordService.getLastMedicalRecord(token);
 
       if (lastMedicalRecord.status) {
-        return format_json(true, null, null, lastMedicalRecord.message, {
+        return format_json(200,true, null, null, lastMedicalRecord.message, {
           record: lastMedicalRecord.data,
         });
       } else {
-        return format_json(false, null, null, lastMedicalRecord.message, null);
+        return format_json(400,false, null, null, lastMedicalRecord.message, null);
       }
     } catch (error) {
-      return format_json(false, true, null, 'Server Error', error);
+      return format_json(400,false, true, null, 'Server Error', error);
     }
   }
 }
