@@ -11,6 +11,7 @@ import { Profile } from 'src/entity/profile/profile.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([User, Otp, Profile])],
   controllers: [AuthController],
-  providers: [AuthService,mailService,JwtStrategy],
+  providers: [AuthService, mailService, JwtStrategy],
+  exports: [AuthService],
 })
 export class Authmodule {}

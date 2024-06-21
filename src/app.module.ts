@@ -45,9 +45,9 @@ import { mailService } from 'src/service/mailer/mailer.service';
 import { JwtStrategy } from 'src/middleware/jwt.strategy';
 import { paymentModule } from './modules/payment/payment.module';
 import { FeedbackModule } from './modules/feedback.module';
-import { TermModule } from './modules/term/term.module';
 import { TermCategoryModule } from './modules/term/term.category.module';
 import { DiagnosisModule } from './modules/diagnosis.module';
+import { TermModule } from './modules/term/term.module';
 
 @Module({
   controllers: [AuthController],
@@ -116,7 +116,7 @@ import { DiagnosisModule } from './modules/diagnosis.module';
     RoomModule,
     ScheduleModule,
     SummaryModule,
-    TermModule,
+    // TermModule,
     TermCategoryModule,
     TransactionModule,
     LocationModule,
@@ -126,7 +126,7 @@ import { DiagnosisModule } from './modules/diagnosis.module';
     RedeemModule,
     paymentModule,
     FeedbackModule,
-    DiagnosisModule
+    DiagnosisModule,
   ],
 })
 export class AppModule implements NestModule {

@@ -27,7 +27,7 @@ export class AuthService {
   isInBlacklist(token: string): boolean {
     return this.blacklist.has(token);
   }
-  
+
   constructor(
     @InjectRepository(User)
     private readonly authRepository: Repository<User>,
@@ -453,7 +453,13 @@ export class AuthService {
   async update_profile(
     token: string,
     updateProfile: Partial<Profile>,
-  ): Promise<{ status: boolean; message: string; users: any;verifikasi: any; token: string }> {
+  ): Promise<{
+    status: boolean;
+    message: string;
+    users: any;
+    verifikasi: any;
+    token: string;
+  }> {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
     if (
@@ -794,7 +800,7 @@ export class AuthService {
           message: 'Data profiles berhasil diambil',
           users: {
             checkprofile,
-            verifikasi: CheckUser.verifed === 1
+            verifikasi: CheckUser.verifed === 1,
           },
           token: null,
         };
@@ -1113,5 +1119,9 @@ export class AuthService {
         token: null,
       };
     }
+  }
+
+  async getAuthById(id: number): Promise<User> {
+    return this.authRepository.findOne({ where: { id } });
   }
 }
