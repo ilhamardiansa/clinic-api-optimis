@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { Bank } from '../bank/bank.entity';
+import { Profile } from '../profile/profile.entity';
 @Entity()
 export class LastRedeem {
   @PrimaryGeneratedColumn()
@@ -19,9 +20,15 @@ export class LastRedeem {
 
   @Column()
   bank_id: number;
+  @ManyToOne(() => Bank, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'bank_id', referencedColumnName: 'id' })
+  bank: Bank;
 
   @Column()
   user_id: number;
+  @ManyToOne(() => Profile, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
+  profile: Profile;
 
   @OneToMany((type) => LastRedeem, (lastredeem) => lastredeem.id)
   lastredeem: LastRedeem[];
