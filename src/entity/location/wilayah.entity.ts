@@ -2,8 +2,8 @@ import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity('wilayah')
 export class Wilayah {
-  @PrimaryColumn({ type: 'varchar', length: 255 })
-  id: string;
+  @PrimaryColumn({ type: 'bigint' })
+  id: number;
 
   @Column({ type: 'varchar', length: 255 })
   provinsi: string;
@@ -16,7 +16,4 @@ export class Wilayah {
 
   @Column({ type: 'varchar', length: 255 })
   kelurahan: string;
-
-  @Column({ type: 'int' })
-  city_id: number;
 }
