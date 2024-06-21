@@ -453,7 +453,7 @@ export class AuthService {
   async update_profile(
     token: string,
     updateProfile: Partial<Profile>,
-  ): Promise<{ status: boolean; message: string; users: any; token: string }> {
+  ): Promise<{ status: boolean; message: string; users: any;verifikasi: any; token: string }> {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
     if (
@@ -474,8 +474,8 @@ export class AuthService {
             image: null,
             email: null,
             phone_number: null,
-            verifikasi: userVerifikasi,
           },
+          verifikasi: userVerifikasi,
           token: null,
         };
       }
@@ -493,8 +493,8 @@ export class AuthService {
             image: null,
             email: null,
             phone_number: null,
-            verifikasi: CheckUser.verifed === 1,
           },
+          verifikasi: CheckUser.verifed === 1,
           token: null,
         };
       }
@@ -510,14 +510,8 @@ export class AuthService {
       return {
         status: true,
         message: 'Data profiles berhasil di ubah',
-        users: {
-          id: CheckUser.id,
-          full_name: checkprofile.fullname,
-          image: checkprofile.profil_image,
-          email: CheckUser.email,
-          phone_number: CheckUser.phone_number,
-          verifikasi: CheckUser.verifed === 1,
-        },
+        users: checkprofile,
+        verifikasi: CheckUser.verifed === 1,
         token: null,
       };
     } else {
@@ -530,8 +524,8 @@ export class AuthService {
           image: null,
           email: null,
           phone_number: null,
-          verifikasi: null,
         },
+        verifikasi: null,
         token: null,
       };
     }

@@ -331,7 +331,8 @@ export class AuthController {
 
       if ((await getpersonaldata).status === true) {
         return res.status(200).json(format_json(200, true, null, null, (await getpersonaldata).message, {
-          user: (await getpersonaldata).users,
+          user: (await getpersonaldata).users.checkprofile,
+          verifikasi: (await getpersonaldata).users.verifikasi,
           token: (await getpersonaldata).token
         }));
       } else {
@@ -494,19 +495,12 @@ export class AuthController {
         token,
         profile,
       );
-
       if ((await updateProfile).status == true) {
-        return res.status(200).json(format_json(
-          200,
-          true,
-          null,
-          null,
-          (await updateProfile).message,
-          {
-            user: (await updateProfile).users,
-            token: updateProfile.token
-          },
-        ));
+        return res.status(200).json(format_json(200, true, null, null, (await updateProfile).message, {
+          user: (await updateProfile).users,
+          verifikasi: (await updateProfile).verifikasi,
+          token: (await updateProfile).token
+        }));
       } else {
         return res.status(400).json(format_json(
           400,
