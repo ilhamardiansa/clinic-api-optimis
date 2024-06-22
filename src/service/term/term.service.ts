@@ -46,11 +46,15 @@ export class TermService {
     const user = await this.authService.getAuthById(userId);
 
     const ticket = new Ticket();
-    ticket.userId = user.id;
+    ticket.user_id = user.id;
     ticket.email = user.email;
     ticket.title = title;
     ticket.content = content;
 
     return this.ticketRepository.save(ticket);
+  }
+
+  async findAllTickets(): Promise<Ticket[]> {
+    return this.ticketRepository.find();
   }
 }

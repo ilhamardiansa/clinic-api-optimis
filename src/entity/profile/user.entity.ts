@@ -69,6 +69,6 @@ export class User {
   })
   schedule: ScheduleEntity[];
 
-  // @OneToMany(() => Ticket, (ticket) => ticket.user)
-  // tickets: Ticket[];
+  @OneToMany(() => Ticket, (ticket) => ticket.user)
+  tickets: Ticket[];
 }

@@ -30,8 +30,8 @@ export class Ticket {
   updated_at: Date;
 
   @Column()
-  userId: number;
+  user_id: number;
 
-  //   @ManyToOne(() => User, (user) => user.tickets)
-  //   user: User;
+  @ManyToOne(() => User, (user) => user.tickets)
+  user: User;
 }

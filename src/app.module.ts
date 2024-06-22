@@ -116,7 +116,7 @@ import { TermModule } from './modules/term/term.module';
     RoomModule,
     ScheduleModule,
     SummaryModule,
-    // TermModule,
+    TermModule,
     TermCategoryModule,
     TransactionModule,
     LocationModule,
