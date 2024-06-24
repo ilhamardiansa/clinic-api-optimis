@@ -31,6 +31,7 @@ import { Term } from './entity/term/term.entity';
 import { TermCategory } from './entity/term/term.category.entity';
 import { DiagnosisEntity } from './entity/diagnosis.entity';
 import { Ticket } from './entity/term/ticket.entity';
+import { BankCategory } from './entity/bank/bank.category.entity';
 
 export const DATABASE_ENTITIES = [
   Bank,
@@ -64,6 +65,7 @@ export const DATABASE_ENTITIES = [
   Feedback,
   DiagnosisEntity,
   Ticket,
+  BankCategory,
 ];
 
 export const format_json = (

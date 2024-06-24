@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Payment } from '../payment/payment.entity';
+import { BankCategory } from './bank.category.entity';
 
 @Entity()
 export class Bank {
@@ -23,6 +24,9 @@ export class Bank {
 
   @Column('text', { nullable: true })
   bank_images?: string;
+
+  @ManyToOne(() => BankCategory, (bankCategory) => bankCategory.banks)
+  bankCategory: BankCategory;
 
   // @ManyToOne((type) => Payment, (payment) => payment.bank_id)
   // payment: Payment[];
