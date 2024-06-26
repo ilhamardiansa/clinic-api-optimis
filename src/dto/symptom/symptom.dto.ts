@@ -7,4 +7,6 @@ export class SymptomDto {
 
   @IsString()
   description: string;
+
+  poly_id: number;
 }

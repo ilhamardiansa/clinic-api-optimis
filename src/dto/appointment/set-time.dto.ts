@@ -10,5 +10,5 @@ export class setTimeDTO {
     date: Date;
 
     @IsArray()
-    time: string[];
+    time: string;
 }

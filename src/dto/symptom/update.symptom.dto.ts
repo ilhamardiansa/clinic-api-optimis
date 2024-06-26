@@ -7,4 +7,6 @@ export class UpdateSymptomDto {
 
   @IsString()
   description: string;
+
+  poly_id: number;
 }

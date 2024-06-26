@@ -12,45 +12,8 @@ import { Response } from 'express';
 
 
 @Controller('api')
-export class LastRedeemController {
+export class ScheduleController {
   constructor(private readonly SchedulesServices: SchedulesService) {}
-
-  @Get('schedules/:doctor_id/:date')
-  @UseGuards(AuthGuard('jwt'))
-  async GetSchedule(@Req() req: Request,@Param('doctor_id', ParseIntPipe) doctor_id: number,@Param('date', ParseIntPipe) date: Date) {
-    try {
-      const authorizationHeader = req.headers['authorization'];
-
-      if (!authorizationHeader) {
-        return format_json(
-          400,
-          false,
-          null,
-          null,
-          'Authorization header is missing',
-          null,
-        );
-      }
-
-      const token = authorizationHeader.split(' ')[1];
-
-      if (!token) {
-        return format_json(400,false, null, null, 'Bearer token is missing', null);
-      }
-
-      const gettallRecords = await this.SchedulesServices.getAll(token,doctor_id,date);
-
-      if (gettallRecords.status) {
-        return format_json(200,true, null, null, gettallRecords.message, {
-          redeem: gettallRecords.data,
-        });
-      } else {
-        return format_json(400,false, null, null, gettallRecords.message, null);
-      }
-    } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
-    }
-  }
 
   @Get('schedules/get-approval-token')
   @UseGuards(AuthGuard('jwt'))
@@ -78,11 +41,9 @@ export class LastRedeemController {
       const gettallRecords = await this.SchedulesServices.getToken(token);
 
       if (gettallRecords.status) {
-        return format_json(200,true, null, null, gettallRecords.message, {
-          redeem: gettallRecords.data,
-        });
+        return format_json(200,true, null, null, gettallRecords.message, gettallRecords.data);
       } else {
-        return format_json(400,false, null, null, gettallRecords.message, null);
+        return format_json(400,false, null, null, gettallRecords.message, gettallRecords.data);
       }
     } catch (error) {
       return format_json(400,false, true, null, 'Server Error', error);
@@ -122,9 +83,7 @@ export class LastRedeemController {
       const createdata = await this.SchedulesServices.ApprovalToken(token,Create,code);
 
       if (createdata.status) {
-        return format_json(200,true, null, null, createdata.message, {
-          redeem: createdata.data,
-        });
+        return format_json(200,true, null, null, createdata.message, createdata.data);
       } else {
         return format_json(400,false, null, null, createdata.message, null);
       }
@@ -167,9 +126,7 @@ export class LastRedeemController {
       const createdata = await this.SchedulesServices.SetTime(token,Create);
 
       if (createdata.status) {
-        return format_json(200,true, null, null, createdata.message, {
-          redeem: createdata.data,
-        });
+        return format_json(200,true, null, null, createdata.message, createdata.data);
       } else {
         return format_json(400,false, null, null, createdata.message, null);
       }
@@ -213,9 +170,7 @@ export class LastRedeemController {
       const createdata = await this.SchedulesServices.Create(token,Schedules,clinic_name,poly_name);
 
       if (createdata.status) {
-        return format_json(200,true, null, null, createdata.message, {
-          redeem: createdata.data,
-        });
+        return format_json(200,true, null, null, createdata.message, createdata.data);
       } else {
         return format_json(400,false, null, null, createdata.message, null);
       }
@@ -269,6 +224,46 @@ export class LastRedeemController {
       }
     } catch (error) {
       return format_json(400,false, true, null, 'Server Error', error);
+    }
+  }
+
+  @Get('schedules/:doctor_id?/:date?')
+  @UseGuards(AuthGuard('jwt'))
+  async GetSchedule(@Req() req: Request, @Param('doctor_id') doctor_id: string, @Param('date') date: string) {
+    try {
+      const authorizationHeader = req.headers['authorization'];
+
+      if (!authorizationHeader) {
+        return format_json(
+          400,
+          false,
+          null,
+          null,
+          'Authorization header is missing',
+          null,
+        );
+      }
+
+      const token = authorizationHeader.split(' ')[1];
+
+      if (!token) {
+        return format_json(400, false, null, null, 'Bearer token is missing', null);
+      }
+
+      const doctorId = doctor_id ? parseInt(doctor_id, 10) : null;
+      const parsedDate = date ? new Date(date) : null;
+
+      const gettallRecords = await this.SchedulesServices.getAll(token, doctorId, parsedDate);
+
+      if (gettallRecords.status) {
+        return format_json(200, true, null, null, gettallRecords.message, {
+          redeem: gettallRecords.data,
+        });
+      } else {
+        return format_json(400, false, null, null, gettallRecords.message, null);
+      }
+    } catch (error) {
+      return format_json(400, false, true, null, 'Server Error', error);
     }
   }
 }

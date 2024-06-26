@@ -15,6 +15,6 @@ export class ScheduleDoctorEntity {
     @Column('date')
     date: Date;
 
-    @Column('text', { array: true })
-    time: string[];
+    @Column('text')
+    time: string;
 }
