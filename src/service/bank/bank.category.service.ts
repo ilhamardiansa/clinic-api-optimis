@@ -35,7 +35,8 @@ export class BankCategoryService {
     return this.bankCategoryRepository.findOne({ where: { id } });
   }
 
-  async removeBankCategory(id: number): Promise<void> {
-    await this.bankCategoryRepository.delete(id);
+  async removeBankCategory(id: number): Promise<boolean> {
+    const deleteResult = await this.bankCategoryRepository.delete(id);
+    return deleteResult.affected > 0;
   }
 }

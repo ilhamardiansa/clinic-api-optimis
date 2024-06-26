@@ -37,8 +37,9 @@ export class BankService {
     return banks.map((bank) => this.BankOutput(bank));
   }
 
-  async removeBank(id: number): Promise<void> {
-    await this.bankRepository.delete(id);
+  async removeBank(id: number): Promise<boolean> {
+    const deleteResult = await this.bankRepository.delete(id);
+    return deleteResult.affected > 0;
   }
 
   private BankOutput(bank: Bank): Partial<Bank> {

@@ -8,11 +8,6 @@ import {
   Param,
   UseGuards,
   Res,
-  HttpException,
-  HttpStatus,
-  Catch,
-  ExceptionFilter,
-  ArgumentsHost,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -45,17 +40,15 @@ export class BankCategoryController {
         );
     } catch (error) {
       return res
-        .status(error.getStatus ? error.getStatus() : 400)
+        .status(400)
         .json(
           format_json(
-            error.getStatus ? error.getStatus() : 400,
+            400,
             false,
-            error.getResponse ? error.getResponse()['errors'] : 'Bad Request',
+            'Bad Request',
             null,
-            error.getResponse
-              ? error.getResponse()['message']
-              : 'Failed to create bank category',
-            null,
+            'Failed to create bank category',
+            error,
           ),
         );
     }
@@ -74,6 +67,20 @@ export class BankCategoryController {
           +id,
           updateBankCategoryDto,
         );
+      if (!updatedBankCategory) {
+        return res
+          .status(404)
+          .json(
+            format_json(
+              404,
+              false,
+              'Not Found',
+              null,
+              'Bank Category not found',
+              null,
+            ),
+          );
+      }
       return res
         .status(200)
         .json(
@@ -88,17 +95,15 @@ export class BankCategoryController {
         );
     } catch (error) {
       return res
-        .status(error.getStatus ? error.getStatus() : 400)
+        .status(400)
         .json(
           format_json(
-            error.getStatus ? error.getStatus() : 400,
+            400,
             false,
-            error.getResponse ? error.getResponse()['errors'] : 'Bad Request',
+            'Bad Request',
             null,
-            error.getResponse
-              ? error.getResponse()['message']
-              : 'Failed to update bank category',
-            null,
+            'Failed to update bank category',
+            error,
           ),
         );
     }
@@ -123,15 +128,15 @@ export class BankCategoryController {
         );
     } catch (error) {
       return res
-        .status(500)
+        .status(400)
         .json(
           format_json(
-            500,
+            400,
             false,
-            'Internal Server Error',
+            'Bad Request',
             null,
             'Failed to retrieve bank categories',
-            error.message || error,
+            error,
           ),
         );
     }
@@ -170,15 +175,15 @@ export class BankCategoryController {
         );
     } catch (error) {
       return res
-        .status(500)
+        .status(400)
         .json(
           format_json(
-            500,
+            400,
             false,
-            'Internal Server Error',
+            'Bad Request',
             null,
             'Failed to retrieve bank category',
-            error.message || error,
+            error,
           ),
         );
     }
@@ -188,7 +193,21 @@ export class BankCategoryController {
   @UseGuards(AuthGuard('jwt'))
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
-      await this.bankCategoryService.removeBankCategory(+id);
+      const isDeleted = await this.bankCategoryService.removeBankCategory(+id);
+      if (!isDeleted) {
+        return res
+          .status(404)
+          .json(
+            format_json(
+              404,
+              false,
+              'Not Found',
+              null,
+              'Bank Category not found',
+              null,
+            ),
+          );
+      }
       return res
         .status(200)
         .json(
