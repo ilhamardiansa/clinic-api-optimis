@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DoctorDto } from 'src/dto/clinic/doctor.dto';
 import { UpdateDoctorDto } from 'src/dto/clinic/update.doctor.dto';
 import { Doctor } from 'src/entity/clinic/doctor.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { PolyService } from './poly.service';
 import { WilayahService } from '../location/location.service';
 
@@ -33,8 +33,24 @@ export class DoctorService {
     return this.doctorRepository.findOne({ where: { id } });
   }
 
-  async findAll(): Promise<Doctor[]> {
-    return this.doctorRepository.find();
+  async findAll( query: string,
+    page: number,
+    limit: number,
+    order: 'ASC' | 'DESC' = 'ASC'): Promise<Doctor[]> {
+      const skip = (page - 1) * limit;
+
+      const whereClause = query ? { doctor_name: Like(`%${query}%`) } : {};
+  
+      const cities = await this.doctorRepository.find({
+        where: whereClause,
+        take: limit || 10,
+        skip: skip || 0,
+        order: {
+          doctor_name: order,
+        },
+      });
+
+    return cities;
   }
 
   async removeDoctor(id: number): Promise<void> {

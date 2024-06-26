@@ -10,6 +10,7 @@ import {
   Res,
   HttpException,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -102,9 +103,15 @@ export class DoctorController {
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'patient', 'doctor')
-  async findAll(@Res() res: Response) {
+  async findAll(@Query('nama') query: string = '',
+  @Query('page') page: number = null,
+  @Query('limit') limit: number = null,
+  @Query('order') order: 'ASC' | 'DESC' = 'ASC',@Res() res: Response) {
     try {
-      const doctors = await this.doctorService.findAll();
+      const doctors = await this.doctorService.findAll(query,
+        page,
+        limit,
+        order);
       return res
         .status(200)
         .json(
