@@ -26,10 +26,7 @@ export class PaymentService {
         const formattedPayments = payments.map((payment) => ({
           id: payment.id,
           payment_name: payment.payment_name,
-          bank: {
-            bank_id: payment.bank_id,
-            bank_name: payment.bank.bank_name,
-          },
+          bank: payment.bank,
           redeem: {
             redeem_id: payment.redeem_id,
             drug_list: payment.LastRedeem?.list_of_medications,

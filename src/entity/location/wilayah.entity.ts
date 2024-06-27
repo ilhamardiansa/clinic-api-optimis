@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import { Clinic } from '../clinic/clinic.entity';
 
 @Entity('wilayah')
 export class Wilayah {
@@ -16,4 +17,7 @@ export class Wilayah {
 
   @Column({ type: 'varchar', length: 255 })
   kelurahan: string;
+
+  @OneToMany(() => Clinic, (clinic) => clinic.wilayah)
+  clinics: Clinic[];
 }

@@ -1,5 +1,6 @@
 import { Schedule } from 'src/entity/schedule.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Record } from '../latest/record.entity';
 
 @Entity()
 export class Doctor {
@@ -59,4 +60,7 @@ export class Doctor {
 
   @OneToMany((type) => Schedule, (schedule) => schedule.doctor_id)
   schedule: Schedule[];
+
+  @OneToMany(() => Record, (record) => record.doctor)
+  record: Record[];
 }

@@ -25,15 +25,21 @@ export class TermService {
 
   async updateTerm(id: number, updateTermDto: UpdateTermDto): Promise<Term> {
     await this.termRepository.update(id, updateTermDto);
-    return this.termRepository.findOne({ where: { id } });
+    return this.termRepository.findOne({
+      where: { id },
+      relations: ['term_category'],
+    });
   }
 
   async findAll(): Promise<Term[]> {
-    return this.termRepository.find();
+    return this.termRepository.find({ relations: ['term_category'] });
   }
 
   async findOne(id: number): Promise<Term> {
-    return this.termRepository.findOne({ where: { id } });
+    return this.termRepository.findOne({
+      where: { id },
+      relations: ['term_category'],
+    });
   }
 
   async removeTerm(id: number): Promise<void> {

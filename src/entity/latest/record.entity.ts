@@ -1,5 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { MedicalRecordDrug } from 'src/entity/medical_record_drug.entity';
+import { Poly } from '../clinic/poly.entity';
+import { Clinic } from '../clinic/clinic.entity';
+import { Doctor } from '../clinic/doctor.entity';
 
 @Entity()
 export class Record {
@@ -57,9 +68,16 @@ export class Record {
   @Column()
   user_id: number;
 
-  @OneToMany(
-    (type) => MedicalRecordDrug,
-    (medical_record_drug) => medical_record_drug.id,
-  )
+  @ManyToOne(() => Poly, (poly) => poly.record)
+  poly: Poly;
+
+  @ManyToOne(() => Clinic, (clinic) => clinic.record)
+  clinic: Clinic;
+
+  @ManyToOne(() => Doctor, (doctor) => doctor.record)
+  doctor: Doctor;
+
+  @ManyToMany(() => MedicalRecordDrug)
+  @JoinTable()
   medical_record_drug: MedicalRecordDrug[];
 }

@@ -9,8 +9,6 @@ import {
   UseGuards,
   Req,
   Res,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 
 import { ClinicService } from 'src/service/clinic/clinic.service';

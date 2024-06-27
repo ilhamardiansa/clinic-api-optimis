@@ -22,7 +22,10 @@ export class MedicalRecordService {
     updateMedicalRecordDto: UpdateMedicalRecordDto,
   ): Promise<Record> {
     await this.medicalRecordRepository.update(id, updateMedicalRecordDto);
-    return this.medicalRecordRepository.findOne({ where: { id } });
+    return this.medicalRecordRepository.findOne({
+      where: { id },
+      relations: ['poly'],
+    });
   }
 
   async findOne(id: number): Promise<Record> {

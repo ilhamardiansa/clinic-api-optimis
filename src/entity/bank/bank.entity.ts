@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Payment } from '../payment/payment.entity';
 import { BankCategory } from './bank.category.entity';
 
@@ -28,6 +34,6 @@ export class Bank {
   @ManyToOne(() => BankCategory, (bankCategory) => bankCategory.banks)
   bankCategory: BankCategory;
 
-  // @ManyToOne((type) => Payment, (payment) => payment.bank_id)
-  // payment: Payment[];
+  @OneToMany(() => Payment, (payment) => payment.bank)
+  payments: Payment[];
 }
