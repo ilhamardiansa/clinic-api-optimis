@@ -54,7 +54,7 @@ export class MedicalRecordController {
             'Bad Request',
             null,
             'Failed to create medical record',
-            null,
+            error.message || error,
           ),
         );
     }
@@ -73,6 +73,20 @@ export class MedicalRecordController {
         +id,
         updateMedicalRecordDto,
       );
+      if (!updatedRecord) {
+        return res
+          .status(404)
+          .json(
+            format_json(
+              404,
+              false,
+              'Not Found',
+              null,
+              'Medical record not found',
+              null,
+            ),
+          );
+      }
       return res
         .status(200)
         .json(
@@ -95,7 +109,7 @@ export class MedicalRecordController {
             'Bad Request',
             null,
             'Failed to update medical record',
-            null,
+            error.message || error,
           ),
         );
     }
@@ -121,15 +135,15 @@ export class MedicalRecordController {
         );
     } catch (error) {
       return res
-        .status(500)
+        .status(400)
         .json(
           format_json(
-            500,
+            400,
             false,
-            'Internal Server Error',
+            'Bad Request',
             null,
             'Failed to retrieve medical records',
-            null,
+            error.message || error,
           ),
         );
     }
@@ -141,6 +155,20 @@ export class MedicalRecordController {
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const record = await this.medicalRecordService.findOne(+id);
+      if (!record) {
+        return res
+          .status(404)
+          .json(
+            format_json(
+              404,
+              false,
+              'Not Found',
+              null,
+              'Medical record not found',
+              null,
+            ),
+          );
+      }
       return res
         .status(200)
         .json(
@@ -155,15 +183,15 @@ export class MedicalRecordController {
         );
     } catch (error) {
       return res
-        .status(500)
+        .status(400)
         .json(
           format_json(
-            500,
+            400,
             false,
-            'Internal Server Error',
+            'Bad Request',
             null,
             'Failed to retrieve medical record',
-            null,
+            error.message || error,
           ),
         );
     }
@@ -174,6 +202,21 @@ export class MedicalRecordController {
   @Roles('admin')
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
+      const record = await this.medicalRecordService.findOne(+id);
+      if (!record) {
+        return res
+          .status(404)
+          .json(
+            format_json(
+              404,
+              false,
+              'Not Found',
+              null,
+              'Medical record not found',
+              null,
+            ),
+          );
+      }
       await this.medicalRecordService.removeRecord(+id);
       return res
         .status(200)
@@ -189,15 +232,15 @@ export class MedicalRecordController {
         );
     } catch (error) {
       return res
-        .status(500)
+        .status(400)
         .json(
           format_json(
-            500,
+            400,
             false,
-            'Internal Server Error',
+            'Bad Request',
             null,
             'Failed to delete medical record',
-            null,
+            error.message || error,
           ),
         );
     }

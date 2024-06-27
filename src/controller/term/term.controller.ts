@@ -75,10 +75,10 @@ export class TermController {
           format_json(
             400,
             false,
+            'Bad Request',
             null,
-            error.message || error,
             'Failed to create term',
-            null,
+            error.message || error,
           ),
         );
     }
@@ -92,6 +92,13 @@ export class TermController {
   ) {
     try {
       const updatedTerm = await this.termService.updateTerm(+id, updateTermDto);
+      if (!updatedTerm) {
+        return res
+          .status(404)
+          .json(
+            format_json(404, false, 'Not Found', null, 'Term not found', null),
+          );
+      }
       return res
         .status(200)
         .json(
@@ -111,10 +118,10 @@ export class TermController {
           format_json(
             400,
             false,
+            'Bad Request',
             null,
-            error.message || error,
             'Failed to update term',
-            null,
+            error.message || error,
           ),
         );
     }
@@ -138,15 +145,15 @@ export class TermController {
         );
     } catch (error) {
       return res
-        .status(500)
+        .status(400)
         .json(
           format_json(
-            500,
+            400,
             false,
+            'Bad Request',
             null,
-            error.message || error,
             'Failed to retrieve terms',
-            null,
+            error.message || error,
           ),
         );
     }
@@ -159,7 +166,9 @@ export class TermController {
       if (!term) {
         return res
           .status(404)
-          .json(format_json(404, false, null, null, 'Term not found', null));
+          .json(
+            format_json(404, false, 'Not Found', null, 'Term not found', null),
+          );
       }
       return res
         .status(200)
@@ -175,15 +184,15 @@ export class TermController {
         );
     } catch (error) {
       return res
-        .status(500)
+        .status(400)
         .json(
           format_json(
-            500,
+            400,
             false,
+            'Bad Request',
             null,
-            error.message || error,
             'Failed to retrieve term',
-            null,
+            error.message || error,
           ),
         );
     }
@@ -192,6 +201,14 @@ export class TermController {
   @Delete(':id')
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
+      const term = await this.termService.findOne(+id);
+      if (!term) {
+        return res
+          .status(404)
+          .json(
+            format_json(404, false, 'Not Found', null, 'Term not found', null),
+          );
+      }
       await this.termService.removeTerm(+id);
       return res
         .status(200)
@@ -200,15 +217,15 @@ export class TermController {
         );
     } catch (error) {
       return res
-        .status(500)
+        .status(400)
         .json(
           format_json(
-            500,
+            400,
             false,
+            'Bad Request',
             null,
-            error.message || error,
             'Failed to delete term',
-            null,
+            error.message || error,
           ),
         );
     }
