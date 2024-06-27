@@ -103,7 +103,7 @@ export class DoctorController {
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'patient', 'doctor')
-  async findAll(@Query('nama') query: string = '',
+  async findAll(@Query('q') query: string = '',
   @Query('page') page: number = null,
   @Query('limit') limit: number = null,
   @Query('order') order: 'ASC' | 'DESC' = 'ASC',@Res() res: Response) {

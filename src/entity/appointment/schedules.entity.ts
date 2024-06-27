@@ -5,11 +5,11 @@ import {
     OneToOne,
     OneToMany,
     ManyToMany,
-    ManyToOne
+    ManyToOne,
+    JoinColumn
 } from 'typeorm';
 import { User } from '../profile/user.entity';
 import { Doctor } from '../clinic/doctor.entity';
-
 
 @Entity('scheduleentity')
 export class ScheduleEntity {

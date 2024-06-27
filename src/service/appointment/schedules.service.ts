@@ -23,77 +23,110 @@ export class SchedulesService {
   ) {}
 
   async getAll(token: string, doctor_id: number, date: Date) {
-    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+    try {
+        const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
-      const userId = extracttoken.userId;
+        if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+            const userId = extracttoken.userId;
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-      let records: ScheduleDoctorEntity[] | null = null;
+            let records: ScheduleDoctorEntity[] | null = null;
 
-      if (doctor_id && date) {
-        records = await this.scheduleDoctorReposity.find({
-          where: {
-            date: date,
-            doctor_id: doctor_id,
-          },
-          select: ["time"],
-        });
-      } else if (doctor_id) {
-        records = await this.scheduleDoctorReposity.find({
-          where: {
-            doctor_id: doctor_id,
-          },
-          select: ["time"],
-        });
-      } else if (date) {
-        records = await this.scheduleDoctorReposity.find({
-          where: {
-            date: date,
-          },
-          select: ["time"],
-        });
-      } else {
-        records = await this.scheduleDoctorReposity.find({
-          where: {
-            date: today,
-          },
-          select: ["time"],
-        });
-      }
+            if (doctor_id && date) {
+                records = await this.scheduleDoctorReposity.find({
+                    where: {
+                        date: date,
+                        doctor_id: doctor_id,
+                    },
+                    select: ["time", "poly_id", "doctor_id", "date"],
+                    relations: ['poly', 'doctor', 'clinic']
+                });
+            } else if (doctor_id) {
+                records = await this.scheduleDoctorReposity.find({
+                    where: {
+                        doctor_id: doctor_id,
+                    },
+                    select: ["time", "poly_id", "doctor_id", "date"],
+                    relations: ['poly', 'doctor', 'clinic']
+                });
+            } else if (date) {
+                records = await this.scheduleDoctorReposity.find({
+                    where: {
+                        date: date,
+                    },
+                    select: ["time", "poly_id", "doctor_id", "date"],
+                    relations: ['poly', 'doctor', 'clinic']
+                });
+            } else {
+                records = await this.scheduleDoctorReposity.find({
+                    where: {
+                        date: today,
+                    },
+                    select: ["time", "poly_id", "doctor_id", "date"],
+                    relations: ['poly', 'doctor', 'clinic']
+                });
+            }
 
-      if (records && records.length > 0) {
+            if (records && records.length > 0) {
+                const groupedRecords = records.reduce((acc, record) => {
+                    const dateObj = new Date(record.date);
+                    const dateStr = dateObj.toISOString().split('T')[0];
+                    if (!acc[dateStr]) {
+                        acc[dateStr] = {
+                            date: dateStr,
+                            doctor_id: record.doctor_id,
+                            doctor: record.doctor,
+                            poly_id: record.poly_id,
+                            poly: record.poly,
+                            clinic_id: record.clinic_id,
+                            clinic: record.clinic,
+                            times: []
+                        };
+                    }
+                    acc[dateStr].times.push(record.time);
+                    return acc;
+                }, {});
+
+                const formattedRecords = Object.values(groupedRecords);
+
+                return {
+                    status: true,
+                    message: 'Success ambil data schedule',
+                    data: {
+                        status: true,
+                        data: formattedRecords
+                    },
+                };
+            } else {
+                return {
+                    status: false,
+                    message: 'tidak ada data yang berhasil di ambil',
+                    data: {
+                        status: false,
+                        data: null,
+                    },
+                };
+            }
+        } else {
+            return {
+                status: false,
+                message: 'Invalid token',
+                data: {
+                    date: false,
+                    time: null
+                },
+            };
+        }
+    } catch (error) {
         return {
-          status: true,
-          message: 'Success ambil data schedule',
-          data: {
-            date: true,
-            time: records
-          },
+            status: false,
+            message: 'Server Error',
+            data: null
         };
-      } else {
-        return {
-          status: false,
-          message: 'tidak ada data yang berhasil di ambil',
-          data: {
-            date: false,
-            time: null
-          },
-        };
-      }
-    } else {
-      return {
-        status: false,
-        message: 'Invalid token',
-        data: {
-          date: false,
-          time: null
-        },
-      };
     }
-  }
+}
 
   async getToken(token: string) {
     try {
@@ -336,7 +369,6 @@ export class SchedulesService {
   }
 
   async SetTime(token: string, createData: Partial<ScheduleDoctorEntity>) {
-    try {
         const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
         if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
@@ -345,31 +377,49 @@ export class SchedulesService {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            for (const timeSlot of createData.time) {
-                const checkdata = await this.scheduleDoctorReposity.findOne({
-                    where: {
-                        doctor_id: createData.doctor_id,
-                        date: createData.date,
-                        time: timeSlot,
-                    }
-                });
+            if (!Array.isArray(createData.time)) {
+                return {
+                    status: false,
+                    message: 'Kesalahan!!, waktu tidak valid.',
+                    data: null
+                };
+            }
 
-                if (!checkdata) {
-                    const scheduleCreate = this.scheduleDoctorReposity.create({
-                        doctor_id: createData.doctor_id,
-                        date: createData.date,
-                        time: timeSlot,
+            for (const timeSlot of createData.time) {
+                try {
+                    const checkdata = await this.scheduleDoctorReposity.findOne({
+                        where: {
+                            doctor_id: createData.doctor_id,
+                            date: createData.date,
+                            time: timeSlot,
+                        }
                     });
 
-                    const save = await this.scheduleDoctorReposity.save(scheduleCreate);
+                    if (!checkdata) {
+                        const scheduleCreate = this.scheduleDoctorReposity.create({
+                            doctor_id: createData.doctor_id,
+                            clinic_id: createData.clinic_id,
+                            poly_id: createData.poly_id,
+                            date: createData.date,
+                            time: timeSlot,
+                        });
 
-                    if (!save) {
-                        return {
-                            status: false,
-                            message: 'Kesalahan!!, error to create new data.',
-                            data: null
-                        };
+                        const save = await this.scheduleDoctorReposity.save(scheduleCreate);
+
+                        if (!save) {
+                            return {
+                                status: false,
+                                message: 'Kesalahan!!, gagal menyimpan data baru.',
+                                data: null
+                            };
+                        }
                     }
+                } catch (innerError) {
+                    return {
+                        status: false,
+                        message: 'Kesalahan!!, error saat menyimpan data baru.',
+                        data: null
+                    };
                 }
             }
 
@@ -388,14 +438,7 @@ export class SchedulesService {
                 data: null,
             };
         }
-    } catch (error) {
-        return {
-            status: false,
-            message: 'Kesalahan!!, error to create new data.',
-            data: null
-        };
-    }
-}
+      }
 
   
   

@@ -6,6 +6,12 @@ export class setTimeDTO {
     @IsInt()
     doctor_id: number;
 
+    @IsInt()
+    poly_id: number;
+
+    @IsInt()
+    clinic_id: number;
+
     @IsDate()
     date: Date;
 

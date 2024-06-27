@@ -39,7 +39,14 @@ export class DoctorService {
     order: 'ASC' | 'DESC' = 'ASC'): Promise<Doctor[]> {
       const skip = (page - 1) * limit;
 
-      const whereClause = query ? { doctor_name: Like(`%${query}%`) } : {};
+      const whereClause = query 
+        ? [
+            { doctor_name: Like(`%${query}%`) },
+            { description: Like(`%${query}%`) },
+            { address: Like(`%${query}%`) },
+            { education: Like(`%${query}%`) }
+          ]
+        : {};
   
       const cities = await this.doctorRepository.find({
         where: whereClause,

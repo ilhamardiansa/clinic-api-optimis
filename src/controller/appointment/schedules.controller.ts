@@ -115,10 +115,12 @@ export class ScheduleController {
         return format_json(400,false, null, null, 'Bearer token is missing', null);
       }
 
-      const { doctor_id, date, time } = setTimeDTO;
+      const { doctor_id, poly_id, clinic_id, date, time } = setTimeDTO;
 
       const Create = {
         doctor_id: doctor_id,
+        poly_id: poly_id,
+        clinic_id: clinic_id,
         date: date,
         time: time
     };
@@ -256,9 +258,7 @@ export class ScheduleController {
       const gettallRecords = await this.SchedulesServices.getAll(token, doctorId, parsedDate);
 
       if (gettallRecords.status) {
-        return format_json(200, true, null, null, gettallRecords.message, {
-          redeem: gettallRecords.data,
-        });
+        return format_json(200, true, null, null, gettallRecords.message, gettallRecords.data);
       } else {
         return format_json(400, false, null, null, gettallRecords.message, null);
       }
