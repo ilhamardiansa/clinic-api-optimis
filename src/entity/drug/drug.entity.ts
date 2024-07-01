@@ -6,9 +6,13 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Category } from '../category.entity';
+import { LastRedeem } from '../latest/last.redeem.entity';
 
 @Entity()
 export class Drug {
+  map(arg0: (drug: any) => { id: any; name: any; price: any }): any {
+    throw new Error('Method not implemented.');
+  }
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -41,4 +45,11 @@ export class Drug {
 
   @Column()
   category_id: number;
+
+  @ManyToOne(() => LastRedeem, (lastRedeem) => lastRedeem.drugs)
+  @JoinColumn({ name: 'redeem_id' })
+  lastRedeem: LastRedeem;
+
+  @Column()
+  redeem_id: number;
 }

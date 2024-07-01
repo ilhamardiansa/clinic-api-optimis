@@ -12,6 +12,6 @@ export class BankCategory {
   @Column('text', { nullable: true })
   description: string;
 
-  @OneToMany(() => Bank, (bank) => bank.bankCategory)
+  @OneToMany(() => Bank, (bank) => bank.bank_category)
   banks: Bank[];
 }

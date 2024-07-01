@@ -1,6 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Bank } from '../bank/bank.entity';
 import { Profile } from '../profile/profile.entity';
+import { Drug } from '../drug/drug.entity';
 @Entity()
 export class LastRedeem {
   @PrimaryGeneratedColumn()
@@ -30,6 +38,6 @@ export class LastRedeem {
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
   profile: Profile;
 
-  @OneToMany((type) => LastRedeem, (lastredeem) => lastredeem.id)
-  lastredeem: LastRedeem[];
+  @OneToMany(() => Drug, (drug) => drug.lastRedeem)
+  drugs: Drug[];
 }

@@ -7,7 +7,7 @@ import {
   ManyToOne,
   OneToOne,
   JoinColumn,
-  ManyToMany
+  ManyToMany,
 } from 'typeorm';
 import { LastRedeem } from '../latest/last.redeem.entity';
 
@@ -29,14 +29,14 @@ export class Payment {
   @Column()
   redeem_id: number;
 
-  @ManyToOne(() => LastRedeem, last => last.id)
+  @ManyToOne(() => LastRedeem, (last) => last.id)
   @JoinColumn({ name: 'redeem_id' })
   LastRedeem: LastRedeem;
 
   @Column()
   bank_id: number;
 
-  @ManyToOne(() => Bank, banks => banks.id)
+  @ManyToOne(() => Bank, (banks) => banks.id)
   @JoinColumn({ name: 'bank_id' })
   bank: Bank;
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as jwt from 'jsonwebtoken';
-import { Payment, paymentStatus } from 'src/entity/payment/payment.entity';
+import { Payment } from 'src/entity/payment/payment.entity';
 import { paymentDTO } from 'src/dto/payment/payment.dto';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class PaymentService {
       const userId = extracttoken.userId;
 
       const payments = await this.paymentRepository.find({
-        relations: ['bank', 'LastRedeem'],
+        relations: ['bank', 'LastRedeem', 'LastRedeem.drugs'],
       });
 
       if (payments.length > 0) {
@@ -29,7 +29,11 @@ export class PaymentService {
           bank: payment.bank,
           redeem: {
             redeem_id: payment.redeem_id,
-            drug_list: payment.LastRedeem?.list_of_medications,
+            drugs: payment.LastRedeem?.drugs.map((drug) => ({
+              id: drug.id,
+              name: drug.drug_name,
+              price: drug.sell_price,
+            })),
           },
           status: payment.status,
         }));

@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { Payment } from '../payment/payment.entity';
 import { BankCategory } from './bank.category.entity';
@@ -31,8 +32,12 @@ export class Bank {
   @Column('text', { nullable: true })
   bank_images?: string;
 
+  @Column()
+  bank_category_id: number;
+
   @ManyToOne(() => BankCategory, (bankCategory) => bankCategory.banks)
-  bankCategory: BankCategory;
+  @JoinColumn({ name: 'bank_category_id' })
+  bank_category: BankCategory;
 
   @OneToMany(() => Payment, (payment) => payment.bank)
   payments: Payment[];
