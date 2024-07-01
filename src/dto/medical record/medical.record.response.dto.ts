@@ -1,12 +1,9 @@
-import {
-  IsString,
-  IsInt,
-  IsDate,
-  IsOptional,
-  MaxLength,
-} from 'class-validator';
+import { IsInt, IsDate, IsString } from 'class-validator';
 
-export class MedicalRecordDto {
+export class RecordResponseDto {
+  @IsInt()
+  id: number;
+
   @IsDate()
   consultation_date_time: Date;
 
@@ -45,4 +42,25 @@ export class MedicalRecordDto {
 
   @IsInt()
   user_id: number;
+
+  @IsInt()
+  poly_id: number;
+
+  @IsInt()
+  clinic_id: number;
+
+  @IsInt()
+  doctor_id: number;
+
+  poly: {
+    name: string;
+  };
+
+  clinic: {
+    clinic_name: string;
+  };
+
+  doctor: {
+    doctor_name: string;
+  };
 }

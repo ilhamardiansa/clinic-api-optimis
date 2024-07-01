@@ -37,10 +37,16 @@ export class Clinic {
   @Column()
   city_id: number;
 
+  @Column()
+  wilayah_id: number;
+
   @ManyToOne(() => Wilayah, (wilayah) => wilayah.clinics)
-  @JoinColumn({ name: 'wilayahId' })
+  @JoinColumn({ name: 'wilayah_id' })
   wilayah: Wilayah;
 
   @OneToMany(() => Poly, (poly) => poly.clinic)
   poly: Poly[];
+
+  @OneToMany(() => Record, (record) => record.clinic)
+  records: Record[];
 }

@@ -2,15 +2,15 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToMany,
   ManyToOne,
   ManyToMany,
   JoinTable,
+  JoinColumn,
 } from 'typeorm';
 import { MedicalRecordDrug } from 'src/entity/medical_record_drug.entity';
 import { Poly } from '../clinic/poly.entity';
-import { Clinic } from '../clinic/clinic.entity';
 import { Doctor } from '../clinic/doctor.entity';
+import { Clinic } from '../clinic/clinic.entity';
 
 @Entity()
 export class Record {
@@ -63,18 +63,27 @@ export class Record {
   solution: string;
 
   @Column()
+  user_id: number;
+
+  @Column()
+  poly_id: number;
+
+  @Column()
   clinic_id: number;
 
   @Column()
-  user_id: number;
+  doctor_id: number;
 
   @ManyToOne(() => Poly, (poly) => poly.records)
+  @JoinColumn({ name: 'poly_id' })
   poly: Poly;
 
-  // @ManyToOne(() => Clinic, (clinic) => clinic.record)
-  // clinic: Clinic;
+  @ManyToOne(() => Clinic, (clinic) => clinic.records)
+  @JoinColumn({ name: 'clinic_id' })
+  clinic: Clinic;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.record)
+  @JoinColumn({ name: 'doctor_id' })
   doctor: Doctor;
 
   @ManyToMany(() => MedicalRecordDrug)

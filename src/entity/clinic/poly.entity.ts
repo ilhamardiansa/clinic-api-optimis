@@ -30,4 +30,7 @@ export class Poly {
 
   @OneToMany(() => Record, (record) => record.poly)
   records: Record[];
+
+  @OneToMany(() => Doctor, (doctor) => doctor.poly)
+  doctors: Doctor[];
 }

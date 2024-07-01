@@ -17,6 +17,7 @@ import { Roles } from 'src/middleware/role.decorator';
 import { MedicalRecordService } from 'src/service/medical record/medical.record.service';
 import { MedicalRecordDto } from 'src/dto/medical record/medical.record.dto';
 import { UpdateMedicalRecordDto } from 'src/dto/medical record/update.medical.record.dto';
+import { RecordResponseDto } from 'src/dto/medical record/medical.record.response.dto';
 
 @Controller('api/medicalrecords')
 export class MedicalRecordController {
@@ -120,7 +121,7 @@ export class MedicalRecordController {
   @Roles('admin', 'patient', 'doctor')
   async findAll(@Res() res: Response) {
     try {
-      const records = await this.medicalRecordService.findAll();
+      const records = await this.medicalRecordService.getRecords();
       return res
         .status(200)
         .json(

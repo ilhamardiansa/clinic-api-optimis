@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Record } from '../latest/record.entity';
 import { Poly } from './poly.entity';
+import { Wilayah } from '../location/wilayah.entity';
 
 @Entity()
 export class Doctor {
@@ -66,9 +67,13 @@ export class Doctor {
   @Column('int')
   poly_id: number;
 
-  // @ManyToOne(() => Poly, (poly) => poly.doctors)
-  // @JoinColumn({ name: 'poly_id' })
-  // poly: Poly;
+  @ManyToOne(() => Poly, (poly) => poly.doctors)
+  @JoinColumn({ name: 'poly_id' })
+  poly: Poly;
+
+  @ManyToOne(() => Wilayah, (wilayah) => wilayah.doctors)
+  @JoinColumn({ name: 'wilayah_id' })
+  wilayah: Wilayah;
 
   @OneToMany((type) => Schedule, (schedule) => schedule.doctor_id)
   schedule: Schedule[];

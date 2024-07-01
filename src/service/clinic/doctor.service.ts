@@ -28,18 +28,14 @@ export class DoctorService {
     await this.doctorRepository.update(id, updateDoctorDto);
     return this.doctorRepository.findOne({
       where: { id },
-      relations: ['poly'],
+      relations: ['poly', 'wilayah'],
     });
   }
 
-  /*({
-      where: { id },
-      relations: ['term_category'],
-    }); */
   async findOne(id: number): Promise<Doctor> {
     return this.doctorRepository.findOne({
       where: { id },
-      relations: ['poly'],
+      relations: ['poly', 'wilayah'],
     });
   }
 
@@ -67,6 +63,7 @@ export class DoctorService {
       order: {
         doctor_name: order,
       },
+      relations: ['poly', 'wilayah'],
     });
 
     return cities;
