@@ -67,7 +67,7 @@ export const DATABASE_ENTITIES = [
   DiagnosisEntity,
   Ticket,
   ScheduleDoctorEntity,
-  BankCategory
+  BankCategory,
 ];
 
 export const format_json = (

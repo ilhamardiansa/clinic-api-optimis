@@ -68,11 +68,11 @@ export class Record {
   @Column()
   user_id: number;
 
-  @ManyToOne(() => Poly, (poly) => poly.record)
+  @ManyToOne(() => Poly, (poly) => poly.records)
   poly: Poly;
 
-  @ManyToOne(() => Clinic, (clinic) => clinic.record)
-  clinic: Clinic;
+  // @ManyToOne(() => Clinic, (clinic) => clinic.record)
+  // clinic: Clinic;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.record)
   doctor: Doctor;

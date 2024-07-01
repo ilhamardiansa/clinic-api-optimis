@@ -2,19 +2,18 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToMany,
   OneToMany,
+  JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import { Clinic } from './clinic.entity';
 import { Record } from '../latest/record.entity';
+import { Doctor } from './doctor.entity';
 
 @Entity()
 export class Poly {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({ type: 'bigint' })
-  clinic_id: number;
 
   @Column({ length: 32 })
   name: string;
@@ -22,9 +21,13 @@ export class Poly {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @OneToMany(() => Record, (record) => record.poly)
-  record: Record[];
+  @Column('bigint')
+  clinic_id: number;
 
-  @ManyToMany(() => Clinic, (clinic) => clinic.poly)
-  clinic: Clinic[];
+  @ManyToOne(() => Clinic, (clinic) => clinic.poly)
+  @JoinColumn({ name: 'clinic_id' })
+  clinic: Clinic;
+
+  @OneToMany(() => Record, (record) => record.poly)
+  records: Record[];
 }

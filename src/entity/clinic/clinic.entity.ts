@@ -1,5 +1,3 @@
-import { Record } from 'src/entity/latest/record.entity';
-import { Room } from 'src/entity/room.entity';
 import {
   Entity,
   Column,
@@ -10,6 +8,8 @@ import {
 } from 'typeorm';
 import { Wilayah } from '../location/wilayah.entity';
 import { Poly } from './poly.entity';
+import { Record } from 'src/entity/latest/record.entity';
+import { Room } from 'src/entity/room.entity';
 
 @Entity()
 export class Clinic {
@@ -37,17 +37,10 @@ export class Clinic {
   @Column()
   city_id: number;
 
-  @OneToMany((type) => Room, (room) => room.clinic_id)
-  room: Room[];
-
-  @OneToMany((type) => Record, (record) => record.clinic_id)
-  record: Record[];
-
   @ManyToOne(() => Wilayah, (wilayah) => wilayah.clinics)
   @JoinColumn({ name: 'wilayahId' })
   wilayah: Wilayah;
 
-  @ManyToOne(() => Poly, (poly) => poly.clinic)
-  @JoinColumn({ name: 'poly_id' })
-  poly: Poly;
+  @OneToMany(() => Poly, (poly) => poly.clinic)
+  poly: Poly[];
 }

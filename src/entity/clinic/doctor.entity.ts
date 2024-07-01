@@ -1,6 +1,14 @@
 import { Schedule } from 'src/entity/schedule.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Record } from '../latest/record.entity';
+import { Poly } from './poly.entity';
 
 @Entity()
 export class Doctor {
@@ -37,9 +45,6 @@ export class Doctor {
   @Column('bigint')
   city_id: number;
 
-  @Column('int')
-  poly_id: number;
-
   @Column({ length: 10 })
   post_code: string;
 
@@ -57,6 +62,13 @@ export class Doctor {
 
   @Column('text', { nullable: true })
   education: string;
+
+  @Column('int')
+  poly_id: number;
+
+  // @ManyToOne(() => Poly, (poly) => poly.doctors)
+  // @JoinColumn({ name: 'poly_id' })
+  // poly: Poly;
 
   @OneToMany((type) => Schedule, (schedule) => schedule.doctor_id)
   schedule: Schedule[];

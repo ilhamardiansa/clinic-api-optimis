@@ -8,9 +8,6 @@ import {
 } from 'class-validator';
 
 export class DoctorDto {
-  @IsInt()
-  poly_id: number;
-
   @IsString()
   @MaxLength(64)
   doctor_name: string;
@@ -47,4 +44,7 @@ export class DoctorDto {
   @IsOptional()
   @IsString()
   education: string;
+
+  @IsInt()
+  poly_id: number;
 }
