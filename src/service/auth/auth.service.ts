@@ -810,8 +810,14 @@ export class AuthService {
               marital_status: checkprofile.marital_status,
               nationality: checkprofile.nationality,
               religion: checkprofile.religion,
-              city_id: checkprofile.city_id,
-              city: checkprofile.wilayah,
+              city_id: parseInt(checkprofile.city_id.toString(), 10),
+              city: {
+                id: parseInt(checkprofile.wilayah.id.toString(), 10),
+                provinsi: checkprofile.wilayah.provinsi,
+                kabupaten: checkprofile.wilayah.kabupaten,
+                kecamatan: checkprofile.wilayah.kecamatan,
+                kelurahan: checkprofile.wilayah.kelurahan
+              },
               neighborhood_no: checkprofile.neighborhood_no,
               citizen_no: checkprofile.citizen_no,
               area_code: checkprofile.area_code,
