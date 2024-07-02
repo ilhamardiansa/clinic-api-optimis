@@ -34,7 +34,7 @@ export class Clinic {
   @Column('double precision')
   longitude: number;
 
-  @Column()
+  @Column('bigint')
   city_id: number;
 
   @Column()

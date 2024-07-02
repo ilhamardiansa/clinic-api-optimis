@@ -7,9 +7,10 @@ import { mailService } from 'src/service/mailer/mailer.service';
 import { Otp } from 'src/entity/otp.entity';
 import { JwtStrategy } from 'src/middleware/jwt.strategy';
 import { Profile } from 'src/entity/profile/profile.entity';
+import { Wilayah } from 'src/entity/location/wilayah.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Otp, Profile])],
+  imports: [TypeOrmModule.forFeature([User, Otp, Profile, Wilayah])],
   controllers: [AuthController],
   providers: [AuthService, mailService, JwtStrategy],
   exports: [AuthService],

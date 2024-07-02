@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, Index } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, Index, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
 import { User } from 'src/entity/profile/user.entity';
+import { Wilayah } from '../location/wilayah.entity';
 
 @Entity()
 export class Profile {
@@ -49,8 +50,12 @@ export class Profile {
   @Index({ unique: true })
   user_id: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'bigint', nullable: true })
   city_id: number;
+
+  @ManyToOne(() => Wilayah, wilayah => wilayah.id, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'city_id' })
+  wilayah: Wilayah;
 
   @Column({ nullable: true })
   neighborhood_no: number;

@@ -739,20 +739,14 @@ export class AuthService {
     }
   }
 
-  async personal_data(
-    token: string,
-  ): Promise<{ status: boolean; message: string; users: any; token: string }> {
+  async personal_data(token: string): Promise<{ status: boolean; message: string; users: any; token: string }> {
     try {
       const extracttoken: any = jwt.verify(token, process.env.JWT_SECRET);
-
-      if (
-        extracttoken &&
-        extracttoken.userId &&
-        extracttoken.verifikasi !== undefined
-      ) {
+  
+      if (extracttoken && extracttoken.userId && extracttoken.verifikasi !== undefined) {
         const userId = extracttoken.userId;
         const userVerifikasi = extracttoken.verifikasi;
-
+  
         if (userVerifikasi === false) {
           return {
             status: false,
@@ -768,11 +762,11 @@ export class AuthService {
             token: null,
           };
         }
-
+  
         const CheckUser = await this.authRepository.findOne({
           where: { id: userId },
         });
-
+  
         if (!CheckUser) {
           return {
             status: false,
@@ -781,11 +775,12 @@ export class AuthService {
             token: null,
           };
         }
-
+  
         const checkprofile = await this.profileRepository.findOne({
           where: { user_id: CheckUser.id },
+          relations: ["wilayah"]
         });
-
+  
         if (!checkprofile) {
           return {
             status: false,
@@ -794,12 +789,33 @@ export class AuthService {
             token: null,
           };
         }
-
+  
+        console.log('Fetched profile:', checkprofile); // Add this line for debugging
+  
         return {
           status: true,
-          message: 'Data profiles berhasil diambil',
+          message: 'Data profile berhasil diambil',
           users: {
-            checkprofile,
+            checkprofile: {
+              id: checkprofile.id,
+              fullname: checkprofile.fullname,
+              phone_number: checkprofile.phone_number,
+              no_identity: checkprofile.no_identity,
+              birth_date: checkprofile.birth_date,
+              birth_place: checkprofile.birth_place,
+              address: checkprofile.address,
+              gender: checkprofile.gender,
+              work_in: checkprofile.work_in,
+              blood_type: checkprofile.blood_type,
+              marital_status: checkprofile.marital_status,
+              nationality: checkprofile.nationality,
+              religion: checkprofile.religion,
+              city_id: checkprofile.city_id,
+              city: checkprofile.wilayah,
+              neighborhood_no: checkprofile.neighborhood_no,
+              citizen_no: checkprofile.citizen_no,
+              area_code: checkprofile.area_code,
+            },
             verifikasi: CheckUser.verifed === 1,
           },
           token: null,
@@ -813,6 +829,7 @@ export class AuthService {
         };
       }
     } catch (error) {
+      console.error('Error fetching personal data:', error);
       return {
         status: false,
         message: 'Server error',
