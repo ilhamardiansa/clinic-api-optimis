@@ -49,6 +49,7 @@ import { TermCategoryModule } from './modules/term/term.category.module';
 import { DiagnosisModule } from './modules/diagnosis.module';
 import { TermModule } from './modules/term/term.module';
 import { BankCategoryModule } from './modules/bank/bank.category.module';
+import { configurationsModule } from './modules/configurations.module';
 
 @Module({
   controllers: [AuthController],
@@ -129,6 +130,7 @@ import { BankCategoryModule } from './modules/bank/bank.category.module';
     FeedbackModule,
     DiagnosisModule,
     BankCategoryModule,
+    configurationsModule
   ],
 })
 export class AppModule implements NestModule {

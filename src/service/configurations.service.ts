@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as jwt from 'jsonwebtoken';
-import { Feedback } from 'src/entity/feedback.entity';
-import { FeedbackDTO } from 'src/dto/feedback.dto';
+import { configurations } from 'src/entity/configurations.entity';
+import { configurationsDTO } from 'src/dto/configurations.dto';
 
 
 @Injectable()
-export class FeedbackService {
+export class configurationsService {
   constructor(
-    @InjectRepository(Feedback)
-    private readonly feedbackReposity: Repository<Feedback>,
+    @InjectRepository(configurations)
+    private readonly configurationsReposity: Repository<configurations>,
   ) {}
 
   async getdata(token: string) {
@@ -19,27 +19,18 @@ export class FeedbackService {
     if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
       const userId = extracttoken.userId;
 
-      const feedback = await this.feedbackReposity.find({
-        relations: ['profile']
-      });
+      const feedback = await this.configurationsReposity.findOne({ where: { id: 1 }});
 
-      if (feedback.length > 0) {
-
-        const result = feedback.map(feedback => ({
-            user_id : feedback.user_id,
-            user : feedback.profile,
-            content : feedback.content
-          }));
-
+      if (feedback) {
         return {
           status: true,
           message: 'Success to get data',
-          data: result,
+          data: feedback,
         };
       } else {
         return {
           status: false,
-          message: 'No feedback records found for this user',
+          message: 'no configurasion records found for this user',
           data: null,
         };
       }
@@ -53,26 +44,23 @@ export class FeedbackService {
   }
 
 
-  async create(token: string, data: FeedbackDTO) {
+  async update(token: string, data: configurationsDTO) {
     try {
         const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
         if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
       
       const userId = extracttoken.userId;
       
-      const create = this.feedbackReposity.create({
-        user_id: userId,
-        content: data.content
-      });
+      const feedback = await this.configurationsReposity.update(1,data);
 
-      const saved = await this.feedbackReposity.save(create);
+      const result = await this.configurationsReposity.findOne({ where: { id: 1 }});
 
       
-      if (saved) {
+      if (feedback) {
         return {
           status: true,
-          message: 'Data successfully created',
-          data: create,
+          message: 'Data successfully updated',
+          data: result,
         };
       } else {
         return {

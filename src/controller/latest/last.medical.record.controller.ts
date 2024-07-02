@@ -53,9 +53,7 @@ export class LastMedicalRecordController {
 
       if (lastMedicalRecord.status) {
         return res.status(200).json(
-          format_json(200, true, null, null, lastMedicalRecord.message, {
-            record: lastMedicalRecord.data,
-          }),
+          format_json(200, true, null, null, lastMedicalRecord.message, lastMedicalRecord.data),
         );
       } else {
         return res
