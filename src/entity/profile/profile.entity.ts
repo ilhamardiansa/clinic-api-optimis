@@ -4,8 +4,12 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   Index,
+  ManyToOne,
+  JoinColumn,
+  ManyToMany,
 } from 'typeorm';
 import { User } from 'src/entity/profile/user.entity';
+import { Wilayah } from '../location/wilayah.entity';
 
 @Entity()
 export class Profile {
@@ -51,15 +55,16 @@ export class Profile {
   @Column({ nullable: true })
   religion: string;
 
-  @Column({ type: 'text', nullable: true })
-  responsible_for_costs: string;
-
   @Column()
   @Index({ unique: true })
   user_id: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'bigint', nullable: true })
   city_id: number;
+
+  @ManyToOne(() => Wilayah, (wilayah) => wilayah.id, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'city_id' })
+  wilayah: Wilayah;
 
   @Column({ nullable: true })
   neighborhood_no: number;
