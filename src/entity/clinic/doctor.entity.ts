@@ -72,7 +72,7 @@ export class Doctor {
   @Column('int')
   poly_id: number;
 
-  @ManyToOne(() => Poly, (poly) => poly.doctors)
+  @ManyToOne(() => Poly, (poly) => poly.id)
   @JoinColumn({ name: 'poly_id' })
   poly: Poly;
 

@@ -25,11 +25,21 @@ export class Drug {
   @Column('text')
   drug_summary: string;
 
-  @Column('bigint')
-  buy_price: string;
+  @Column('bigint', {
+    transformer: {
+      from: (value: string) => parseInt(value, 10),
+      to: (value: number) => value.toString(),
+    },
+  })
+  buy_price: number;
 
-  @Column('bigint')
-  sell_price: string;
+  @Column('bigint', {
+    transformer: {
+      from: (value: string) => parseInt(value, 10),
+      to: (value: number) => value.toString(),
+    },
+  })
+  sell_price: number;
 
   @Column({ nullable: true })
   image_url: string;
@@ -48,7 +58,7 @@ export class Drug {
 
   @ManyToOne(() => LastRedeem, (lastRedeem) => lastRedeem.drugs)
   @JoinColumn({ name: 'redeem_id' })
-  lastRedeem: LastRedeem;
+  redeem: LastRedeem;
 
   @Column()
   redeem_id: number;

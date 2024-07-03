@@ -38,6 +38,6 @@ export class LastRedeem {
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
   profile: Profile;
 
-  @OneToMany(() => Drug, (drug) => drug.lastRedeem)
+  @OneToMany(() => Drug, (drug) => drug.redeem)
   drugs: Drug[];
 }

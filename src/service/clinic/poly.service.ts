@@ -14,7 +14,8 @@ export class PolyService {
 
   async createPoly(polyDto: PolyDto): Promise<Poly> {
     const poly = this.polyRepository.create(polyDto);
-    return this.polyRepository.save(poly);
+    await this.polyRepository.save(poly);
+    return this.polyRepository.findOne({ where: { id: poly.id }, relations: ['clinic'] });
   }
 
   async updatePoly(id: number, updatePolyDto: UpdatePolyDto): Promise<Poly> {

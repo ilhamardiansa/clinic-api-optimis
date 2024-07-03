@@ -74,7 +74,7 @@ export class Record {
   @Column()
   doctor_id: number;
 
-  @ManyToOne(() => Poly, (poly) => poly.records)
+  @ManyToOne(() => Poly, (poly) => poly.id)
   @JoinColumn({ name: 'poly_id' })
   poly: Poly;
 

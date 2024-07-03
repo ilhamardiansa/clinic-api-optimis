@@ -53,7 +53,7 @@ export class DrugController {
             null,
             error.getResponse
               ? error.getResponse()['message']
-              : 'Failed to create drug',
+              : error.message,
             null,
           ),
         );
