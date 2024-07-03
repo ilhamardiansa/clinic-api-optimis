@@ -1,6 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, Index, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  Index,
+} from 'typeorm';
 import { User } from 'src/entity/profile/user.entity';
-import { Wilayah } from '../location/wilayah.entity';
 
 @Entity()
 export class Profile {
@@ -46,16 +51,15 @@ export class Profile {
   @Column({ nullable: true })
   religion: string;
 
+  @Column({ type: 'text', nullable: true })
+  responsible_for_costs: string;
+
   @Column()
   @Index({ unique: true })
   user_id: number;
 
-  @Column({ type: 'bigint', nullable: true })
+  @Column({ nullable: true })
   city_id: number;
-
-  @ManyToOne(() => Wilayah, wilayah => wilayah.id, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'city_id' })
-  wilayah: Wilayah;
 
   @Column({ nullable: true })
   neighborhood_no: number;
@@ -66,6 +70,6 @@ export class Profile {
   @Column({ nullable: true })
   area_code: number;
 
-  @OneToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
+  @OneToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
   user: User[];
 }
