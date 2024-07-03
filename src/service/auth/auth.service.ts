@@ -509,6 +509,11 @@ export class AuthService {
         where: { user_id: CheckUser.id },
       });
 
+      if (updateProfile.responsible_for_costs) {
+        updateProfile.responsible_for_costs =
+          updateProfile.responsible_for_costs.toLowerCase();
+      }
+
       Object.assign(checkprofile, updateProfile);
 
       await this.profileRepository.save(checkprofile);
@@ -739,14 +744,20 @@ export class AuthService {
     }
   }
 
-  async personal_data(token: string): Promise<{ status: boolean; message: string; users: any; token: string }> {
+  async personal_data(
+    token: string,
+  ): Promise<{ status: boolean; message: string; users: any; token: string }> {
     try {
       const extracttoken: any = jwt.verify(token, process.env.JWT_SECRET);
-  
-      if (extracttoken && extracttoken.userId && extracttoken.verifikasi !== undefined) {
+
+      if (
+        extracttoken &&
+        extracttoken.userId &&
+        extracttoken.verifikasi !== undefined
+      ) {
         const userId = extracttoken.userId;
         const userVerifikasi = extracttoken.verifikasi;
-  
+
         if (userVerifikasi === false) {
           return {
             status: false,
@@ -762,11 +773,11 @@ export class AuthService {
             token: null,
           };
         }
-  
+
         const CheckUser = await this.authRepository.findOne({
           where: { id: userId },
         });
-  
+
         if (!CheckUser) {
           return {
             status: false,
@@ -775,12 +786,12 @@ export class AuthService {
             token: null,
           };
         }
-  
+
         const checkprofile = await this.profileRepository.findOne({
           where: { user_id: CheckUser.id },
-          relations: ["wilayah"]
+          relations: ['wilayah'],
         });
-  
+
         if (!checkprofile) {
           return {
             status: false,
@@ -789,9 +800,9 @@ export class AuthService {
             token: null,
           };
         }
-  
+
         console.log('Fetched profile:', checkprofile); // Add this line for debugging
-  
+
         return {
           status: true,
           message: 'Data profile berhasil diambil',
@@ -810,17 +821,22 @@ export class AuthService {
               marital_status: checkprofile.marital_status,
               nationality: checkprofile.nationality,
               religion: checkprofile.religion,
-              city_id: parseInt(checkprofile.city_id.toString(), 10),
-              city: {
-                id: parseInt(checkprofile.wilayah.id.toString(), 10),
-                provinsi: checkprofile.wilayah.provinsi,
-                kabupaten: checkprofile.wilayah.kabupaten,
-                kecamatan: checkprofile.wilayah.kecamatan,
-                kelurahan: checkprofile.wilayah.kelurahan
-              },
+              city_id: checkprofile.city_id
+                ? parseInt(checkprofile.city_id.toString(), 10)
+                : null,
+              city: checkprofile.wilayah
+                ? {
+                    id: parseInt(checkprofile.wilayah.id.toString(), 10),
+                    provinsi: checkprofile.wilayah.provinsi,
+                    kabupaten: checkprofile.wilayah.kabupaten,
+                    kecamatan: checkprofile.wilayah.kecamatan,
+                    kelurahan: checkprofile.wilayah.kelurahan,
+                  }
+                : null,
               neighborhood_no: checkprofile.neighborhood_no,
               citizen_no: checkprofile.citizen_no,
               area_code: checkprofile.area_code,
+              responsible_for_costs: checkprofile.responsible_for_costs,
             },
             verifikasi: CheckUser.verifed === 1,
           },

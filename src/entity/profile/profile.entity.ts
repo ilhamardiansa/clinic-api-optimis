@@ -75,6 +75,9 @@ export class Profile {
   @Column({ nullable: true })
   area_code: number;
 
+  @Column({ type: 'text', nullable: true })
+  responsible_for_costs: string;
+
   @OneToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
   user: User[];
 }
