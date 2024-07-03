@@ -4,7 +4,12 @@ import { Doctor } from '../clinic/doctor.entity';
 
 @Entity('wilayah')
 export class Wilayah {
-  @PrimaryColumn({ type: 'bigint' })
+  @PrimaryColumn('bigint', {
+    transformer: {
+      from: (value: string) => parseInt(value, 10),
+      to: (value: number) => value.toString(),
+    },
+  })
   id: number;
 
   @Column({ type: 'varchar', length: 255 })
@@ -19,7 +24,7 @@ export class Wilayah {
   @Column({ type: 'varchar', length: 255 })
   kelurahan: string;
 
-  @OneToMany(() => Clinic, (clinic) => clinic.wilayah)
+  @OneToMany(() => Clinic, (clinic) => clinic.city)
   clinics: Clinic[];
 
   @OneToMany(() => Doctor, (doctor) => doctor.wilayah)

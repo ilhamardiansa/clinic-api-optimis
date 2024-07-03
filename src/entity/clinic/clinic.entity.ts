@@ -34,15 +34,17 @@ export class Clinic {
   @Column('double precision')
   longitude: number;
 
-  @Column('bigint')
+  @Column('bigint', {
+    transformer: {
+      from: (value: string) => parseInt(value, 10),
+      to: (value: number) => value.toString(),
+    },
+  })
   city_id: number;
-
-  @Column()
-  wilayah_id: number;
-
+  
   @ManyToOne(() => Wilayah, (wilayah) => wilayah.clinics)
-  @JoinColumn({ name: 'wilayah_id' })
-  wilayah: Wilayah;
+  @JoinColumn({ name: 'city_id' })
+  city: Wilayah;
 
   @OneToMany(() => Poly, (poly) => poly.clinic)
   poly: Poly[];

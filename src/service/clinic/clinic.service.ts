@@ -14,7 +14,8 @@ export class ClinicService {
 
   async createClinic(clinicDto: ClinicDto): Promise<Clinic> {
     const clinic = this.clinicRepository.create(clinicDto);
-    return this.clinicRepository.save(clinic);
+    await this.clinicRepository.save(clinic);
+    return this.clinicRepository.findOne({ where: { id: clinic.id }, relations: ['city'] });
   }
 
   async updateClinic(
@@ -24,19 +25,19 @@ export class ClinicService {
     await this.clinicRepository.update(id, updateClinicDto);
     return this.clinicRepository.findOne({
       where: { id },
-      relations: ['wilayah'],
+      relations: ['city'],
     });
   }
 
   async findOne(id: number): Promise<Clinic> {
     return this.clinicRepository.findOne({
       where: { id },
-      relations: ['wilayah'],
+      relations: ['city'],
     });
   }
 
   async findAll(): Promise<Clinic[]> {
-    return this.clinicRepository.find({ relations: ['wilayah'] });
+    return this.clinicRepository.find({ relations: ['city'] });
   }
 
   async removeClinic(id: number): Promise<void> {

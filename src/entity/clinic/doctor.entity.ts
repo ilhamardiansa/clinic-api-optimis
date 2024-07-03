@@ -43,7 +43,12 @@ export class Doctor {
   @Column({ length: 64 })
   address: string;
 
-  @Column('bigint')
+  @Column('bigint', {
+    transformer: {
+      from: (value: string) => parseInt(value, 10),
+      to: (value: number) => value.toString(),
+    },
+  })
   city_id: number;
 
   @Column({ length: 10 })

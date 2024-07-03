@@ -59,7 +59,13 @@ export class Profile {
   @Index({ unique: true })
   user_id: number;
 
-  @Column({ type: 'bigint', nullable: true })
+  @Column('bigint', {
+    transformer: {
+      from: (value: string) => parseInt(value, 10),
+      to: (value: number) => value.toString(),
+    },
+    nullable: true
+  })
   city_id: number;
 
   @ManyToOne(() => Wilayah, (wilayah) => wilayah.id, { onDelete: 'CASCADE' })

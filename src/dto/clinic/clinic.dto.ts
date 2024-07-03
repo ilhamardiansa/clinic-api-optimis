@@ -24,7 +24,4 @@ export class ClinicDto {
 
   @IsNumber()
   city_id: number;
-
-  @IsNumber()
-  wilayahId: number;
 }
