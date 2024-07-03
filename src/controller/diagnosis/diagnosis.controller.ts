@@ -56,7 +56,7 @@ export class DiagnosisController {
     } catch (error) {
       console.error('Server Error:', error);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
-        format_json(500, false, true, null, 'Server Error', error)
+        format_json(500, false, true, null, 'Server Error '+error.message, error)
       );
     }
   }
@@ -96,7 +96,7 @@ export class DiagnosisController {
     } catch (error) {
       console.error('Server Error:', error);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
-        format_json(500, false, true, null, 'Server Error', error)
+        format_json(500, false, true, null, 'Server Error '+error.message, error)
       );
     }
   }
@@ -136,7 +136,7 @@ export class DiagnosisController {
     } catch (error) {
       console.error('Server Error:', error);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
-        format_json(500, false, true, null, 'Server Error', error)
+        format_json(500, false, true, null, 'Server Error '+error.message, error)
       );
     }
   }
@@ -180,7 +180,7 @@ export class DiagnosisController {
         }
 
       } catch (error) {
-        return res.status(400).json(format_json(400, false, true, null, 'Server Error', error));
+        return res.status(400).json(format_json(400, false, true, null, 'Server Error '+error.message, error));
       }
     }
 }

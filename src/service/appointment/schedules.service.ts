@@ -123,7 +123,7 @@ export class SchedulesService {
         return {
             status: false,
             message: 'Server Error',
-            data: null
+            data: error.message
         };
     }
 }

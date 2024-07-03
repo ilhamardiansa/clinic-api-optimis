@@ -57,7 +57,7 @@ export class FeedbackController {
     } catch (error) {
       console.error('Server Error:', error);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
-        format_json(500, false, true, null, 'Server Error', error)
+        format_json(500, false, true, null, 'Server Error '+error.message, error)
       );
     }
   }
@@ -102,7 +102,7 @@ export class FeedbackController {
     } catch (error) {
       console.error('Server Error:', error);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
-        format_json(500, false, true, null, 'Server Error', error)
+        format_json(500, false, true, null, 'Server Error '+error.message, error)
       );
     }
   }

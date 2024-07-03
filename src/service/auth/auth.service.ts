@@ -591,7 +591,7 @@ export class AuthService {
     } catch (error) {
       return {
         status: false,
-        message: 'Server error',
+        message: 'Server error '+error.message,
         users: null,
         verifikasi: null,
         token: null,
@@ -787,7 +787,7 @@ export class AuthService {
     } catch (error) {
       return {
         status: false,
-        message: 'Server error',
+        message: 'Server error '+error.message,
         users: {
           id: null,
           full_name: null,
@@ -911,7 +911,7 @@ export class AuthService {
       console.error('Error fetching personal data:', error);
       return {
         status: false,
-        message: 'Server error',
+        message: 'Server error '+error.message,
         users: null,
         token: null,
       };

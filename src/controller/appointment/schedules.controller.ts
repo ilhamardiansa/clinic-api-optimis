@@ -46,7 +46,7 @@ export class ScheduleController {
         return format_json(400,false, null, null, gettallRecords.message, gettallRecords.data);
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
+      return format_json(400,false, true, null, 'Server Error '+error.message, error);
     }
   }
 
@@ -88,7 +88,7 @@ export class ScheduleController {
         return format_json(400,false, null, null, createdata.message, null);
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
+      return format_json(400,false, true, null, 'Server Error '+error.message, error);
     }
   }
 
@@ -133,7 +133,7 @@ export class ScheduleController {
         return format_json(400,false, null, null, createdata.message, null);
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
+      return format_json(400,false, true, null, 'Server Error '+error.message, error);
     }
   }
   
@@ -177,7 +177,7 @@ export class ScheduleController {
         return format_json(400,false, null, null, createdata.message, null);
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
+      return format_json(400,false, true, null, 'Server Error '+error.message, error);
     }
   }
 
@@ -225,7 +225,7 @@ export class ScheduleController {
         return format_json(400,false, null, null, createdata.message, null);
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error', error);
+      return format_json(400,false, true, null, 'Server Error '+error.message, error);
     }
   }
 
@@ -263,7 +263,7 @@ export class ScheduleController {
         return format_json(400, false, null, null, gettallRecords.message, null);
       }
     } catch (error) {
-      return format_json(400, false, true, null, 'Server Error', error);
+      return format_json(400, false, true, null, 'Server Error '+error.message, error);
     }
   }
 }

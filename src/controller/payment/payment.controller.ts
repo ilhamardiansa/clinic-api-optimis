@@ -49,7 +49,7 @@ export class paymentController {
         }
 
       } catch (error) {
-        return res.status(400).json(format_json(400, false, true, null, 'Server Error', error.message));
+        return res.status(400).json(format_json(400, false, true, null, 'Server Error '+error.message, error.message));
       }
     }
 
@@ -93,7 +93,7 @@ export class paymentController {
         }
 
       } catch (error) {
-        return res.status(400).json(format_json(400, false, true, null, 'Server Error', error));
+        return res.status(400).json(format_json(400, false, true, null, 'Server Error '+error.message, error));
       }
     }
 
@@ -137,7 +137,7 @@ export class paymentController {
           }
   
         } catch (error) {
-          return res.status(400).json(format_json(400, false, true, null, 'Server Error', error));
+          return res.status(400).json(format_json(400, false, true, null, 'Server Error '+error.message, error));
         }
       }
 
@@ -181,7 +181,7 @@ export class paymentController {
           }
   
         } catch (error) {
-          return res.status(400).json(format_json(400, false, true, null, 'Server Error', error));
+          return res.status(400).json(format_json(400, false, true, null, 'Server Error '+error.message, error));
         }
       }
 }

@@ -72,7 +72,7 @@ export class LastMedicalRecordController {
     } catch (error) {
       return res
         .status(500)
-        .json(format_json(500, false, true, null, 'Server Error', error));
+        .json(format_json(500, false, true, null, 'Server Error '+error.message, error));
     }
   }
 }
