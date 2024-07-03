@@ -460,82 +460,139 @@ export class AuthService {
     verifikasi: any;
     token: string;
   }> {
-    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+    try {
+      const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (
-      typeof extracttoken !== 'string' &&
-      'userId' in extracttoken &&
-      'verifikasi' in extracttoken
-    ) {
-      const userId = extracttoken.userId;
-      const userVerifikasi = extracttoken.verifikasi;
+      if (
+        typeof extracttoken !== 'string' &&
+        'userId' in extracttoken &&
+        'verifikasi' in extracttoken
+      ) {
+        const userId = extracttoken.userId;
+        const userVerifikasi = extracttoken.verifikasi;
 
-      if (userVerifikasi == false) {
+        if (userVerifikasi == false) {
+          return {
+            status: false,
+            message: 'Silakan verifikasi akun anda',
+            users: {
+              id: null,
+              full_name: null,
+              image: null,
+              email: null,
+              phone_number: null,
+            },
+            verifikasi: userVerifikasi,
+            token: null,
+          };
+        }
+
+        const CheckUser = await this.authRepository.findOne({
+          where: { id: userId },
+        });
+        if (!CheckUser) {
+          return {
+            status: false,
+            message: 'User tidak di temukan',
+            users: {
+              id: null,
+              full_name: null,
+              image: null,
+              email: null,
+              phone_number: null,
+            },
+            verifikasi: null, // Mengatur verifikasi ke null karena user tidak ditemukan
+            token: null,
+          };
+        }
+
+        const checkprofile = await this.profileRepository.findOne({
+          where: { user_id: CheckUser.id },
+          relations: ['wilayah'], // Menyertakan relasi 'wilayah'
+        });
+
+        if (!checkprofile) {
+          return {
+            status: false,
+            message: 'Profile tidak ditemukan',
+            users: null,
+            verifikasi: CheckUser.verifed === 1,
+            token: null,
+          };
+        }
+
+        if (updateProfile.responsible_for_costs) {
+          updateProfile.responsible_for_costs =
+            updateProfile.responsible_for_costs.toLowerCase();
+        }
+
+        Object.assign(checkprofile, updateProfile);
+
+        await this.profileRepository.save(checkprofile);
+
+        // Mengambil kembali profile yang sudah diupdate untuk memastikan semua data disertakan dalam response
+        const updatedProfile = await this.profileRepository.findOne({
+          where: { user_id: CheckUser.id },
+          relations: ['wilayah'],
+        });
+
         return {
-          status: false,
-          message: 'Silakan verifikasi akun anda',
+          status: true,
+          message: 'Data profiles berhasil di ubah',
           users: {
-            id: null,
-            full_name: null,
-            image: null,
-            email: null,
-            phone_number: null,
-          },
-          verifikasi: userVerifikasi,
-          token: null,
-        };
-      }
-
-      const CheckUser = await this.authRepository.findOne({
-        where: { id: userId },
-      });
-      if (!CheckUser) {
-        return {
-          status: false,
-          message: 'User tidak di temukan',
-          users: {
-            id: null,
-            full_name: null,
-            image: null,
-            email: null,
-            phone_number: null,
+            id: updatedProfile.id,
+            fullname: updatedProfile.fullname,
+            phone_number: updatedProfile.phone_number,
+            profil_image: updatedProfile.profil_image,
+            no_identity: updatedProfile.no_identity,
+            birth_date: updatedProfile.birth_date,
+            birth_place: updatedProfile.birth_place,
+            address: updatedProfile.address,
+            gender: updatedProfile.gender,
+            work_in: updatedProfile.work_in,
+            blood_type: updatedProfile.blood_type,
+            marital_status: updatedProfile.marital_status,
+            nationality: updatedProfile.nationality,
+            religion: updatedProfile.religion,
+            user_id: updatedProfile.user_id,
+            city_id: updatedProfile.city_id,
+            city: updatedProfile.wilayah
+              ? {
+                  id: updatedProfile.wilayah.id,
+                  provinsi: updatedProfile.wilayah.provinsi,
+                  kabupaten: updatedProfile.wilayah.kabupaten,
+                  kecamatan: updatedProfile.wilayah.kecamatan,
+                  kelurahan: updatedProfile.wilayah.kelurahan,
+                }
+              : null,
+            neighborhood_no: updatedProfile.neighborhood_no,
+            citizen_no: updatedProfile.citizen_no,
+            area_code: updatedProfile.area_code,
+            responsible_for_costs: updatedProfile.responsible_for_costs,
           },
           verifikasi: CheckUser.verifed === 1,
           token: null,
         };
+      } else {
+        return {
+          status: false,
+          message: 'Invalid Payload',
+          users: {
+            id: null,
+            full_name: null,
+            image: null,
+            email: null,
+            phone_number: null,
+          },
+          verifikasi: null,
+          token: null,
+        };
       }
-
-      const checkprofile = await this.profileRepository.findOne({
-        where: { user_id: CheckUser.id },
-      });
-
-      if (updateProfile.responsible_for_costs) {
-        updateProfile.responsible_for_costs =
-          updateProfile.responsible_for_costs.toLowerCase();
-      }
-
-      Object.assign(checkprofile, updateProfile);
-
-      await this.profileRepository.save(checkprofile);
-
-      return {
-        status: true,
-        message: 'Data profiles berhasil di ubah',
-        users: checkprofile,
-        verifikasi: CheckUser.verifed === 1,
-        token: null,
-      };
-    } else {
+    } catch (error) {
       return {
         status: false,
-        message: 'Invalid Payload',
-        users: {
-          id: null,
-          full_name: null,
-          image: null,
-          email: null,
-          phone_number: null,
-        },
+        message: 'Server error',
+        users: null,
         verifikasi: null,
         token: null,
       };
