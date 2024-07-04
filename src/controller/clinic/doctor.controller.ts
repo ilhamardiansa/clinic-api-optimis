@@ -103,15 +103,20 @@ export class DoctorController {
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'patient', 'doctor')
-  async findAll(@Query('q') query: string = '',
-  @Query('page') page: number = null,
-  @Query('limit') limit: number = null,
-  @Query('order') order: 'ASC' | 'DESC' = 'ASC',@Res() res: Response) {
+  async findAll(
+    @Query('q') query: string = '',
+    @Query('page') page: number = null,
+    @Query('limit') limit: number = null,
+    @Query('order') order: 'ASC' | 'DESC' = 'ASC',
+    @Res() res: Response,
+  ) {
     try {
-      const doctors = await this.doctorService.findAll(query,
+      const doctors = await this.doctorService.findAll(
+        query,
         page,
         limit,
-        order);
+        order,
+      );
       return res
         .status(200)
         .json(
@@ -207,39 +212,4 @@ export class DoctorController {
         );
     }
   }
-
-  // @Get(':id/with-poly-and-city')
-  // async getDoctorWithPolyAndCity(
-  //   @Param('id') id: number,
-  //   @Res() res: Response,
-  // ) {
-  //   try {
-  //     const doctor = await this.doctorService.getDoctorWithPolyAndCity(id);
-  //     return res
-  //       .status(200)
-  //       .json(
-  //         format_json(
-  //           200,
-  //           true,
-  //           null,
-  //           null,
-  //           'Doctor with poly and city retrieved successfully',
-  //           doctor,
-  //         ),
-  //       );
-  //   } catch (error) {
-  //     return res
-  //       .status(500)
-  //       .json(
-  //         format_json(
-  //           500,
-  //           false,
-  //           'Internal Server Error',
-  //           null,
-  //           'Failed to retrieve doctor with poly and city',
-  //           null,
-  //         ),
-  //       );
-  //   }
-  // }
 }

@@ -45,8 +45,8 @@ export class User {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updated_at: Date;
 
-  @OneToMany(() => Record, (record) => record.user_id)
-  record: Record[];
+  @OneToMany(() => Record, (record) => record.user)
+  records: Record[];
 
   @OneToMany(() => Review, (review) => review.user_id)
   review: Review[];

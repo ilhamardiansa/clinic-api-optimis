@@ -27,4 +27,7 @@ export class Poly {
   @ManyToOne(() => Clinic, (clinic) => clinic.poly)
   @JoinColumn({ name: 'clinic_id' })
   clinic: Clinic;
+
+  @OneToMany(() => Record, (record) => record.doctor)
+  records: Record[];
 }

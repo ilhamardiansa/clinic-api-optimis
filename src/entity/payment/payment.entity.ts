@@ -29,7 +29,7 @@ export class Payment {
   @Column()
   redeem_id: number;
 
-  @ManyToOne(() => LastRedeem, (last) => last.id)
+  @ManyToOne(() => LastRedeem, (last) => last.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'redeem_id' })
   LastRedeem: LastRedeem;
 

@@ -121,7 +121,7 @@ export class MedicalRecordController {
   @Roles('admin', 'patient', 'doctor')
   async findAll(@Res() res: Response) {
     try {
-      const records = await this.medicalRecordService.getRecords();
+      const records = await this.medicalRecordService.findAll();
       return res
         .status(200)
         .json(

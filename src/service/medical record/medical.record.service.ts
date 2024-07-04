@@ -13,45 +13,55 @@ export class MedicalRecordService {
     private medicalRecordRepository: Repository<Record>,
   ) {}
 
-  async createRecord(medicalRecordDto: MedicalRecordDto): Promise<Record> {
+  async createRecord(
+    medicalRecordDto: MedicalRecordDto,
+  ): Promise<RecordResponseDto> {
     const record = this.medicalRecordRepository.create(medicalRecordDto);
-    return this.medicalRecordRepository.save(record);
+    await this.medicalRecordRepository.save(record);
+    const savedRecord = await this.medicalRecordRepository.findOne({
+      where: { id: record.id },
+      relations: ['poly', 'clinic', 'doctor', 'user'],
+    });
+
+    return this.toRecordResponseDto(savedRecord);
   }
 
   async updateRecord(
     id: number,
     updateMedicalRecordDto: UpdateMedicalRecordDto,
-  ): Promise<Record> {
+  ): Promise<RecordResponseDto> {
     await this.medicalRecordRepository.update(id, updateMedicalRecordDto);
-    return this.medicalRecordRepository.findOne({
+    const updatedRecord = await this.medicalRecordRepository.findOne({
       where: { id },
-      relations: ['poly', 'clinic', 'doctor'],
+      relations: ['poly', 'clinic', 'doctor', 'user'],
     });
+
+    return this.toRecordResponseDto(updatedRecord);
   }
 
-  async findOne(id: number): Promise<Record> {
-    return this.medicalRecordRepository.findOne({
+  async findOne(id: number): Promise<RecordResponseDto> {
+    const record = await this.medicalRecordRepository.findOne({
       where: { id },
-      relations: ['poly', 'clinic', 'doctor'],
+      relations: ['poly', 'clinic', 'doctor', 'user'],
     });
+
+    return this.toRecordResponseDto(record);
   }
 
-  async findAll(): Promise<Record[]> {
-    return this.medicalRecordRepository.find({
-      relations: ['poly', 'clinic', 'doctor'],
+  async findAll(): Promise<RecordResponseDto[]> {
+    const records = await this.medicalRecordRepository.find({
+      relations: ['poly', 'clinic', 'doctor', 'user'],
     });
+
+    return records.map((record) => this.toRecordResponseDto(record));
   }
 
   async removeRecord(id: number): Promise<void> {
     await this.medicalRecordRepository.delete(id);
   }
 
-  async getRecords(): Promise<RecordResponseDto[]> {
-    const records = await this.medicalRecordRepository.find({
-      relations: ['poly', 'clinic', 'doctor'],
-    });
-
-    return records.map((record) => ({
+  private toRecordResponseDto(record: Record): RecordResponseDto {
+    return {
       id: record.id,
       consultation_date_time: record.consultation_date_time,
       way_to_come: record.way_to_come,
@@ -66,12 +76,16 @@ export class MedicalRecordService {
       history_of_illness: record.history_of_illness,
       solution: record.solution,
       user_id: record.user_id,
-      poly_id: record.poly.id,
-      poly: { name: record.poly.name },
-      clinic_id: record.clinic.id,
-      clinic: { clinic_name: record.clinic.clinic_name },
-      doctor_id: record.doctor.id,
-      doctor: { doctor_name: record.doctor.doctor_name },
-    }));
+      user: {
+        phone_number: record.user?.phone_number,
+        email: record.user?.email,
+      },
+      poly_id: record.poly_id,
+      poly: { name: record.poly?.name },
+      clinic_id: record.clinic_id,
+      clinic: { clinic_name: record.clinic?.clinic_name },
+      doctor_id: record.doctor_id,
+      doctor: { doctor_name: record.doctor?.doctor_name },
+    };
   }
 }

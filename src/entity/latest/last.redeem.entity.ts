@@ -9,6 +9,7 @@ import {
 import { Bank } from '../bank/bank.entity';
 import { Profile } from '../profile/profile.entity';
 import { Drug } from '../drug/drug.entity';
+import { Payment } from '../payment/payment.entity';
 @Entity()
 export class LastRedeem {
   @PrimaryGeneratedColumn()
@@ -40,4 +41,9 @@ export class LastRedeem {
 
   @OneToMany(() => Drug, (drug) => drug.redeem)
   drugs: Drug[];
+
+  @OneToMany(() => Payment, (payment) => payment.LastRedeem, {
+    cascade: ['remove'],
+  })
+  payments: Payment[];
 }

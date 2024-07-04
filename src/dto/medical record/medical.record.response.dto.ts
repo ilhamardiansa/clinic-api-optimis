@@ -52,6 +52,10 @@ export class RecordResponseDto {
   @IsInt()
   doctor_id: number;
 
+  user: {
+    phone_number: string;
+    email: string;
+  };
   poly: {
     name: string;
   };

@@ -11,6 +11,7 @@ import { MedicalRecordDrug } from 'src/entity/medical_record_drug.entity';
 import { Poly } from '../clinic/poly.entity';
 import { Doctor } from '../clinic/doctor.entity';
 import { Clinic } from '../clinic/clinic.entity';
+import { User } from '../profile/user.entity';
 
 @Entity()
 export class Record {
@@ -19,15 +20,6 @@ export class Record {
 
   @Column()
   consultation_date_time: Date;
-
-  @Column()
-  polyclinic: string;
-
-  @Column()
-  clinic_name: string;
-
-  @Column()
-  doctor_name: string;
 
   @Column()
   way_to_come: string;
@@ -74,7 +66,11 @@ export class Record {
   @Column()
   doctor_id: number;
 
-  @ManyToOne(() => Poly, (poly) => poly.id)
+  @ManyToOne(() => User, (user) => user.records)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @ManyToOne(() => Poly, (poly) => poly.records)
   @JoinColumn({ name: 'poly_id' })
   poly: Poly;
 

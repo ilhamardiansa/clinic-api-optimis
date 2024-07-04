@@ -10,6 +10,7 @@ import {
 import { Record } from '../latest/record.entity';
 import { Poly } from './poly.entity';
 import { Wilayah } from '../location/wilayah.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Doctor {
@@ -43,14 +44,6 @@ export class Doctor {
   @Column({ length: 64 })
   address: string;
 
-  @Column('bigint', {
-    transformer: {
-      from: (value: string) => parseInt(value, 10),
-      to: (value: number) => value.toString(),
-    },
-  })
-  city_id: number;
-
   @Column({ length: 10 })
   post_code: string;
 
@@ -71,6 +64,9 @@ export class Doctor {
 
   @Column('int')
   poly_id: number;
+
+  @Column('bigint')
+  wilayah_id: number;
 
   @ManyToOne(() => Poly, (poly) => poly.id)
   @JoinColumn({ name: 'poly_id' })

@@ -55,21 +55,21 @@ export class LastRedeemService {
       const userId = extracttoken.userId;
 
       const redeem = await this.lastRedeemRepository.find({
-        relations: ['bank','profile'],
+        relations: ['bank', 'profile'],
         order: { redemption_date_and_time: 'DESC' },
       });
 
       if (redeem) {
-        const result = redeem.map(redeem => ({
-            id: redeem.id,
-            redemption_date_and_time: redeem.redemption_date_and_time,
-            list_of_medications: redeem.list_of_medications,
-            total_cost: redeem.total_cost,
-            bank_transfer_name: redeem.bank_transfer_name,
-            bank_id: redeem.bank_id,
-            bank: redeem.bank,
-            user_id: redeem.user_id,
-            user: redeem.profile
+        const result = redeem.map((redeem) => ({
+          id: redeem.id,
+          redemption_date_and_time: redeem.redemption_date_and_time,
+          list_of_medications: redeem.list_of_medications,
+          total_cost: redeem.total_cost,
+          bank_transfer_name: redeem.bank_transfer_name,
+          bank_id: redeem.bank_id,
+          bank: redeem.bank,
+          user_id: redeem.user_id,
+          user: redeem.profile,
         }));
 
         return {
@@ -92,7 +92,7 @@ export class LastRedeemService {
       };
     }
   }
-s
+  s;
   async findOneRedeem(token: string, id: number) {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -100,7 +100,7 @@ s
       const userId = extracttoken.userId;
 
       const redeem = await this.lastRedeemRepository.findOne({
-        relations: ['bank','profile'],
+        relations: ['bank', 'profile'],
         where: { id: id },
       });
 
@@ -117,7 +117,7 @@ s
             bank_id: redeem.bank_id,
             bank: redeem.bank,
             user_id: redeem.user_id,
-            user: redeem.profile
+            user: redeem.profile,
           },
         };
       } else {
