@@ -140,15 +140,14 @@ export class SchedulesService {
                     user_id: userId,
                 },
                 select: ["code", "doctor_id", "approval"],
+                relations: ['doctor']
             });
 
             if (records.length > 0) {
                 return {
                     status: true,
                     message: 'Success ambil data approval token',
-                    data: {
-                        records
-                    },
+                    data: records,
                 };
             } else {
                 return {
@@ -346,10 +345,15 @@ export class SchedulesService {
       const save = await this.scheduleReposity.save(checkData);
 
       if(save){
+        const getdata = await this.scheduleReposity.findOne({
+            where: { time: updateData.time },
+            relations: ['user','doctor']
+          });
+    
         return {
             status: true,
             message: 'Data berhasil di ubah.',
-            data: save
+            data: getdata
           };
       } else {
         return {

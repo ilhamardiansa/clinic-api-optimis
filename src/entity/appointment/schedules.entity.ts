@@ -34,9 +34,11 @@ export class ScheduleEntity {
     @Column('time')
     time: string;
 
-    @OneToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
+    @ManyToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'user_id' })
     user: User[];
 
     @ManyToOne(() => Doctor, doctor => doctor.id, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'doctor_id' })
     doctor: Doctor[];
 }

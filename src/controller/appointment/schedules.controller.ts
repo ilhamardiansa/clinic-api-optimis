@@ -218,9 +218,7 @@ export class ScheduleController {
       const createdata = await this.SchedulesServices.Update(token,Schedules);
 
       if (createdata.status) {
-        return format_json(200,true, null, null, createdata.message, {
-          redeem: createdata.data,
-        });
+        return format_json(200,true, null, null, createdata.message, createdata.data);
       } else {
         return format_json(400,false, null, null, createdata.message, null);
       }

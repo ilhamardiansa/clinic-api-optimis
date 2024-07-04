@@ -69,10 +69,14 @@ export class FeedbackService {
 
       
       if (saved) {
+        const getfeedback = await this.feedbackReposity.findOne({
+          where: { id: create.id },
+          relations: ['profile']
+        });
         return {
           status: true,
           message: 'Data successfully created',
-          data: create,
+          data: getfeedback,
         };
       } else {
         return {

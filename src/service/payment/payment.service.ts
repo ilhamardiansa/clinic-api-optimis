@@ -64,26 +64,28 @@ export class PaymentService {
       const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
       if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
         const userId = extracttoken.userId;
-
+  
         const create = this.paymentRepository.create({
           payment_name: data.payment_name,
           bank_id: data.bank_id,
           redeem_id: data.redeem_id,
           status: 'Pending',
         });
-
+  
         const savedPayment = await this.paymentRepository.save(create);
-
+  
         if (savedPayment) {
+          const paymentData = await this.paymentRepository.findOne({ where: { id: create.id }, relations: ['bank', 'LastRedeem', 'LastRedeem.drugs'] });
+  
           return {
             status: true,
             message: 'Data successfully created',
-            data: create,
+            data: paymentData, // Return the actual payment data here
           };
         } else {
           return {
             status: false,
-            message: 'Data tidak bisa di gunakan',
+            message: 'Data cannot be used',
             data: null,
           };
         }
@@ -107,6 +109,7 @@ export class PaymentService {
 
       const payment = await this.paymentRepository.findOne({
         where: { id: id },
+        relations: ['bank', 'LastRedeem', 'LastRedeem.drugs']
       });
 
       if (!payment) {
@@ -124,10 +127,11 @@ export class PaymentService {
       const update = await this.paymentRepository.save(payment);
 
       if (update) {
+        const paymentget = await this.paymentRepository.findOne({ where: { id: payment.id }, relations: ['bank', 'LastRedeem', 'LastRedeem.drugs'] })
         return {
           status: true,
           message: 'Data successfully updated',
-          data: update,
+          data: paymentget,
         };
       } else {
         return {
