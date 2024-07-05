@@ -40,32 +40,32 @@ export class SchedulesService {
                         date: date,
                         doctor_id: doctor_id,
                     },
-                    select: ["time", "poly_id", "doctor_id", "date"],
-                    relations: ['poly', 'doctor', 'clinic']
+                    select: ["time","doctor_id", "date"],
+                    relations: ['doctor']
                 });
             } else if (doctor_id) {
                 records = await this.scheduleDoctorReposity.find({
                     where: {
                         doctor_id: doctor_id,
                     },
-                    select: ["time", "poly_id", "doctor_id", "date"],
-                    relations: ['poly', 'doctor', 'clinic']
+                    select: ["time","doctor_id", "date"],
+                    relations: ['doctor']
                 });
             } else if (date) {
                 records = await this.scheduleDoctorReposity.find({
                     where: {
                         date: date,
                     },
-                    select: ["time", "poly_id", "doctor_id", "date"],
-                    relations: ['poly', 'doctor', 'clinic']
+                    select: ["time","doctor_id", "date"],
+                    relations: ['doctor']
                 });
             } else {
                 records = await this.scheduleDoctorReposity.find({
                     where: {
                         date: today,
                     },
-                    select: ["time", "poly_id", "doctor_id", "date"],
-                    relations: ['poly', 'doctor', 'clinic']
+                    select: ["time","doctor_id", "date"],
+                    relations: ['doctor']
                 });
             }
 
@@ -74,29 +74,29 @@ export class SchedulesService {
                     const dateObj = new Date(record.date);
                     const dateStr = dateObj.toISOString().split('T')[0];
                     if (!acc[dateStr]) {
-                        acc[dateStr] = {
-                            date: dateStr,
-                            doctor_id: record.doctor_id,
-                            doctor: record.doctor,
-                            poly_id: record.poly_id,
-                            poly: record.poly,
-                            clinic_id: record.clinic_id,
-                            clinic: record.clinic,
-                            times: []
-                        };
+                      acc[dateStr] = {
+                        date: dateStr,
+                        doctor_id: record.doctor_id,
+                        doctor: record.doctor,
+                        poly_id: record.poly_id,
+                        poly: record.poly,
+                        clinic_id: record.clinic_id,
+                        clinic: record.clinic,
+                        times: [],
+                      };
                     }
-                    acc[dateStr].times.push(record.time);
+                    acc[dateStr].times.push(record.date);
                     return acc;
-                }, {});
+                  }, {});
 
-                const formattedRecords = Object.values(groupedRecords);
+                  const formattedRecords = Object.values(groupedRecords);
 
                 return {
                     status: true,
                     message: 'Success ambil data schedule',
                     data: {
                         status: true,
-                        data: formattedRecords
+                        data: formattedRecords[0]
                     },
                 };
             } else {

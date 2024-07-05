@@ -258,7 +258,7 @@ export class ScheduleController {
       if (gettallRecords.status) {
         return format_json(200, true, null, null, gettallRecords.message, gettallRecords.data);
       } else {
-        return format_json(400, false, null, null, gettallRecords.message, null);
+        return format_json(400, false, null, null, gettallRecords.message, gettallRecords.data);
       }
     } catch (error) {
       return format_json(400, false, true, null, 'Server Error '+error.message, error);
