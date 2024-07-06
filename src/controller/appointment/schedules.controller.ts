@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { approvaltokenDTO } from 'src/dto/appointment/approval-token.dto';
@@ -17,60 +17,74 @@ export class ScheduleController {
 
   @Get('schedules/get-approval-token')
   @UseGuards(AuthGuard('jwt'))
-  async getapprovaltoken(@Req() req: Request) {
+  async getapprovaltoken(@Res() res: Response,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
       if (!authorizationHeader) {
-        return format_json(
+        return res
+        .status(400)
+        .json(format_json(
           400,
           false,
           null,
           null,
           'Authorization header is missing',
           null,
-        );
+        ));
       }
 
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(400,false, null, null, 'Bearer token is missing', null);
+        return res
+        .status(400)
+        .json(format_json(400,false, null, null, 'Bearer token is missing', null));
       }
 
       const gettallRecords = await this.SchedulesServices.getToken(token);
 
       if (gettallRecords.status) {
-        return format_json(200,true, null, null, gettallRecords.message, gettallRecords.data);
+        return res
+        .status(201)
+        .json(format_json(200,true, null, null, gettallRecords.message, gettallRecords.data));
       } else {
-        return format_json(400,false, null, null, gettallRecords.message, gettallRecords.data);
+        return res
+        .status(400)
+        .json(format_json(400,false, null, null, gettallRecords.message, gettallRecords.data));
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error '+error.message, error);
+      return res
+        .status(400)
+        .json(format_json(400,false, true, null, 'Server Error '+error.message, error));
     }
   }
 
   @Post('schedules/approval-token/:code')
   @UseGuards(AuthGuard('jwt'))
-  async aspprovaltoken(@Param('code') code: string,@Body() approvaltokenDTO: approvaltokenDTO,@Req() req: Request) {
+  async aspprovaltoken(@Res() res: Response,@Param('code') code: string,@Body() approvaltokenDTO: approvaltokenDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
       if (!authorizationHeader) {
-        return format_json(
+        return res
+        .status(400)
+        .json(format_json(
           400,
           false,
           null,
           null,
           'Authorization header is missing',
           null,
-        );
+        ));
       }
 
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(400,false, null, null, 'Bearer token is missing', null);
+        return res
+        .status(400)
+        .json(format_json(400,false, null, null, 'Bearer token is missing', null));
       }
 
       const { doctor_id, approval } = approvaltokenDTO;
@@ -83,36 +97,46 @@ export class ScheduleController {
       const createdata = await this.SchedulesServices.ApprovalToken(token,Create,code);
 
       if (createdata.status) {
-        return format_json(200,true, null, null, createdata.message, createdata.data);
+        return res
+        .status(201)
+        .json(format_json(200,true, null, null, createdata.message, createdata.data));
       } else {
-        return format_json(400,false, null, null, createdata.message, null);
+        return res
+        .status(400)
+        .json(format_json(400,false, null, null, createdata.message, null));
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error '+error.message, error);
+      return res
+        .status(400)
+        .json(format_json(400,false, true, null, 'Server Error '+error.message, error));
     }
   }
 
   @Post('schedules/set-time')
   @UseGuards(AuthGuard('jwt'))
-  async SetTime(@Body() setTimeDTO: setTimeDTO,@Req() req: Request) {
+  async SetTime(@Res() res: Response,@Body() setTimeDTO: setTimeDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
       if (!authorizationHeader) {
-        return format_json(
+        return res
+        .status(400)
+        .json(format_json(
           400,
           false,
           null,
           null,
           'Authorization header is missing',
           null,
-        );
+        ));
       }
 
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(400,false, null, null, 'Bearer token is missing', null);
+        return res
+        .status(400)
+        .json(format_json(400,false, null, null, 'Bearer token is missing', null));
       }
 
       const { doctor_id, poly_id, clinic_id, date, time } = setTimeDTO;
@@ -128,37 +152,47 @@ export class ScheduleController {
       const createdata = await this.SchedulesServices.SetTime(token,Create);
 
       if (createdata.status) {
-        return format_json(200,true, null, null, createdata.message, createdata.data);
+        return res
+        .status(201)
+        .json(format_json(200,true, null, null, createdata.message, createdata.data));
       } else {
-        return format_json(400,false, null, null, createdata.message, null);
+        return res
+        .status(400)
+        .json(format_json(400,false, null, null, createdata.message, null));
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error '+error.message, error);
+      return res
+        .status(400)
+        .json(format_json(400,false, true, null, 'Server Error '+error.message, error));
     }
   }
   
 
   @Post('schedules')
   @UseGuards(AuthGuard('jwt'))
-  async CreateSchedule(@Body() scheduleDTO: SchedulesDTO,@Req() req: Request) {
+  async CreateSchedule(@Res() res: Response,@Body() scheduleDTO: SchedulesDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
       if (!authorizationHeader) {
-        return format_json(
+        return res
+        .status(400)
+        .json(format_json(
           400,
           false,
           null,
           null,
           'Authorization header is missing',
           null,
-        );
+        ));
       }
 
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(400,false, null, null, 'Bearer token is missing', null);
+        return res
+        .status(400)
+        .json(format_json(400,false, null, null, 'Bearer token is missing', null));
       }
 
       const { doctor_id, clinic_name, poly_name, date, time } = scheduleDTO;
@@ -172,40 +206,52 @@ export class ScheduleController {
       const createdata = await this.SchedulesServices.Create(token,Schedules,clinic_name,poly_name);
 
       if (createdata.status) {
-        return format_json(200,true, null, null, createdata.message, createdata.data);
+        return res
+        .status(201)
+        .json(format_json(200,true, null, null, createdata.message, createdata.data));
       } else {
-        return format_json(400,false, null, null, createdata.message, null);
+        return res
+        .status(400)
+        .json(format_json(400,false, null, null, createdata.message, null));
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error '+error.message, error);
+      return res
+        .status(400)
+        .json(format_json(400,false, true, null, 'Server Error '+error.message, error));
     }
   }
 
   @Put('schedules/:id')
   @UseGuards(AuthGuard('jwt'))
-  async UpdateSchedule(@Param('id') id: string, @Body() scheduleDTO: SchedulesUpdateDTO,@Req() req: Request) {
+  async UpdateSchedule(@Res() res: Response,@Param('id') id: string, @Body() scheduleDTO: SchedulesUpdateDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
       if (!authorizationHeader) {
-        return format_json(
+        return res
+        .status(400)
+        .json(format_json(
           400,
           false,
           null,
           null,
           'Authorization header is missing',
           null,
-        );
+        ));
       }
 
       if(!id) {
-        return format_json(400,false, null, null, 'Id Harus di isi', null);
+        return res
+        .status(400)
+        .json(format_json(400,false, null, null, 'Id Harus di isi', null));
       }
 
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(400,false, null, null, 'Bearer token is missing', null);
+        return res
+        .status(400)
+        .json(format_json(400,false, null, null, 'Bearer token is missing', null));
       }
 
       const { date, time } = scheduleDTO;
@@ -218,36 +264,46 @@ export class ScheduleController {
       const createdata = await this.SchedulesServices.Update(token,Schedules);
 
       if (createdata.status) {
-        return format_json(200,true, null, null, createdata.message, createdata.data);
+        return res
+        .status(201)
+        .json(format_json(200,true, null, null, createdata.message, createdata.data));
       } else {
-        return format_json(400,false, null, null, createdata.message, null);
+        return res
+        .status(400)
+        .json(format_json(400,false, null, null, createdata.message, null));
       }
     } catch (error) {
-      return format_json(400,false, true, null, 'Server Error '+error.message, error);
+      return res
+        .status(400)
+        .json(format_json(400,false, true, null, 'Server Error '+error.message, error));
     }
   }
 
   @Get('schedules/:doctor_id?/:date?')
   @UseGuards(AuthGuard('jwt'))
-  async GetSchedule(@Req() req: Request, @Param('doctor_id') doctor_id: string, @Param('date') date: string) {
+  async GetSchedule(@Res() res: Response, @Req() req: Request, @Param('doctor_id') doctor_id: string, @Param('date') date: string) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
       if (!authorizationHeader) {
-        return format_json(
+        return res
+        .status(400)
+        .json(format_json(
           400,
           false,
           null,
           null,
           'Authorization header is missing',
           null,
-        );
+        ));
       }
 
       const token = authorizationHeader.split(' ')[1];
 
       if (!token) {
-        return format_json(400, false, null, null, 'Bearer token is missing', null);
+        return res
+        .status(400)
+        .json(format_json(400, false, null, null, 'Bearer token is missing', null));
       }
 
       const doctorId = doctor_id ? parseInt(doctor_id, 10) : null;
@@ -256,12 +312,18 @@ export class ScheduleController {
       const gettallRecords = await this.SchedulesServices.getAll(token, doctorId, parsedDate);
 
       if (gettallRecords.status) {
-        return format_json(200, true, null, null, gettallRecords.message, gettallRecords.data);
+        return res
+        .status(201)
+        .json(format_json(200, true, null, null, gettallRecords.message, gettallRecords.data));
       } else {
-        return format_json(400, false, null, null, gettallRecords.message, gettallRecords.data);
+        return res
+        .status(400)
+        .json(format_json(400, false, null, null, gettallRecords.message, gettallRecords.data));
       }
     } catch (error) {
-      return format_json(400, false, true, null, 'Server Error '+error.message, error);
+      return res
+        .status(400)
+        .json(format_json(400, false, true, null, 'Server Error '+error.message, error));
     }
   }
 }

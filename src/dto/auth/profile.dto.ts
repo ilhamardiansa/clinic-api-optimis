@@ -10,8 +10,8 @@ import {
 } from 'class-validator';
 
 export class ProfileDto {
-  @IsOptional()
   @MaxLength(64)
+  @IsNotEmpty({ message: 'full name should not be empty' })
   fullname: string;
 
   @IsOptional()
@@ -19,15 +19,15 @@ export class ProfileDto {
   phone_number: string;
 
   @IsInt()
-  @IsNotEmpty({ message: 'no_identity should not be empty' })
+  @IsNotEmpty({ message: 'no identity should not be empty' })
   no_identity: string;
 
   @IsDate()
-  @IsNotEmpty({ message: 'birth_date should not be empty' })
+  @IsNotEmpty({ message: 'birth date should not be empty' })
   birth_date: Date;
 
   @IsInt()
-  @IsNotEmpty({ message: 'birth_place should not be empty' })
+  @IsNotEmpty({ message: 'birth place should not be empty' })
   birth_place: string;
 
   @IsString()
