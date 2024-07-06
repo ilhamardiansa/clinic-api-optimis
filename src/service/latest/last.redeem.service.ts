@@ -24,6 +24,7 @@ export class LastRedeemService {
       const redeem = await this.lastRedeemRepository.findOne({
         where: { user_id: userId },
         order: { redemption_date_and_time: 'DESC' },
+        relations: ['bank', 'bank.bank_category', 'profile', 'profile.wilayah', 'profile.user'],
       });
 
       if (redeem) {
@@ -55,7 +56,7 @@ export class LastRedeemService {
       const userId = extracttoken.userId;
 
       const redeem = await this.lastRedeemRepository.find({
-        relations: ['bank', 'profile'],
+        relations: ['bank', 'bank.bank_category', 'profile', 'profile.wilayah', 'profile.user'],
         order: { redemption_date_and_time: 'DESC' },
       });
 
@@ -100,7 +101,7 @@ export class LastRedeemService {
       const userId = extracttoken.userId;
 
       const redeem = await this.lastRedeemRepository.findOne({
-        relations: ['bank', 'profile'],
+        relations: ['bank', 'bank.bank_category', 'profile', 'profile.wilayah', 'profile.user'],
         where: { id: id },
       });
 
@@ -152,7 +153,10 @@ export class LastRedeemService {
       return {
         status: true,
         message: 'Redeem record created successfully',
-        data: newRedeem,
+        data: await this.lastRedeemRepository.findOne({
+          relations: ['bank', 'bank.bank_category', 'profile', 'profile.wilayah', 'profile.user'],
+          where: { id: newRedeem.id },
+        }),
       };
     } else {
       return {
@@ -182,7 +186,10 @@ export class LastRedeemService {
         return {
           status: true,
           message: 'Data sucess to create',
-          data: create,
+          data: await this.lastRedeemRepository.findOne({
+            relations: ['bank', 'bank.bank_category', 'profile', 'profile.wilayah', 'profile.user'],
+            where: { id: create.id },
+          }),
         };
       } else {
         return {

@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Unique,
+  JoinColumn,
 } from 'typeorm';
 import { Profile } from 'src/entity/profile/profile.entity';
 import { Schedule } from 'src/entity/schedule.entity';

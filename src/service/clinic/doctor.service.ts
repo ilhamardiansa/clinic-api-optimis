@@ -19,7 +19,7 @@ export class DoctorService {
   async createDoctor(doctorDto: DoctorDto): Promise<any> {
     const doctor = this.doctorRepository.create(doctorDto);
     const savedDoctor = await this.doctorRepository.save(doctor);
-    return this.mapToPostDoctorResponse(savedDoctor);
+    return this.doctorRepository.findOne({ where: { id: doctor.id }, relations: ['poly', 'poly.clinic', 'wilayah'] });
   }
 
   async updateDoctor(
@@ -27,13 +27,13 @@ export class DoctorService {
     updateDoctorDto: UpdateDoctorDto,
   ): Promise<Doctor> {
     await this.doctorRepository.update(id, updateDoctorDto);
-    return this.findOne(id);
+    return this.doctorRepository.findOne({ where: { id: id }, relations: ['poly', 'poly.clinic', 'wilayah'] });
   }
 
   async findOne(id: number): Promise<any> {
     const doctor = await this.doctorRepository.findOne({
       where: { id },
-      relations: ['poly', 'wilayah'],
+      relations: ['poly', 'poly.clinic', 'wilayah'],
     });
     return this.mapToDoctorResponse(doctor);
   }
@@ -62,7 +62,7 @@ export class DoctorService {
       order: {
         doctor_name: order,
       },
-      relations: ['poly', 'wilayah'],
+      relations: ['poly', 'poly.clinic', 'wilayah'],
     });
 
     return doctors.map((doctor) => this.mapToDoctorResponse(doctor));
@@ -90,6 +90,7 @@ export class DoctorService {
         name: doctor.poly.name,
         description: doctor.poly.description,
         clinic_id: doctor.poly.clinic_id,
+        clinic: doctor.poly.clinic,
       },
       wilayah_id: doctor.wilayah_id,
       wilayah: {

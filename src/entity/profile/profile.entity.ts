@@ -85,5 +85,6 @@ export class Profile {
   responsible_for_costs: string;
 
   @OneToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
   user: User[];
 }

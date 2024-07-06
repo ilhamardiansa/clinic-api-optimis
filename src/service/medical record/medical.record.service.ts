@@ -15,45 +15,45 @@ export class MedicalRecordService {
 
   async createRecord(
     medicalRecordDto: MedicalRecordDto,
-  ): Promise<RecordResponseDto> {
+  ) {
     const record = this.medicalRecordRepository.create(medicalRecordDto);
     await this.medicalRecordRepository.save(record);
     const savedRecord = await this.medicalRecordRepository.findOne({
       where: { id: record.id },
-      relations: ['poly', 'clinic', 'doctor', 'user'],
+      relations: ['poly', 'poly.clinic', 'clinic', 'clinic.city', 'doctor', 'doctor.poly', 'doctor.wilayah', 'user'],
     });
 
-    return this.toRecordResponseDto(savedRecord);
+    return savedRecord;
   }
 
   async updateRecord(
     id: number,
     updateMedicalRecordDto: UpdateMedicalRecordDto,
-  ): Promise<RecordResponseDto> {
+  ) {
     await this.medicalRecordRepository.update(id, updateMedicalRecordDto);
     const updatedRecord = await this.medicalRecordRepository.findOne({
       where: { id },
-      relations: ['poly', 'clinic', 'doctor', 'user'],
+      relations: ['poly', 'poly.clinic', 'clinic', 'clinic.city', 'doctor', 'doctor.poly', 'doctor.wilayah', 'user'],
     });
 
-    return this.toRecordResponseDto(updatedRecord);
+    return updatedRecord;
   }
 
-  async findOne(id: number): Promise<RecordResponseDto> {
+  async findOne(id: number) {
     const record = await this.medicalRecordRepository.findOne({
       where: { id },
-      relations: ['poly', 'clinic', 'doctor', 'user'],
+      relations: ['poly', 'poly.clinic', 'clinic', 'clinic.city', 'doctor', 'doctor.poly', 'doctor.wilayah', 'user'],
     });
 
-    return this.toRecordResponseDto(record);
+    return record;
   }
 
-  async findAll(): Promise<RecordResponseDto[]> {
+  async findAll() {
     const records = await this.medicalRecordRepository.find({
-      relations: ['poly', 'clinic', 'doctor', 'user'],
+      relations: ['poly', 'poly.clinic', 'clinic', 'clinic.city', 'doctor', 'doctor.poly', 'doctor.wilayah', 'user'],
     });
 
-    return records.map((record) => this.toRecordResponseDto(record));
+    return records;
   }
 
   async removeRecord(id: number): Promise<void> {

@@ -14,7 +14,8 @@ export class BankService {
 
   async createBank(bankDto: BankDto): Promise<Bank> {
     const bank = this.bankRepository.create(bankDto);
-    return this.bankRepository.save(bank);
+    await this.bankRepository.save(bank);
+    return this.bankRepository.findOne({ where: { id: bank.id }, relations: ['bank_category'] });
   }
 
   async updateBank(

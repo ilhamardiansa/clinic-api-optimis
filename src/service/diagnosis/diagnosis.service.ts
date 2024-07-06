@@ -19,7 +19,7 @@ export class DiagnosisService {
       const userId = extracttoken.userId;
 
       const diagnosis = await this.diagnosisReposity.find({
-        relations: ['profile'],
+        relations: ['profile', 'profile.wilayah', 'profile.user'],
         where: { user_id: userId }
       });
 
@@ -72,7 +72,7 @@ export class DiagnosisService {
         return {
           status: true,
           message: 'Data successfully created',
-          data: create,
+          data: await this.diagnosisReposity.findOne({ where: { id: create.id }, relations: ['profile', 'profile.wilayah', 'profile.user'] }),
         };
       } else {
         return {
@@ -102,7 +102,7 @@ async update(token: string, id: number, data: DiagnosisDTO) {
 
             const diagnosis = await this.diagnosisReposity.findOne({
                 where: { id: id },
-                relations: ['profile']
+                relations: ['profile', 'profile.wilayah', 'profile.user'],
             });
 
             if (!diagnosis) {

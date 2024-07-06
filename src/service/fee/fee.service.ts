@@ -17,21 +17,21 @@ export class FeeService {
     await this.feeRepository.save(fee);
     return this.feeRepository.findOne({
       where: { id: fee.id },
-      relations: ['clinic'],
+      relations: ['clinic', 'clinic.city']
     });
   }
 
   async updateFee(id: number, updateFeeDto: UpdateFeeDto): Promise<Fee> {
     await this.feeRepository.update(id, updateFeeDto);
-    return this.feeRepository.findOne({ where: { id }, relations: ['clinic'] });
+    return this.feeRepository.findOne({ where: { id },  relations: ['clinic', 'clinic.city'] });
   }
 
   async findOne(id: number): Promise<Fee> {
-    return this.feeRepository.findOne({ where: { id }, relations: ['clinic'] });
+    return this.feeRepository.findOne({ where: { id },  relations: ['clinic', 'clinic.city'] });
   }
 
   async findAll(): Promise<Fee[]> {
-    return this.feeRepository.find({ relations: ['clinic'] });
+    return this.feeRepository.find({  relations: ['clinic', 'clinic.city'] });
   }
 
   async removeFee(id: number): Promise<void> {

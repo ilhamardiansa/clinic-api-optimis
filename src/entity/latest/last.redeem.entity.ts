@@ -35,6 +35,7 @@ export class LastRedeem {
 
   @Column()
   user_id: number;
+  
   @ManyToOne(() => Profile, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
   profile: Profile;

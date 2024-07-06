@@ -15,21 +15,21 @@ export class PolyService {
   async createPoly(polyDto: PolyDto): Promise<Poly> {
     const poly = this.polyRepository.create(polyDto);
     await this.polyRepository.save(poly);
-    return this.polyRepository.findOne({ where: { id: poly.id }, relations: ['clinic'] });
+    return this.polyRepository.findOne({ where: { id: poly.id }, relations: ['clinic', 'clinic.city'] });
   }
 
   async updatePoly(id: number, updatePolyDto: UpdatePolyDto): Promise<Poly> {
     await this.polyRepository.update(id, updatePolyDto);
     return this.polyRepository.findOne({
       where: { id },
-      relations: ['clinic'],
+      relations: ['clinic', 'clinic.city']
     });
   }
 
   async findOne(id: number): Promise<Poly> {
     const poly = await this.polyRepository.findOne({
       where: { id },
-      relations: ['clinic'],
+      relations: ['clinic', 'clinic.city']
     });
 
     if (!poly) {
@@ -39,7 +39,7 @@ export class PolyService {
   }
 
   async findAll(): Promise<Poly[]> {
-    return this.polyRepository.find({ relations: ['clinic'] });
+    return this.polyRepository.find({ relations: ['clinic', 'clinic.city'] });
   }
 
   async removePoly(id: number): Promise<void> {

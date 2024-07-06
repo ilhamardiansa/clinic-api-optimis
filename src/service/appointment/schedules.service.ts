@@ -41,7 +41,7 @@ export class SchedulesService {
               doctor_id: doctor_id,
             },
             select: ['time', 'doctor_id', 'date'],
-            relations: ['doctor'],
+            relations: ['doctor','doctor.poly', 'doctor.wilayah'],
           });
         } else if (doctor_id) {
           records = await this.scheduleDoctorReposity.find({
@@ -49,7 +49,7 @@ export class SchedulesService {
               doctor_id: doctor_id,
             },
             select: ['time', 'doctor_id', 'date'],
-            relations: ['doctor'],
+            relations: ['doctor','doctor.poly', 'doctor.wilayah'],
           });
         } else if (date) {
           records = await this.scheduleDoctorReposity.find({
@@ -57,7 +57,7 @@ export class SchedulesService {
               date: date,
             },
             select: ['time', 'doctor_id', 'date'],
-            relations: ['doctor'],
+            relations: ['doctor','doctor.poly', 'doctor.wilayah'],
           });
         } else {
           records = await this.scheduleDoctorReposity.find({
@@ -65,7 +65,7 @@ export class SchedulesService {
               date: today,
             },
             select: ['time', 'doctor_id', 'date'],
-            relations: ['doctor'],
+            relations: ['doctor','doctor.poly', 'doctor.wilayah'],
           });
         }
 
@@ -140,7 +140,7 @@ export class SchedulesService {
             user_id: userId,
           },
           select: ['code', 'doctor_id', 'approval'],
-          relations: ['doctor'],
+          relations: ['doctor','doctor.poly', 'doctor.wilayah'],
         });
 
         if (records.length > 0) {
@@ -225,6 +225,7 @@ export class SchedulesService {
 
         const get_profile_doctor = await this.doctorRepository.findOne({
           where: { id: createData.doctor_id },
+          relations: ['poly', 'wilayah'],
         });
 
         if (save) {
@@ -292,6 +293,7 @@ export class SchedulesService {
 
       const get_profile_doctor = this.profileRepository.findOne({
         where: { user_id: save.id },
+        relations: ['wilayah', 'user'],
       });
 
       if (save) {
@@ -351,7 +353,7 @@ export class SchedulesService {
       if (save) {
         const getdata = await this.scheduleReposity.findOne({
           where: { time: updateData.time },
-          relations: ['user', 'doctor'],
+          relations: ['user', 'doctor', 'doctor.poly', 'doctor.wilayah'],
         });
 
         return {

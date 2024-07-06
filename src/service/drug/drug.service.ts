@@ -19,7 +19,7 @@ export class DrugService {
   ): Promise<Drug | undefined> {
     return this.drugRepository.findOne({
       where: { drug_name, company_name },
-      relations: ['category','redeem'],
+      relations: ['category','redeem','redeem.bank','redeem.profile'],
     });
   }
 
@@ -43,26 +43,26 @@ export class DrugService {
     }
     const drug = this.drugRepository.create(drugDto);
     await this.drugRepository.save(drug);
-    return this.drugRepository.findOne({ where: { id: drug.id }, relations: ['category','redeem'] });
+    return this.drugRepository.findOne({ where: { id: drug.id }, relations: ['category','redeem','redeem.bank','redeem.profile'], });
   }
 
   async updateDrug(id: number, updateDrugDto: UpdateDrugDto): Promise<Drug> {
     await this.drugRepository.update(id, { ...updateDrugDto });
     return this.drugRepository.findOne({
       where: { id },
-      relations: ['category','redeem'],
+      relations: ['category','redeem','redeem.bank','redeem.profile'],
     });
   }
 
   async findOne(id: number): Promise<Drug> {
     return this.drugRepository.findOne({
       where: { id },
-      relations: ['category','redeem'],
+      relations: ['category','redeem','redeem.bank','redeem.profile'],
     });
   }
 
   async findAll(): Promise<Drug[]> {
-    return this.drugRepository.find({ relations: ['category','redeem'] });
+    return this.drugRepository.find({ relations: ['category','redeem','redeem.bank','redeem.profile'], });
   }
 
   async removeDrug(id: number): Promise<void> {
