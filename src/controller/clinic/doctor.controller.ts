@@ -29,8 +29,12 @@ export class DoctorController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
+<<<<<<< HEAD
   @Roles('admin')
   @UsePipes(CustomValidationPipe)
+=======
+  @Roles('admin', 'manager', 'operator')
+>>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async create(@Body() doctorDto: DoctorDto, @Res() res: Response) {
     try {
       const createdDoctor = await this.doctorService.createDoctor(doctorDto);
@@ -64,8 +68,12 @@ export class DoctorController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
+<<<<<<< HEAD
   @Roles('admin')
   @UsePipes(CustomValidationPipe)
+=======
+  @Roles('admin', 'manager', 'operator')
+>>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async update(
     @Param('id') id: string,
     @Body() updateDoctorDto: UpdateDoctorDto,
@@ -106,7 +114,7 @@ export class DoctorController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'patient', 'doctor')
+  @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
   async findAll(
     @Query('q') query: string = '',
     @Query('page') page: number = null,
@@ -151,7 +159,7 @@ export class DoctorController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'patient', 'doctor')
+  @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const doctor = await this.doctorService.findOne(+id);
@@ -185,7 +193,7 @@ export class DoctorController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'manager', 'operator')
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       await this.doctorService.removeDoctor(+id);

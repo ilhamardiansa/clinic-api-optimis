@@ -15,18 +15,24 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { format_json } from 'src/env';
+import { RolesGuard } from 'src/middleware/role.guard';
+import { Roles } from 'src/middleware/role.decorator';
 import { CategoryDto } from 'src/dto/category/category.dto';
 import { UpdateCategoryDto } from 'src/dto/category/update.category.dto';
 import { CategoryService } from 'src/service/category.service';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/drug-categories')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
+<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
+=======
+  @Roles('admin', 'manager', 'operator')
+>>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async create(@Body() categoryDto: CategoryDto, @Res() res: Response) {
     try {
       const createdCategory =
@@ -62,7 +68,11 @@ export class CategoryController {
   }
 
   @Put(':id')
+<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
+=======
+  @Roles('admin', 'manager', 'operator')
+>>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -104,6 +114,7 @@ export class CategoryController {
   }
 
   @Get()
+  @Roles('admin', 'manager', 'operator')
   async findAll(@Res() res: Response) {
     try {
       const categories = await this.categoryService.findAll();
@@ -136,6 +147,7 @@ export class CategoryController {
   }
 
   @Get(':id')
+  @Roles('admin', 'manager', 'operator')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const category = await this.categoryService.findOne(+id);
@@ -182,6 +194,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @Roles('admin', 'manager', 'operator')
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       await this.categoryService.removeCategory(+id);

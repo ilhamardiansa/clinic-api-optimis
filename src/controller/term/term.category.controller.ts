@@ -15,13 +15,20 @@ import { format_json } from 'src/env';
 import { TermCategoryDto } from 'src/dto/term/term.category.dto';
 import { UpdateTermCategoryDto } from 'src/dto/term/update.term.category.dto';
 import { TermCategoryService } from 'src/service/term/term.category.service';
+<<<<<<< HEAD
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
+=======
+import { Roles } from 'src/middleware/role.decorator';
+import { RolesGuard } from 'src/middleware/role.guard';
+>>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
 
 @Controller('api/term-categories')
+@UseGuards(RolesGuard)
 export class TermCategoryController {
   constructor(private readonly termCategoryService: TermCategoryService) {}
 
   @Post()
+  @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
   async create(@Body() termCategoryDto: TermCategoryDto) {
@@ -52,6 +59,7 @@ export class TermCategoryController {
   }
 
   @Put(':id')
+  @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
   async update(
@@ -88,6 +96,7 @@ export class TermCategoryController {
   }
 
   @Get()
+  @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
   async findAll() {
     try {
@@ -116,6 +125,7 @@ export class TermCategoryController {
   }
 
   @Get(':id')
+  @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
   async findOne(@Param('id') id: string) {
     try {
@@ -144,6 +154,7 @@ export class TermCategoryController {
   }
 
   @Delete(':id')
+  @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
   async remove(@Param('id') id: string) {
     try {

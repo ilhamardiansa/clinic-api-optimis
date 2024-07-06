@@ -8,21 +8,36 @@ import {
   Param,
   Req,
   Res,
+<<<<<<< HEAD
   UsePipes,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
+=======
+  UseGuards,
+} from '@nestjs/common';
+import { Request, Response } from 'express';
+import { format_json } from 'src/env';
+>>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
 import { FeeDto } from 'src/dto/fee/fee.dto';
 import { UpdateFeeDto } from 'src/dto/fee/update.fee.dto';
-import { format_json } from 'src/env';
 import { FeeService } from 'src/service/fee/fee.service';
+import { Roles } from 'src/middleware/role.decorator';
+import { RolesGuard } from 'src/middleware/role.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('api/fees')
+@UseGuards(RolesGuard)
 export class FeeController {
   constructor(private readonly feeService: FeeService) {}
 
   @Post()
+<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
+=======
+  @Roles('admin', 'manager', 'operator')
+  @UseGuards(AuthGuard('jwt'))
+>>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async create(
     @Body() feeDto: FeeDto,
     @Req() req: Request,
@@ -59,7 +74,12 @@ export class FeeController {
   }
 
   @Put(':id')
+<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
+=======
+  @Roles('admin', 'manager', 'operator')
+  @UseGuards(AuthGuard('jwt'))
+>>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async update(
     @Param('id') id: string,
     @Body() updateFeeDto: UpdateFeeDto,
@@ -104,6 +124,8 @@ export class FeeController {
   }
 
   @Get()
+  @Roles('admin', 'manager', 'operator')
+  @UseGuards(AuthGuard('jwt'))
   async findAll(@Req() req: Request, @Res() res: Response) {
     try {
       const fees = await this.feeService.findAll();
@@ -136,6 +158,8 @@ export class FeeController {
   }
 
   @Get(':id')
+  @Roles('admin', 'manager', 'operator')
+  @UseGuards(AuthGuard('jwt'))
   async findOne(
     @Param('id') id: string,
     @Req() req: Request,
@@ -170,6 +194,8 @@ export class FeeController {
   }
 
   @Delete(':id')
+  @Roles('admin', 'manager', 'operator')
+  @UseGuards(AuthGuard('jwt'))
   async remove(
     @Param('id') id: string,
     @Req() req: Request,
