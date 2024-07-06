@@ -10,10 +10,10 @@ export class mailService {
       from: 'Founder DusunWEB <founder.dusunweb@gmail.com>',
       to: email,
       subject: subjek,
-      template: './mailer', // Path ke template Anda, sesuaikan sesuai kebutuhan
+      template: './mailer',
       context: {
         name: nama,
-        otp: otp.toString().split(''), // Ubah OTP menjadi array digit
+        otp: otp.toString().split(''),
       },
     });
   }

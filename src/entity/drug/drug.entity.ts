@@ -4,9 +4,11 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Category } from '../category.entity';
 import { LastRedeem } from '../latest/last.redeem.entity';
+import { PaymentDetails } from '../payment/payment.details.entity';
 
 @Entity()
 export class Drug {
@@ -62,4 +64,7 @@ export class Drug {
 
   @Column()
   redeem_id: number;
+
+  @OneToMany(() => PaymentDetails, (paymentDetails) => paymentDetails.drug)
+  paymentDetails: PaymentDetails[];
 }

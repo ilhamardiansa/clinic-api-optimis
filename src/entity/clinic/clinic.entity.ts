@@ -10,6 +10,7 @@ import { Wilayah } from '../location/wilayah.entity';
 import { Poly } from './poly.entity';
 import { Record } from 'src/entity/latest/record.entity';
 import { Room } from 'src/entity/room.entity';
+import { Fee } from '../fee/fee.entity';
 
 @Entity()
 export class Clinic {
@@ -41,7 +42,7 @@ export class Clinic {
     },
   })
   city_id: number;
-  
+
   @ManyToOne(() => Wilayah, (wilayah) => wilayah.clinics)
   @JoinColumn({ name: 'city_id' })
   city: Wilayah;
@@ -51,4 +52,7 @@ export class Clinic {
 
   @OneToMany(() => Record, (record) => record.clinic)
   records: Record[];
+
+  @OneToMany(() => Fee, (fee) => fee.clinic)
+  fees: Fee[];
 }

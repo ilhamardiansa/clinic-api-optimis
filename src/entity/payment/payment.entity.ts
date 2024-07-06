@@ -8,8 +8,10 @@ import {
   OneToOne,
   JoinColumn,
   ManyToMany,
+  OneToMany,
 } from 'typeorm';
 import { LastRedeem } from '../latest/last.redeem.entity';
+import { PaymentDetails } from './payment.details.entity';
 
 export enum paymentStatus {
   SUCCESS = 'success',
@@ -39,6 +41,9 @@ export class Payment {
   @ManyToOne(() => Bank, (banks) => banks.id)
   @JoinColumn({ name: 'bank_id' })
   bank: Bank;
+
+  @OneToMany(() => PaymentDetails, (paymentDetails) => paymentDetails.payment)
+  paymentDetails: PaymentDetails[];
 
   @Column()
   status: string;

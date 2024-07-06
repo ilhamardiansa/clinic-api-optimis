@@ -501,14 +501,14 @@ export class AuthService {
               email: null,
               phone_number: null,
             },
-            verifikasi: null, // Mengatur verifikasi ke null karena user tidak ditemukan
+            verifikasi: null,
             token: null,
           };
         }
 
         const checkprofile = await this.profileRepository.findOne({
           where: { user_id: CheckUser.id },
-          relations: ['wilayah'], // Menyertakan relasi 'wilayah'
+          relations: ['wilayah'],
         });
 
         if (!checkprofile) {
@@ -530,7 +530,6 @@ export class AuthService {
 
         await this.profileRepository.save(checkprofile);
 
-        // Mengambil kembali profile yang sudah diupdate untuk memastikan semua data disertakan dalam response
         const updatedProfile = await this.profileRepository.findOne({
           where: { user_id: CheckUser.id },
           relations: ['wilayah'],
@@ -591,7 +590,7 @@ export class AuthService {
     } catch (error) {
       return {
         status: false,
-        message: 'Server error '+error.message,
+        message: 'Server error ' + error.message,
         users: null,
         verifikasi: null,
         token: null,
@@ -787,7 +786,7 @@ export class AuthService {
     } catch (error) {
       return {
         status: false,
-        message: 'Server error '+error.message,
+        message: 'Server error ' + error.message,
         users: {
           id: null,
           full_name: null,
@@ -858,7 +857,7 @@ export class AuthService {
           };
         }
 
-        console.log('Fetched profile:', checkprofile); // Add this line for debugging
+        console.log('Fetched profile:', checkprofile);
 
         return {
           status: true,
@@ -911,7 +910,7 @@ export class AuthService {
       console.error('Error fetching personal data:', error);
       return {
         status: false,
-        message: 'Server error '+error.message,
+        message: 'Server error ' + error.message,
         users: null,
         token: null,
       };
