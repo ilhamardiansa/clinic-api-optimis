@@ -11,18 +11,20 @@ import {
   Param,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { LastRedeemService } from 'src/service/latest/last.redeem.service';
 import { format_json } from 'src/env';
-import { Response } from 'express';
 import { CreateDTO } from 'src/dto/redeem/create.dto';
+import { RolesGuard } from 'src/middleware/role.guard';
+import { Roles } from 'src/middleware/role.decorator';
 
 @Controller('api/users')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class RedeemController {
   constructor(private readonly lastRedeemService: LastRedeemService) {}
 
   @Get('redeem')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async getRedeem(@Req() req: Request, @Res() res: Response) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -89,7 +91,7 @@ export class RedeemController {
   }
 
   @Get('redeem/:id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async findOneRedeem(
     @Param('id') id: number,
     @Req() req: Request,
@@ -160,7 +162,7 @@ export class RedeemController {
   }
 
   @Post('redeem')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async createRedeem(
     @Body() createDTO: CreateDTO,
     @Req() req: Request,
@@ -241,7 +243,7 @@ export class RedeemController {
   }
 
   @Put('redeem/:id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async UpdateRedeem(
     @Param('id') id: number,
     @Body() createDTO: CreateDTO,
@@ -324,7 +326,7 @@ export class RedeemController {
   }
 
   @Delete('redeem/:id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async deleteRedeem(
     @Param('id') id: number,
     @Req() req: Request,

@@ -7,7 +7,6 @@ import {
   Body,
   Param,
   UseGuards,
-  HttpException,
   Res,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -16,13 +15,16 @@ import { format_json } from 'src/env';
 import { BankDto } from 'src/dto/bank/bank.dto';
 import { UpdateBankDto } from 'src/dto/bank/update.bank.dto';
 import { BankService } from 'src/service/bank/bank.service';
+import { RolesGuard } from 'src/middleware/role.guard';
+import { Roles } from 'src/middleware/role.decorator';
 
 @Controller('api/banks')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class BankController {
   constructor(private readonly bankService: BankService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async create(@Body() bankDto: BankDto, @Res() res: Response) {
     try {
       const createdBank = await this.bankService.createBank(bankDto);
@@ -55,7 +57,7 @@ export class BankController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async update(
     @Param('id') id: string,
     @Body() updateBankDto: UpdateBankDto,
@@ -99,7 +101,7 @@ export class BankController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async findAll(@Res() res: Response) {
     try {
       const banks = await this.bankService.findAll();
@@ -132,7 +134,7 @@ export class BankController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const bank = await this.bankService.findOne(+id);
@@ -172,7 +174,7 @@ export class BankController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       const deletedBank = await this.bankService.removeBank(+id);

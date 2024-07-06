@@ -13,7 +13,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { format_json } from 'src/env';
 import { RolesGuard } from 'src/middleware/role.guard';
-import { Roles } from 'src/middleware/role.decorator';
 import { MedicalRecordService } from 'src/service/medical record/medical.record.service';
 import { MedicalRecordDto } from 'src/dto/medical record/medical.record.dto';
 import { UpdateMedicalRecordDto } from 'src/dto/medical record/update.medical.record.dto';
@@ -25,7 +24,6 @@ export class MedicalRecordController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
   async create(
     @Body() medicalRecordDto: MedicalRecordDto,
     @Res() res: Response,
@@ -63,7 +61,6 @@ export class MedicalRecordController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
   async update(
     @Param('id') id: string,
     @Body() updateMedicalRecordDto: UpdateMedicalRecordDto,
@@ -118,7 +115,6 @@ export class MedicalRecordController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'patient', 'doctor')
   async findAll(@Res() res: Response) {
     try {
       const records = await this.medicalRecordService.findAll();
@@ -152,7 +148,6 @@ export class MedicalRecordController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'patient', 'doctor')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const record = await this.medicalRecordService.findOne(+id);
@@ -200,7 +195,6 @@ export class MedicalRecordController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       const record = await this.medicalRecordService.findOne(+id);

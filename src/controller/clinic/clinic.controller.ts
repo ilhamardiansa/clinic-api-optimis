@@ -26,7 +26,7 @@ export class ClinicController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'manager', 'operator')
   async create(
     @Body() clinicDto: ClinicDto,
     @Req() req: Request,
@@ -64,7 +64,7 @@ export class ClinicController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'manager', 'operator')
   async update(
     @Param('id') id: string,
     @Body() updateClinicDto: UpdateClinicDto,
@@ -113,7 +113,7 @@ export class ClinicController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'patient', 'doctor')
+  @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
   async findAll(@Req() req: Request, @Res() res: Response) {
     try {
       const clinics = await this.clinicService.findAll();
@@ -147,7 +147,7 @@ export class ClinicController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'patient', 'doctor')
+  @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
   async findOne(
     @Param('id') id: string,
     @Req() req: Request,
@@ -190,7 +190,7 @@ export class ClinicController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'manager', 'operator')
   async remove(
     @Param('id') id: string,
     @Req() req: Request,

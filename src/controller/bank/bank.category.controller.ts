@@ -15,13 +15,16 @@ import { BankCategoryDto } from 'src/dto/bank/bank.category.dto';
 import { UpdateBankCategoryDto } from 'src/dto/bank/update.bank.category.dto';
 import { format_json } from 'src/env';
 import { BankCategoryService } from 'src/service/bank/bank.category.service';
+import { RolesGuard } from 'src/middleware/role.guard';
+import { Roles } from 'src/middleware/role.decorator';
 
 @Controller('api/bank-categories')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class BankCategoryController {
   constructor(private readonly bankCategoryService: BankCategoryService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async create(@Body() bankCategoryDto: BankCategoryDto, @Res() res: Response) {
     try {
       const createdBankCategory =
@@ -55,7 +58,7 @@ export class BankCategoryController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async update(
     @Param('id') id: string,
     @Body() updateBankCategoryDto: UpdateBankCategoryDto,
@@ -110,7 +113,7 @@ export class BankCategoryController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async findAll(@Res() res: Response) {
     try {
       const bankCategories = await this.bankCategoryService.findAll();
@@ -143,7 +146,7 @@ export class BankCategoryController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const bankCategory = await this.bankCategoryService.findOne(+id);
@@ -190,7 +193,7 @@ export class BankCategoryController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'manager', 'operator')
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       const isDeleted = await this.bankCategoryService.removeBankCategory(+id);

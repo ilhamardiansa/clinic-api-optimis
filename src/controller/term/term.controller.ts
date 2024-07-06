@@ -8,6 +8,7 @@ import {
   Param,
   Res,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { TermDto } from 'src/dto/term/term.dto';
@@ -15,12 +16,16 @@ import { TicketDto } from 'src/dto/term/ticket.dto';
 import { UpdateTermDto } from 'src/dto/term/update.term.dto';
 import { format_json } from 'src/env';
 import { TermService } from 'src/service/term/term.service';
+import { Roles } from 'src/middleware/role.decorator';
+import { RolesGuard } from 'src/middleware/role.guard';
 
 @Controller('api/terms')
+@UseGuards(RolesGuard)
 export class TermController {
   constructor(private readonly termService: TermService) {}
 
   @Get('tickets')
+  @Roles('admin', 'manager', 'operator')
   async findAllTickets(@Res() res: Response) {
     try {
       const tickets = await this.termService.findAllTickets();
@@ -53,6 +58,7 @@ export class TermController {
   }
 
   @Post()
+  @Roles('admin', 'manager', 'operator')
   async create(@Body() termDto: TermDto, @Res() res: Response) {
     try {
       const createdTerm = await this.termService.createTerm(termDto);
@@ -85,6 +91,7 @@ export class TermController {
   }
 
   @Put(':id')
+  @Roles('admin', 'manager', 'operator')
   async update(
     @Param('id') id: string,
     @Body() updateTermDto: UpdateTermDto,
@@ -128,6 +135,7 @@ export class TermController {
   }
 
   @Get()
+  @Roles('admin', 'manager', 'operator')
   async findAll(@Res() res: Response) {
     try {
       const terms = await this.termService.findAll();
@@ -160,6 +168,7 @@ export class TermController {
   }
 
   @Get(':id')
+  @Roles('admin', 'manager', 'operator')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const term = await this.termService.findOne(+id);
@@ -199,6 +208,7 @@ export class TermController {
   }
 
   @Delete(':id')
+  @Roles('admin', 'manager', 'operator')
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       const term = await this.termService.findOne(+id);
@@ -232,6 +242,7 @@ export class TermController {
   }
 
   @Post('send-a-ticket')
+  @Roles('admin')
   async sendTicket(@Body() ticketDto: TicketDto, @Res() res: Response) {
     try {
       const userId = null;
