@@ -61,10 +61,20 @@ export class Profile {
 
   @Column('bigint', {
     transformer: {
-      from: (value: string) => parseInt(value, 10),
-      to: (value: number) => value.toString(),
+      from: (value: string | null) => {
+        if (value === null || value === undefined) {
+          return null; 
+        }
+        return parseInt(value, 10);
+      },
+      to: (value: number | null) => {
+        if (value === null || value === undefined) {
+          return null;
+        }
+        return value.toString();
+      },
     },
-    nullable: true
+    nullable: true,
   })
   city_id: number;
 

@@ -877,12 +877,10 @@ export class AuthService {
               marital_status: checkprofile.marital_status,
               nationality: checkprofile.nationality,
               religion: checkprofile.religion,
-              city_id: checkprofile.city_id
-                ? parseInt(checkprofile.city_id.toString(), 10)
-                : null,
+              city_id: checkprofile.city_id,
               city: checkprofile.wilayah
                 ? {
-                    id: parseInt(checkprofile.wilayah.id.toString(), 10),
+                    id: checkprofile.wilayah.id,
                     provinsi: checkprofile.wilayah.provinsi,
                     kabupaten: checkprofile.wilayah.kabupaten,
                     kecamatan: checkprofile.wilayah.kecamatan,
