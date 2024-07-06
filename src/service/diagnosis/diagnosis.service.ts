@@ -140,10 +140,9 @@ async update(token: string, id: number, data: DiagnosisDTO) {
             };
         }
     } catch (error) {
-        console.error('Error updating diagnosis:', error);
         return {
             status: false,
-            message: 'An error occurred while updating the diagnosis',
+            message: error.message,
             data: null,
         };
     }

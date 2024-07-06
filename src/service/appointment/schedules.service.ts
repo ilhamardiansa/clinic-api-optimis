@@ -122,7 +122,7 @@ export class SchedulesService {
     } catch (error) {
       return {
         status: false,
-        message: 'Server Error',
+        message: error.message,
         data: error.message,
       };
     }
@@ -164,10 +164,9 @@ export class SchedulesService {
         };
       }
     } catch (error) {
-      console.error('Error in getToken method:', error);
       return {
         status: false,
-        message: 'Kesalahan!!, error to retrieve data.',
+        message: error.message,
         data: null,
       };
     }
@@ -256,7 +255,7 @@ export class SchedulesService {
       console.error('Error in Create method:', error);
       return {
         status: false,
-        message: 'Kesalahan!!, error to create new data.',
+        message: error.message,
         data: null,
       };
     }
