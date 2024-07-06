@@ -1,4 +1,4 @@
-import { IsInt, IsDate, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsBoolean } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class approvaltokenDTO {
@@ -6,6 +6,7 @@ export class approvaltokenDTO {
     @IsInt()
     doctor_id: number;
 
-    @IsString()
+    @IsNotEmpty({ message: 'Tidak boleh kosong' })
+    @IsBoolean()
     approval: boolean;
 }

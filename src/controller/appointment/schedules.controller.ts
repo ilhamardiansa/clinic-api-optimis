@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { approvaltokenDTO } from 'src/dto/appointment/approval-token.dto';
@@ -10,6 +10,8 @@ import { format_json } from 'src/env';
 import { SchedulesService } from 'src/service/appointment/schedules.service';
 import { Response } from 'express';
 import { Roles } from 'src/middleware/role.decorator';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
+
 
 @Controller('api')
 export class ScheduleController {
@@ -62,6 +64,7 @@ export class ScheduleController {
 
   @Post('schedules/approval-token/:code')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async aspprovaltoken(@Res() res: Response,@Param('code') code: string,@Body() approvaltokenDTO: approvaltokenDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
