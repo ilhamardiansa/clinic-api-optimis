@@ -59,7 +59,7 @@ export class ClinicController {
             'Bad Request',
             null,
             'Failed to create clinic',
-            error,
+            error.message,
           ),
         );
     }
@@ -109,7 +109,7 @@ export class ClinicController {
             'Bad Request',
             null,
             'Failed to update clinic',
-            error,
+            error.message,
           ),
         );
     }
@@ -143,7 +143,7 @@ export class ClinicController {
             'Internal Server Error',
             null,
             'Failed to retrieve clinics',
-            error,
+            error.message,
           ),
         );
     }
@@ -186,7 +186,7 @@ export class ClinicController {
             'Internal Server Error',
             null,
             'Failed to retrieve clinic',
-            error,
+            error.message,
           ),
         );
     }
@@ -231,7 +231,7 @@ export class ClinicController {
             'Internal Server Error',
             null,
             'Failed to delete clinic',
-            error,
+            error.message,
           ),
         );
     }

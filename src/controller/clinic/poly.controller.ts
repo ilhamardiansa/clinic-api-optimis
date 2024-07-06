@@ -54,7 +54,7 @@ export class PolyController {
             'Bad Request',
             null,
             'Failed to create poly',
-            null,
+            error.message,
           ),
         );
     }
@@ -93,7 +93,7 @@ export class PolyController {
             'Bad Request',
             null,
             'Failed to update poly',
-            null,
+            error.message,
           ),
         );
     }
@@ -127,7 +127,7 @@ export class PolyController {
             'Internal Server Error',
             null,
             'Failed to retrieve polies',
-            null,
+            error.message,
           ),
         );
     }
@@ -161,7 +161,7 @@ export class PolyController {
             'Internal Server Error',
             null,
             'Failed to retrieve poly',
-            null,
+            error.message,
           ),
         );
     }
@@ -188,7 +188,7 @@ export class PolyController {
             'Internal Server Error',
             null,
             'Failed to delete poly',
-            null,
+            error.message,
           ),
         );
     }
