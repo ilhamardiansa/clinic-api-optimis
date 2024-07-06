@@ -19,7 +19,12 @@ export class PaymentService {
       const userId = extracttoken.userId;
 
       const payments = await this.paymentRepository.find({
-        relations: ['bank', 'LastRedeem', 'LastRedeem.drugs'],
+        relations: [
+          'bank',
+          'bank.bank_category',
+          'LastRedeem',
+          'LastRedeem.drugs',
+        ],
       });
 
       if (payments.length > 0) {
@@ -77,7 +82,12 @@ export class PaymentService {
         if (savedPayment) {
           const paymentData = await this.paymentRepository.findOne({
             where: { id: create.id },
-            relations: ['bank', 'LastRedeem', 'LastRedeem.drugs'],
+            relations: [
+              'bank',
+              'bank.bank_category',
+              'LastRedeem',
+              'LastRedeem.drugs',
+            ],
           });
 
           return {
@@ -112,7 +122,12 @@ export class PaymentService {
 
       const payment = await this.paymentRepository.findOne({
         where: { id: id },
-        relations: ['bank', 'LastRedeem', 'LastRedeem.drugs'],
+        relations: [
+          'bank',
+          'bank.bank_category',
+          'LastRedeem',
+          'LastRedeem.drugs',
+        ],
       });
 
       if (!payment) {
@@ -132,7 +147,12 @@ export class PaymentService {
       if (update) {
         const paymentget = await this.paymentRepository.findOne({
           where: { id: payment.id },
-          relations: ['bank', 'LastRedeem', 'LastRedeem.drugs'],
+          relations: [
+            'bank',
+            'bank_category',
+            'LastRedeem',
+            'LastRedeem.drugs',
+          ],
         });
         return {
           status: true,

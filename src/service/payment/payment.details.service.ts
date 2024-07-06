@@ -31,20 +31,38 @@ export class PaymentDetailsService {
     await this.paymentDetailsRepository.update(id, updatePaymentDetailsDto);
     return this.paymentDetailsRepository.findOne({
       where: { id },
-      relations: ['payment', 'drug', 'fee'],
+      relations: [
+        'payment',
+        'payment.bank',
+        'payment.LastRedeem',
+        'drug',
+        'fee',
+      ],
     });
   }
 
   async findOne(id: number): Promise<PaymentDetails> {
     return this.paymentDetailsRepository.findOne({
       where: { id },
-      relations: ['payment', 'drug', 'fee'],
+      relations: [
+        'payment',
+        'payment.bank',
+        'payment.LastRedeem',
+        'drug',
+        'fee',
+      ],
     });
   }
 
   async findAll(): Promise<PaymentDetails[]> {
     return this.paymentDetailsRepository.find({
-      relations: ['payment', 'drug', 'fee'],
+      relations: [
+        'payment',
+        'payment.bank',
+        'payment.LastRedeem',
+        'drug',
+        'fee',
+      ],
     });
   }
 

@@ -28,7 +28,7 @@ export class SymptomService {
   async findOne(id: number) {
     const get = await this.symptomRepository.findOne({
       where: { id },
-      relations: ['poly'],
+      relations: ['poly', 'poly.clinic', 'poly.clinic.city'],
     });
 
     return {
@@ -42,7 +42,7 @@ export class SymptomService {
 
   async findAll() {
     const get = await this.symptomRepository.find({
-      relations: ['poly'],
+      relations: ['poly', 'poly.clinic', 'poly.clinic.city'],
     });
 
     const result = get.map((get) => ({
