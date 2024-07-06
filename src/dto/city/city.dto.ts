@@ -9,11 +9,9 @@ export class CityDto {
   @IsNotEmpty({ message: 'should not be empty' })
   region_id: number;
 
-  @IsNumber()
   @IsNotEmpty({ message: 'should not be empty' })
   longitude: number;
 
-  @IsNumber()
   @IsNotEmpty({ message: 'should not be empty' })
   latitude: number;
 }

@@ -21,18 +21,12 @@ export class UpdateClinicDto {
   post_code?: string;
 
   @IsNotEmpty({ message: 'should not be empty' })
-  @IsNumber()
   latitude?: number;
 
   @IsNotEmpty({ message: 'should not be empty' })
-  @IsNumber()
   longitude?: number;
 
   @IsNotEmpty({ message: 'should not be empty' })
   @IsNumber()
   city_id?: number;
-
-  @IsNotEmpty({ message: 'should not be empty' })
-  @IsNumber()
-  wilayahId?: number; 
 }

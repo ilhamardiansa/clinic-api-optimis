@@ -19,11 +19,9 @@ export class DoctorDto {
   @IsNotEmpty({ message: 'should not be empty' })
   post_code: string;
 
-  @IsInt()
   @IsNotEmpty({ message: 'should not be empty' })
   latitude: number;
 
-  @IsInt()
   @IsNotEmpty({ message: 'should not be empty' })
   longitude: number;
 
