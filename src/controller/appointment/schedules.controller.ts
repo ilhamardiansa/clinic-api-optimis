@@ -118,6 +118,7 @@ export class ScheduleController {
   @Post('schedules/set-time')
   @UseGuards(AuthGuard('jwt'))
   @Roles('doctor')
+  @UsePipes(CustomValidationPipe)
   async SetTime(@Res() res: Response,@Body() setTimeDTO: setTimeDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -175,6 +176,7 @@ export class ScheduleController {
   @Post('schedules')
   @UseGuards(AuthGuard('jwt'))
   @Roles('doctor')
+  @UsePipes(CustomValidationPipe)
   async CreateSchedule(@Res() res: Response,@Body() scheduleDTO: SchedulesDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -229,6 +231,7 @@ export class ScheduleController {
   @Put('schedules/:id')
   @UseGuards(AuthGuard('jwt'))
   @Roles('doctor')
+  @UsePipes(CustomValidationPipe)
   async UpdateSchedule(@Res() res: Response,@Param('id') id: string, @Body() scheduleDTO: SchedulesUpdateDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];

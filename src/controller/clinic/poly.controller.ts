@@ -9,6 +9,7 @@ import {
   Res,
   UseGuards,
   HttpException,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -18,6 +19,7 @@ import { format_json } from 'src/env';
 import { PolyDto } from 'src/dto/clinic/poly.dto';
 import { UpdatePolyDto } from 'src/dto/clinic/update.poly.dto';
 import { PolyService } from 'src/service/clinic/poly.service';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/polies')
 export class PolyController {
@@ -26,6 +28,7 @@ export class PolyController {
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
+  @UsePipes(CustomValidationPipe)
   async create(@Body() polyDto: PolyDto, @Res() res: Response) {
     try {
       const createdPoly = await this.polyService.createPoly(polyDto);
@@ -60,6 +63,7 @@ export class PolyController {
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updatePolyDto: UpdatePolyDto,

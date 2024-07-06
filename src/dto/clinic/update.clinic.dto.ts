@@ -1,38 +1,38 @@
-import { IsString, IsNumber, MaxLength, IsOptional } from 'class-validator';
+import { IsString, IsNumber, MaxLength, IsOptional, IsNotEmpty } from 'class-validator';
 
 export class UpdateClinicDto {
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsString()
   @MaxLength(64)
   clinic_name?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsString()
   description?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsString()
   @MaxLength(64)
   address?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsString()
   @MaxLength(10)
   post_code?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsNumber()
   latitude?: number;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsNumber()
   longitude?: number;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsNumber()
   city_id?: number;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsNumber()
   wilayahId?: number; 
 }

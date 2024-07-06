@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpException,
   Res,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -16,6 +17,7 @@ import { format_json } from 'src/env';
 import { BankDto } from 'src/dto/bank/bank.dto';
 import { UpdateBankDto } from 'src/dto/bank/update.bank.dto';
 import { BankService } from 'src/service/bank/bank.service';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/banks')
 export class BankController {
@@ -23,6 +25,7 @@ export class BankController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async create(@Body() bankDto: BankDto, @Res() res: Response) {
     try {
       const createdBank = await this.bankService.createBank(bankDto);
@@ -56,6 +59,7 @@ export class BankController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updateBankDto: UpdateBankDto,

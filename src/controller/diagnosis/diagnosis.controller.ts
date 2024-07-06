@@ -9,13 +9,15 @@ import {
     Body,
     Put,
     Param,
-    Delete
+    Delete,
+    UsePipes
   } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { format_json } from 'src/env';
 import { Request, Response } from 'express';
 import { DiagnosisDTO } from 'src/dto/diagnosis.dto';
 import { DiagnosisService } from 'src/service/diagnosis/diagnosis.service';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
   
 @Controller('api')
 export class DiagnosisController {
@@ -63,6 +65,7 @@ export class DiagnosisController {
 
   @Post('diagnosis')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async create(@Body() diagnosisDTO: DiagnosisDTO, @Res() res: Response, @Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -103,6 +106,7 @@ export class DiagnosisController {
 
   @Put('diagnosis/:id')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async update(@Param('id') id: number,@Body() diagnosisDTO: DiagnosisDTO, @Res() res: Response, @Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];

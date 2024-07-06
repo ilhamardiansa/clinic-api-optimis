@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Put, Delete, Req, UseGuards, Res, Body, Param} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Req, UseGuards, Res, Body, Param, UsePipes} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { format_json } from 'src/env';
 import { Response } from 'express';
 import { PaymentService } from 'src/service/payment/payment.service';
 import { paymentDTO } from 'src/dto/payment/payment.dto';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/users')
 export class paymentController {
@@ -55,6 +56,7 @@ export class paymentController {
 
   @Post('payment')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async createpayment(@Body() createDTO: paymentDTO,@Req() req: Request,@Res() res: Response) {
     try {
         const authorizationHeader = req.headers['authorization'];
@@ -99,6 +101,7 @@ export class paymentController {
 
     @Put('payment/:id')
     @UseGuards(AuthGuard('jwt'))
+    @UsePipes(CustomValidationPipe)
     async Updatepayment(@Param('id') id: number,@Body() createDTO: paymentDTO,@Req() req: Request,@Res() res: Response) {
       try {
           const authorizationHeader = req.headers['authorization'];

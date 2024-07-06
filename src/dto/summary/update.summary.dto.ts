@@ -1,39 +1,48 @@
-import { IsString, MaxLength, IsBoolean, IsOptional } from 'class-validator';
+import { IsString, MaxLength, IsBoolean, IsOptional, IsNotEmpty } from 'class-validator';
 
 export class UpdateSummaryDto {
   @IsString()
-  @IsOptional()
-  doctor_name?: string;
+  @IsNotEmpty({ message: 'should not be empty' })
+  poly_id: number;
 
   @IsString()
-  @IsOptional()
-  polies_name?: string;
+  @IsNotEmpty({ message: 'should not be empty' })
+  doctor_id: number;
 
-  @IsOptional()
-  scheduled_date_time?: Date;
+  @IsNotEmpty({ message: 'should not be empty' })
+  scheduled_date_time: Date;
 
   @IsString()
-  @IsOptional()
-  qr_code?: string;
+  @IsNotEmpty({ message: 'should not be empty' })
+  qr_code: string;
 
   @IsBoolean()
   @IsOptional()
   image_captured_checked?: boolean;
 
   @IsString()
-  @IsOptional()
-  patient_name?: string;
-
-  @IsString()
   @MaxLength(256)
-  @IsOptional()
-  symptoms?: string;
+  @IsNotEmpty({ message: 'should not be empty' })
+  symptoms: string;
 
   @IsString()
-  @IsOptional()
-  symptoms_description?: string;
+  @IsNotEmpty({ message: 'should not be empty' })
+  symptoms_description: string;
 
-  @IsString()
   @IsOptional()
-  avatar_of_doctor?: string;
+  status?: boolean;
+
+  @IsOptional()
+  ai_status?: boolean;
+
+  @IsOptional()
+  ai_response?: string;
+
+  @IsOptional()
+  image_url: string;
+
+  @IsOptional()
+  ai_token: string;
+
+  drug: { drug_id: number; qty: number }[];
 }

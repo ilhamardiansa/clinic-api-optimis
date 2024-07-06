@@ -1,13 +1,16 @@
-import { IsString, IsNumber, MaxLength, IsOptional } from 'class-validator';
+import { IsString, IsNumber, MaxLength, IsOptional, IsNotEmpty } from 'class-validator';
 
 export class UpdatePolyDto {
   @IsString()
   @MaxLength(32)
+  @IsNotEmpty({ message: 'should not be empty' })
   name: string;
 
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   description: string;
 
   @IsNumber()
+  @IsNotEmpty({ message: 'should not be empty' })
   clinic_id: number;
 }

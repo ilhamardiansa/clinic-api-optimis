@@ -11,6 +11,7 @@ import {
   HttpException,
   HttpStatus,
   Query,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -20,6 +21,7 @@ import { format_json } from 'src/env';
 import { DoctorService } from 'src/service/clinic/doctor.service';
 import { UpdateDoctorDto } from 'src/dto/clinic/update.doctor.dto';
 import { DoctorDto } from 'src/dto/clinic/doctor.dto';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/doctors')
 export class DoctorController {
@@ -28,6 +30,7 @@ export class DoctorController {
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
+  @UsePipes(CustomValidationPipe)
   async create(@Body() doctorDto: DoctorDto, @Res() res: Response) {
     try {
       const createdDoctor = await this.doctorService.createDoctor(doctorDto);
@@ -62,6 +65,7 @@ export class DoctorController {
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updateDoctorDto: UpdateDoctorDto,

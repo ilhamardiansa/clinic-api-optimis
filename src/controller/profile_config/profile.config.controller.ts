@@ -1,5 +1,6 @@
-import { Controller, Patch, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Patch, Body, Req, UseGuards, UsePipes } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { format_json } from 'src/env';
 import { ProfileConfigurationService } from 'src/service/profile_config/profile.config.service';
 
@@ -11,6 +12,7 @@ export class SettingsController {
   ) {}
 
   @Patch('location')
+  @UsePipes(CustomValidationPipe)
   async updateLocationSetting(
     @Body('isLocation') isLocation: boolean,
     @Req() req,
@@ -30,6 +32,7 @@ export class SettingsController {
   }
 
   @Patch('push-notification')
+  @UsePipes(CustomValidationPipe)
   async updatePushNotificationSetting(
     @Body('isPushNotification') isPushNotification: boolean,
     @Req() req,
@@ -49,6 +52,7 @@ export class SettingsController {
   }
 
   @Patch('email-notification')
+  @UsePipes(CustomValidationPipe)
   async updateEmailNotificationSetting(
     @Body('isEmailNotification') isEmailNotification: boolean,
     @Req() req,

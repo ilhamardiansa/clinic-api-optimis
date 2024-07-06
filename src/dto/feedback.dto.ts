@@ -1,6 +1,7 @@
-import { IsString, MaxLength, IsBoolean, IsOptional } from 'class-validator';
+import { IsString, MaxLength, IsBoolean, IsOptional, IsNotEmpty } from 'class-validator';
 
 export class FeedbackDTO {
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   content: string;
 }

@@ -9,6 +9,7 @@ import {
   UseGuards,
   Req,
   Res,
+  UsePipes,
 } from '@nestjs/common';
 
 import { ClinicService } from 'src/service/clinic/clinic.service';
@@ -19,6 +20,7 @@ import { Roles } from 'src/middleware/role.decorator';
 import { format_json } from 'src/env';
 import { ClinicDto } from 'src/dto/clinic/clinic.dto';
 import { Request, Response } from 'express';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/clinics')
 export class ClinicController {
@@ -27,6 +29,7 @@ export class ClinicController {
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
+  @UsePipes(CustomValidationPipe)
   async create(
     @Body() clinicDto: ClinicDto,
     @Req() req: Request,
@@ -65,6 +68,7 @@ export class ClinicController {
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updateClinicDto: UpdateClinicDto,

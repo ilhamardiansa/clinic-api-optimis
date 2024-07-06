@@ -9,6 +9,7 @@ import {
   Put,
   Res,
   HttpStatus,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthDTO } from 'src/dto/auth/auth.dto';
 import { SignInDto } from 'src/dto/auth/signin.dto';
@@ -27,6 +28,7 @@ import path, { basename, extname } from 'path';
 import { diskStorage } from 'multer';
 import { GoogleOauthGuard } from 'src/middleware/google.auth.guards';
 import { Response } from 'express';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -48,6 +50,7 @@ export class AuthController {
   ) {}
 
   @Post('auth/register')
+  @UsePipes(CustomValidationPipe)
   async register(@Body() authDTO: AuthDTO, @Res() res: Response) {
     try {
       const { fullname, email, phone_number, password } = authDTO;
@@ -92,6 +95,7 @@ export class AuthController {
   }
 
   @Post('auth/signin')
+  @UsePipes(CustomValidationPipe)
   async signIn(@Body() signInDto: SignInDto, @Res() res: Response) {
     const { email, password } = signInDto;
     const token = await this.authService.signIn(email, password);
@@ -136,6 +140,7 @@ export class AuthController {
 
   @Post('auth/verification')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async verifikasiEmail(
     @Body() verifikasiDTO: VerifikasiDTO,
     @Req() req: Request,
@@ -200,6 +205,7 @@ export class AuthController {
 
   @Post('auth/resend')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async resendOTP(@Req() req: Request, @Res() res: Response) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -404,6 +410,7 @@ export class AuthController {
 
   @Put('users/update/avatar')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   @UseInterceptors(FileInterceptor('profil_image', { storage }))
   async update_avatar(
     @Req() req: Request,
@@ -504,6 +511,7 @@ export class AuthController {
   }
 
   @Put('users/personal-data')
+  @UsePipes(CustomValidationPipe)
   @UseGuards(AuthGuard('jwt'))
   async update_profile(
     @Body() profileDTO: ProfileDto,
@@ -599,6 +607,7 @@ export class AuthController {
   }
 
   @Post('users/change-password')
+  @UsePipes(CustomValidationPipe)
   @UseGuards(AuthGuard('jwt'))
   async change_password(
     @Body() ChangePassDTO: ChangePassDTO,

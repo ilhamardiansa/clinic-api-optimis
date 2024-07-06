@@ -1,36 +1,36 @@
-import { IsOptional, IsString, IsInt, Length } from 'class-validator';
+import { IsOptional, IsString, IsInt, Length, IsNotEmpty } from 'class-validator';
 
 export class UpdateWilayahDto {
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsString()
   @Length(1, 255)
   id?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsString()
   @Length(1, 255)
   provinsi?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsString()
   @Length(1, 255)
   kabupaten?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsString()
   @Length(1, 255)
   kecamatan?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsString()
   @Length(1, 255)
   kelurahan?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsInt()
   city_id?: number;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsInt()
   wilayah_id?: number;
 }

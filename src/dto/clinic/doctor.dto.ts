@@ -1,43 +1,52 @@
-import { IsInt, IsString, IsDate, IsOptional } from 'class-validator';
+import { IsInt, IsString, IsDate, IsOptional, IsNotEmpty } from 'class-validator';
 
 export class DoctorDto {
-  @IsInt()
-  id: number;
 
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   doctor_name: string;
 
   @IsOptional()
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   description: string;
 
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   address: string;
 
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   post_code: string;
 
   @IsInt()
+  @IsNotEmpty({ message: 'should not be empty' })
   latitude: number;
 
   @IsInt()
+  @IsNotEmpty({ message: 'should not be empty' })
   longitude: number;
 
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   title: string;
 
   @IsOptional()
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   experience: string;
 
   @IsOptional()
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   education: string;
 
   @IsInt()
+  @IsNotEmpty({ message: 'should not be empty' })
   poly_id: number;
 
   @IsInt()
+  @IsNotEmpty({ message: 'should not be empty' })
   wilayah_id: number;
 
   poly: {

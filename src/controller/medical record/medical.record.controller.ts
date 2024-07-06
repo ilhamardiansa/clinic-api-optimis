@@ -8,6 +8,7 @@ import {
   Param,
   Res,
   UseGuards,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -18,6 +19,7 @@ import { MedicalRecordService } from 'src/service/medical record/medical.record.
 import { MedicalRecordDto } from 'src/dto/medical record/medical.record.dto';
 import { UpdateMedicalRecordDto } from 'src/dto/medical record/update.medical.record.dto';
 import { RecordResponseDto } from 'src/dto/medical record/medical.record.response.dto';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/medicalrecords')
 export class MedicalRecordController {
@@ -26,6 +28,7 @@ export class MedicalRecordController {
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
+  @UsePipes(CustomValidationPipe)
   async create(
     @Body() medicalRecordDto: MedicalRecordDto,
     @Res() res: Response,
@@ -64,6 +67,7 @@ export class MedicalRecordController {
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updateMedicalRecordDto: UpdateMedicalRecordDto,

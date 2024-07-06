@@ -1,15 +1,19 @@
-import { IsString, MaxLength, IsBoolean, IsOptional } from 'class-validator';
+import { IsString, MaxLength, IsBoolean, IsOptional, IsNotEmpty } from 'class-validator';
 
 export class SummaryDto {
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   poly_id: number;
 
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   doctor_id: number;
 
+  @IsNotEmpty({ message: 'should not be empty' })
   scheduled_date_time: Date;
 
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   qr_code: string;
 
   @IsBoolean()
@@ -18,9 +22,11 @@ export class SummaryDto {
 
   @IsString()
   @MaxLength(256)
+  @IsNotEmpty({ message: 'should not be empty' })
   symptoms: string;
 
   @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
   symptoms_description: string;
 
   @IsOptional()

@@ -1,16 +1,16 @@
-import { IsOptional, IsNumber, IsString, MaxLength } from 'class-validator';
+import { IsOptional, IsNumber, IsString, MaxLength, IsNotEmpty } from 'class-validator';
 
 export class UpdateTermDto {
   @IsNumber()
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   term_category_id?: number;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @MaxLength(255)
   title?: string;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   content?: string;
 }

@@ -8,8 +8,10 @@ import {
   Param,
   Res,
   HttpStatus,
+  UsePipes,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { TermDto } from 'src/dto/term/term.dto';
 import { TicketDto } from 'src/dto/term/ticket.dto';
 import { UpdateTermDto } from 'src/dto/term/update.term.dto';
@@ -53,6 +55,7 @@ export class TermController {
   }
 
   @Post()
+  @UsePipes(CustomValidationPipe)
   async create(@Body() termDto: TermDto, @Res() res: Response) {
     try {
       const createdTerm = await this.termService.createTerm(termDto);
@@ -85,6 +88,7 @@ export class TermController {
   }
 
   @Put(':id')
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updateTermDto: UpdateTermDto,
@@ -232,6 +236,7 @@ export class TermController {
   }
 
   @Post('send-a-ticket')
+  @UsePipes(CustomValidationPipe)
   async sendTicket(@Body() ticketDto: TicketDto, @Res() res: Response) {
     try {
       const userId = null;

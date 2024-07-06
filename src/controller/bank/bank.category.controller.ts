@@ -8,9 +8,11 @@ import {
   Param,
   UseGuards,
   Res,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { BankCategoryDto } from 'src/dto/bank/bank.category.dto';
 import { UpdateBankCategoryDto } from 'src/dto/bank/update.bank.category.dto';
 import { format_json } from 'src/env';
@@ -22,6 +24,7 @@ export class BankCategoryController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async create(@Body() bankCategoryDto: BankCategoryDto, @Res() res: Response) {
     try {
       const createdBankCategory =
@@ -56,6 +59,7 @@ export class BankCategoryController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updateBankCategoryDto: UpdateBankCategoryDto,

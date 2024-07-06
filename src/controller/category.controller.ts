@@ -10,6 +10,7 @@ import {
   Res,
   HttpException,
   HttpStatus,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -17,6 +18,7 @@ import { format_json } from 'src/env';
 import { CategoryDto } from 'src/dto/category/category.dto';
 import { UpdateCategoryDto } from 'src/dto/category/update.category.dto';
 import { CategoryService } from 'src/service/category.service';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/drug-categories')
 @UseGuards(AuthGuard('jwt'))
@@ -24,6 +26,7 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
+  @UsePipes(CustomValidationPipe)
   async create(@Body() categoryDto: CategoryDto, @Res() res: Response) {
     try {
       const createdCategory =
@@ -59,6 +62,7 @@ export class CategoryController {
   }
 
   @Put(':id')
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,

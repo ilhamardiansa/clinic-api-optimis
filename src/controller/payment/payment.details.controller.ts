@@ -8,8 +8,10 @@ import {
   Param,
   Req,
   Res,
+  UsePipes,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { PaymentDetailsDto } from 'src/dto/payment/payment.details.dto';
 import { UpdatePaymentDetailsDto } from 'src/dto/payment/update.payment.details.dto';
 import { format_json } from 'src/env';
@@ -20,6 +22,7 @@ export class PaymentDetailsController {
   constructor(private readonly paymentDetailsService: PaymentDetailsService) {}
 
   @Post()
+  @UsePipes(CustomValidationPipe)
   async create(
     @Body() paymentDetailsDto: PaymentDetailsDto,
     @Req() req: Request,
@@ -59,6 +62,7 @@ export class PaymentDetailsController {
   }
 
   @Put(':id')
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updatePaymentDetailsDto: UpdatePaymentDetailsDto,

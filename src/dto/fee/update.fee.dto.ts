@@ -1,15 +1,15 @@
-import { IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
 
 export class UpdateFeeDto {
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsInt()
   clinic_id?: number;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsString()
   activities?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'should not be empty' })
   @IsInt()
   @Min(0)
   cost?: number;

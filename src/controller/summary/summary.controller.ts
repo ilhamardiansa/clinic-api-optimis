@@ -8,7 +8,8 @@ import {
   Param,
   Res,
   UseGuards,
-  Req
+  Req,
+  UsePipes
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { format_json } from 'src/env';
@@ -16,6 +17,7 @@ import { SummaryDto } from 'src/dto/summary/summary.dto';
 import { SummaryService } from 'src/service/summary/summary.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateSummaryDto } from 'src/dto/summary/update.summary.dto';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/users')
 export class SummaryController {
@@ -71,6 +73,7 @@ export class SummaryController {
 
   @Post('appointments')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async create(@Body() summaryDto: SummaryDto, @Res() res: Response, @Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -118,6 +121,7 @@ export class SummaryController {
   }
 
   @Put('summary/:id')
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updateSummaryDto: UpdateSummaryDto,

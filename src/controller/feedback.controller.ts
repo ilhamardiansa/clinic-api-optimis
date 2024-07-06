@@ -6,13 +6,15 @@ import {
     Req,
     Res,
     HttpStatus,
-    Body
+    Body,
+    UsePipes
   } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { format_json } from 'src/env';
 import { Request, Response } from 'express';
 import { FeedbackDTO } from 'src/dto/feedback.dto';
 import { FeedbackService } from 'src/service/feedback.service';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
   
 @Controller('api')
 export class FeedbackController {
@@ -64,6 +66,7 @@ export class FeedbackController {
 
   @Post('feedback')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async create(@Body() feedbackdto: FeedbackDTO, @Res() res: Response, @Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];

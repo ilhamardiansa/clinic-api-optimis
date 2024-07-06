@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UseGuards, UsePipes } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { configurationsDTO } from 'src/dto/configurations.dto';
 import { format_json } from 'src/env';
 import { configurationsService } from 'src/service/configurations.service';
@@ -46,6 +47,7 @@ export class configurationsController {
 
   @Post('configurations')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async update(@Req() req: Request,@Body() data: configurationsDTO) {
     try {
       const authorizationHeader = req.headers['authorization'];

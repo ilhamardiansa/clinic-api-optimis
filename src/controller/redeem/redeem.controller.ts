@@ -9,6 +9,7 @@ import {
   Res,
   Body,
   Param,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
@@ -16,6 +17,7 @@ import { LastRedeemService } from 'src/service/latest/last.redeem.service';
 import { format_json } from 'src/env';
 import { Response } from 'express';
 import { CreateDTO } from 'src/dto/redeem/create.dto';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/users')
 export class RedeemController {
@@ -161,6 +163,7 @@ export class RedeemController {
 
   @Post('redeem')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async createRedeem(
     @Body() createDTO: CreateDTO,
     @Req() req: Request,
@@ -242,6 +245,7 @@ export class RedeemController {
 
   @Put('redeem/:id')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async UpdateRedeem(
     @Param('id') id: number,
     @Body() createDTO: CreateDTO,

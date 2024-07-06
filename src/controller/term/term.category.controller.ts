@@ -8,12 +8,14 @@ import {
   Param,
   UseGuards,
   HttpException,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { format_json } from 'src/env';
 import { TermCategoryDto } from 'src/dto/term/term.category.dto';
 import { UpdateTermCategoryDto } from 'src/dto/term/update.term.category.dto';
 import { TermCategoryService } from 'src/service/term/term.category.service';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/term-categories')
 export class TermCategoryController {
@@ -21,6 +23,7 @@ export class TermCategoryController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async create(@Body() termCategoryDto: TermCategoryDto) {
     try {
       const createdTermCategory =
@@ -50,6 +53,7 @@ export class TermCategoryController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updateTermCategoryDto: UpdateTermCategoryDto,

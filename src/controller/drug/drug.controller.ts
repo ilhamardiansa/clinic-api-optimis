@@ -13,6 +13,7 @@ import {
   Catch,
   ExceptionFilter,
   ArgumentsHost,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -20,6 +21,7 @@ import { format_json } from 'src/env';
 import { DrugDto } from 'src/dto/drug/drug.dto';
 import { UpdateDrugDto } from 'src/dto/drug/update.drug.dto';
 import { DrugService } from 'src/service/drug/drug.service';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 
 @Controller('api/drugs')
 export class DrugController {
@@ -27,6 +29,7 @@ export class DrugController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async create(@Body() drugDto: DrugDto, @Res() res: Response) {
     try {
       const createdDrug = await this.drugService.createDrug(drugDto);
@@ -62,6 +65,7 @@ export class DrugController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
     @Body() updateDrugDto: UpdateDrugDto,
