@@ -9,7 +9,7 @@ import { ScheduleDto } from 'src/dto/schedule.dto';
 import { format_json } from 'src/env';
 import { SchedulesService } from 'src/service/appointment/schedules.service';
 import { Response } from 'express';
-
+import { Roles } from 'src/middleware/role.decorator';
 
 @Controller('api')
 export class ScheduleController {
@@ -114,6 +114,7 @@ export class ScheduleController {
 
   @Post('schedules/set-time')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('doctor')
   async SetTime(@Res() res: Response,@Body() setTimeDTO: setTimeDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -170,6 +171,7 @@ export class ScheduleController {
 
   @Post('schedules')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('doctor')
   async CreateSchedule(@Res() res: Response,@Body() scheduleDTO: SchedulesDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -223,6 +225,7 @@ export class ScheduleController {
 
   @Put('schedules/:id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('doctor')
   async UpdateSchedule(@Res() res: Response,@Param('id') id: string, @Body() scheduleDTO: SchedulesUpdateDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
