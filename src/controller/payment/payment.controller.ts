@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-import { Controller, Get, Post, Put, Delete, Req, UseGuards, Res, Body, Param, UsePipes} from '@nestjs/common';
-=======
+
 import {
   Controller,
   Get,
@@ -12,19 +10,16 @@ import {
   Res,
   Body,
   Param,
+  UsePipes,
 } from '@nestjs/common';
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { format_json } from 'src/env';
 import { PaymentService } from 'src/service/payment/payment.service';
 import { paymentDTO } from 'src/dto/payment/payment.dto';
-<<<<<<< HEAD
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
-=======
 import { RolesGuard } from 'src/middleware/role.guard';
 import { Roles } from 'src/middleware/role.decorator';
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
 
 @Controller('api/users')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -99,18 +94,14 @@ export class PaymentController {
   }
 
   @Post('payment')
-<<<<<<< HEAD
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
-  async createpayment(@Body() createDTO: paymentDTO,@Req() req: Request,@Res() res: Response) {
-=======
   @Roles('admin', 'manager', 'operator')
   async createPayment(
     @Body() createDTO: paymentDTO,
     @Req() req: Request,
     @Res() res: Response,
   ) {
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
     try {
       const authorizationHeader = req.headers['authorization'];
 
@@ -175,25 +166,17 @@ export class PaymentController {
     }
   }
 
-<<<<<<< HEAD
     @Put('payment/:id')
     @UseGuards(AuthGuard('jwt'))
     @UsePipes(CustomValidationPipe)
-    async Updatepayment(@Param('id') id: number,@Body() createDTO: paymentDTO,@Req() req: Request,@Res() res: Response) {
-      try {
-          const authorizationHeader = req.headers['authorization'];
-    
-          if (!authorizationHeader) {
-            return res.status(400).json(format_json(
-=======
-  @Put('payment/:id')
-  @Roles('admin', 'manager', 'operator')
-  async updatePayment(
-    @Param('id') id: number,
-    @Body() createDTO: paymentDTO,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
+    @Put('payment/:id')
+    @Roles('admin', 'manager', 'operator')
+    async updatePayment(
+      @Param('id') id: number,
+      @Body() createDTO: paymentDTO,
+      @Req() req: Request,
+      @Res() res: Response,
+    ) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
@@ -202,7 +185,6 @@ export class PaymentController {
           .status(400)
           .json(
             format_json(
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
               400,
               false,
               null,

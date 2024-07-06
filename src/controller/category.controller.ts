@@ -28,11 +28,8 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async create(@Body() categoryDto: CategoryDto, @Res() res: Response) {
     try {
       const createdCategory =
@@ -68,11 +65,8 @@ export class CategoryController {
   }
 
   @Put(':id')
-<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,

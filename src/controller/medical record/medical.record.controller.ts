@@ -19,6 +19,7 @@ import { MedicalRecordDto } from 'src/dto/medical record/medical.record.dto';
 import { UpdateMedicalRecordDto } from 'src/dto/medical record/update.medical.record.dto';
 import { RecordResponseDto } from 'src/dto/medical record/medical.record.response.dto';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
+import { Roles } from 'src/middleware/role.decorator';
 
 @Controller('api/medicalrecords')
 export class MedicalRecordController {
@@ -26,11 +27,8 @@ export class MedicalRecordController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-<<<<<<< HEAD
   @Roles('admin')
   @UsePipes(CustomValidationPipe)
-=======
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async create(
     @Body() medicalRecordDto: MedicalRecordDto,
     @Res() res: Response,
@@ -68,11 +66,8 @@ export class MedicalRecordController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-<<<<<<< HEAD
   @Roles('admin')
   @UsePipes(CustomValidationPipe)
-=======
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async update(
     @Param('id') id: string,
     @Body() updateMedicalRecordDto: UpdateMedicalRecordDto,

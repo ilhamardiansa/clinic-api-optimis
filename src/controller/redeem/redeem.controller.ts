@@ -16,12 +16,9 @@ import { Request, Response } from 'express';
 import { LastRedeemService } from 'src/service/latest/last.redeem.service';
 import { format_json } from 'src/env';
 import { CreateDTO } from 'src/dto/redeem/create.dto';
-<<<<<<< HEAD
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
-=======
 import { RolesGuard } from 'src/middleware/role.guard';
 import { Roles } from 'src/middleware/role.decorator';
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
 
 @Controller('api/users')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -167,12 +164,9 @@ export class RedeemController {
   }
 
   @Post('redeem')
-<<<<<<< HEAD
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async createRedeem(
     @Body() createDTO: CreateDTO,
     @Req() req: Request,
@@ -253,12 +247,9 @@ export class RedeemController {
   }
 
   @Put('redeem/:id')
-<<<<<<< HEAD
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async UpdateRedeem(
     @Param('id') id: number,
     @Body() createDTO: CreateDTO,

@@ -1,5 +1,4 @@
 import {
-<<<<<<< HEAD
     Controller,
     Get,
     Post,
@@ -13,33 +12,16 @@ import {
     Delete,
     UsePipes
   } from '@nestjs/common';
-=======
-  Controller,
-  Get,
-  Post,
-  Put,
-  Delete,
-  Body,
-  Param,
-  UseGuards,
-  HttpStatus,
-  Res,
-  Req,
-} from '@nestjs/common';
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
 import { AuthGuard } from '@nestjs/passport';
 import { format_json } from 'src/env';
 import { Request, Response } from 'express';
 import { DiagnosisDTO } from 'src/dto/diagnosis.dto';
 import { DiagnosisService } from 'src/service/diagnosis/diagnosis.service';
-<<<<<<< HEAD
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
   
-=======
 import { Roles } from 'src/middleware/role.decorator';
 import { RolesGuard } from 'src/middleware/role.guard';
 
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
 @Controller('api')
 @UseGuards(RolesGuard)
 export class DiagnosisController {
@@ -116,16 +98,12 @@ export class DiagnosisController {
   @Post('diagnosis')
   @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
-<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
-  async create(@Body() diagnosisDTO: DiagnosisDTO, @Res() res: Response, @Req() req: Request) {
-=======
   async create(
     @Body() diagnosisDTO: DiagnosisDTO,
     @Res() res: Response,
     @Req() req: Request,
   ) {
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
     try {
       const authorizationHeader = req.headers['authorization'];
 
@@ -193,17 +171,13 @@ export class DiagnosisController {
   @Put('diagnosis/:id')
   @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
-<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
-  async update(@Param('id') id: number,@Body() diagnosisDTO: DiagnosisDTO, @Res() res: Response, @Req() req: Request) {
-=======
   async update(
     @Param('id') id: number,
     @Body() diagnosisDTO: DiagnosisDTO,
     @Res() res: Response,
     @Req() req: Request,
   ) {
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
     try {
       const authorizationHeader = req.headers['authorization'];
 

@@ -8,11 +8,8 @@ import {
   Param,
   Res,
   HttpStatus,
-<<<<<<< HEAD
   UsePipes,
-=======
   UseGuards,
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
@@ -63,11 +60,8 @@ export class TermController {
   }
 
   @Post()
-<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async create(@Body() termDto: TermDto, @Res() res: Response) {
     try {
       const createdTerm = await this.termService.createTerm(termDto);
@@ -100,11 +94,8 @@ export class TermController {
   }
 
   @Put(':id')
-<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async update(
     @Param('id') id: string,
     @Body() updateTermDto: UpdateTermDto,
@@ -255,11 +246,8 @@ export class TermController {
   }
 
   @Post('send-a-ticket')
-<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async sendTicket(@Body() ticketDto: TicketDto, @Res() res: Response) {
     try {
       const userId = null;

@@ -8,17 +8,12 @@ import {
   Param,
   Req,
   Res,
-<<<<<<< HEAD
   UsePipes,
-} from '@nestjs/common';
-import { Request, Response } from 'express';
-import { CustomValidationPipe } from 'src/custom-validation.pipe';
-=======
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { format_json } from 'src/env';
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
 import { FeeDto } from 'src/dto/fee/fee.dto';
 import { UpdateFeeDto } from 'src/dto/fee/update.fee.dto';
 import { FeeService } from 'src/service/fee/fee.service';
@@ -32,12 +27,9 @@ export class FeeController {
   constructor(private readonly feeService: FeeService) {}
 
   @Post()
-<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async create(
     @Body() feeDto: FeeDto,
     @Req() req: Request,
@@ -74,12 +66,9 @@ export class FeeController {
   }
 
   @Put(':id')
-<<<<<<< HEAD
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async update(
     @Param('id') id: string,
     @Body() updateFeeDto: UpdateFeeDto,

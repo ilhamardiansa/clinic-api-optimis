@@ -1,5 +1,4 @@
 import {
-<<<<<<< HEAD
     Controller,
     Get,
     Post,
@@ -10,30 +9,16 @@ import {
     Body,
     UsePipes
   } from '@nestjs/common';
-=======
-  Controller,
-  Get,
-  Post,
-  UseGuards,
-  Req,
-  Res,
-  HttpStatus,
-  Body,
-} from '@nestjs/common';
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
 import { AuthGuard } from '@nestjs/passport';
 import { format_json } from 'src/env';
 import { Request, Response } from 'express';
 import { FeedbackDTO } from 'src/dto/feedback.dto';
 import { FeedbackService } from 'src/service/feedback.service';
-<<<<<<< HEAD
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
   
-=======
 import { RolesGuard } from 'src/middleware/role.guard';
 import { Roles } from 'src/middleware/role.decorator';
 
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
 @Controller('api')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class FeedbackController {
@@ -113,18 +98,14 @@ export class FeedbackController {
   }
 
   @Post('feedback')
-<<<<<<< HEAD
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
-  async create(@Body() feedbackdto: FeedbackDTO, @Res() res: Response, @Req() req: Request) {
-=======
   @Roles('admin', 'manager', 'operator')
   async create(
     @Body() feedbackDto: FeedbackDTO,
     @Res() res: Response,
     @Req() req: Request,
   ) {
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
     try {
       const authorizationHeader = req.headers['authorization'];
 

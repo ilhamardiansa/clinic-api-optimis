@@ -28,12 +28,9 @@ export class ClinicController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-<<<<<<< HEAD
   @Roles('admin')
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async create(
     @Body() clinicDto: ClinicDto,
     @Req() req: Request,
@@ -71,12 +68,9 @@ export class ClinicController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-<<<<<<< HEAD
   @Roles('admin')
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async update(
     @Param('id') id: string,
     @Body() updateClinicDto: UpdateClinicDto,

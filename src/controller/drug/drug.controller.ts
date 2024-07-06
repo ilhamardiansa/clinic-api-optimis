@@ -30,13 +30,9 @@ export class DrugController {
   constructor(private readonly drugService: DrugService) {}
 
   @Post()
-<<<<<<< HEAD
-  @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
-=======
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async create(@Body() drugDto: DrugDto, @Res() res: Response) {
     try {
       const createdDrug = await this.drugService.createDrug(drugDto);
@@ -69,13 +65,9 @@ export class DrugController {
   }
 
   @Put(':id')
-<<<<<<< HEAD
-  @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
-=======
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async update(
     @Param('id') id: string,
     @Body() updateDrugDto: UpdateDrugDto,

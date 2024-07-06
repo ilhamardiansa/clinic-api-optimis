@@ -27,12 +27,8 @@ export class PolyController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-<<<<<<< HEAD
-  @Roles('admin')
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async create(@Body() polyDto: PolyDto, @Res() res: Response) {
     try {
       const createdPoly = await this.polyService.createPoly(polyDto);
@@ -66,12 +62,8 @@ export class PolyController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-<<<<<<< HEAD
-  @Roles('admin')
   @UsePipes(CustomValidationPipe)
-=======
   @Roles('admin', 'manager', 'operator')
->>>>>>> 0520f9ffe311e9b1b58c09ba0bfe7515b3026973
   async update(
     @Param('id') id: string,
     @Body() updatePolyDto: UpdatePolyDto,
