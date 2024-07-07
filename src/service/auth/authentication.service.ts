@@ -12,10 +12,19 @@ export function generateRandomNumber(min: number, max: number): number {
 
 @Injectable()
 export class AuthenticationService {
+  private blacklist: Set<string> = new Set();
+
+  addToBlacklist(token: string) {
+    this.blacklist.add(token);
+  }
+
+  isInBlacklist(token: string): boolean {
+    return this.blacklist.has(token);
+  }
+  
   constructor(
     private prisma: PrismaService,
     private readonly mailService: mailService,
-    private blacklistedTokens: string[] = [],
   ) {}
 
   async register(AuthDTO) {
@@ -356,7 +365,7 @@ export class AuthenticationService {
     try {
       const validatedData = SignoutSchema.parse(authDTO);
 
-      this.blacklistedTokens.push(validatedData.token);
+      this.addToBlacklist(validatedData.token);
 
       return {
         status: true,

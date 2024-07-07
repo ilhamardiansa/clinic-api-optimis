@@ -1,18 +1,16 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'src/prisma.module';
-import { PrismaService } from 'src/prisma.service';
-import { AuthenticationService } from 'src/service/auth/Authentication.service';
+import { AuthenticationService } from 'src/service/auth/authentication.service'; 
+import { ProfileService } from 'src/service/auth/profile.service'; 
 import { mailService } from 'src/service/mailer/mailer.service';
-import { ProfileService } from 'src/service/profile.service';
 
 @Module({
-  imports: [PrismaModule], // Assuming PrismaModule correctly exports PrismaService
+  imports: [PrismaModule],
   providers: [
     AuthenticationService,
     ProfileService,
-    mailService, // Ensure mailService is correctly imported and provided
-    PrismaService, // Ensure PrismaService is correctly imported and provided
+    mailService, 
   ],
-  exports: [AuthenticationService, ProfileService], // Export necessary services if needed
+  exports: [AuthenticationService, ProfileService], 
 })
 export class Authmodule {}
