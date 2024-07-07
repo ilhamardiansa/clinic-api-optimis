@@ -110,7 +110,7 @@ export class PaymentService {
         };
       }
     } catch (error) {
-      return { status: false, message: error.message, data: null };
+      return { status: false, message: error, data: null };
     }
   }
 

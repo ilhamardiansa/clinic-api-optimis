@@ -58,7 +58,7 @@ export class MedicalRecordController {
             'Bad Request',
             null,
             'Failed to create medical record',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -114,7 +114,7 @@ export class MedicalRecordController {
             'Bad Request',
             null,
             'Failed to update medical record',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -147,7 +147,7 @@ export class MedicalRecordController {
             'Bad Request',
             null,
             'Failed to retrieve medical records',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -194,7 +194,7 @@ export class MedicalRecordController {
             'Bad Request',
             null,
             'Failed to retrieve medical record',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -242,7 +242,7 @@ export class MedicalRecordController {
             'Bad Request',
             null,
             'Failed to delete medical record',
-            error.message || error,
+            error || error,
           ),
         );
     }

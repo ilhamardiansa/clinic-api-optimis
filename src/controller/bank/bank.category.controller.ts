@@ -239,7 +239,7 @@ export class BankCategoryController {
             'Internal Server Error',
             null,
             'Failed to delete bank category',
-            error.message || error,
+            error || error,
           ),
         );
     }

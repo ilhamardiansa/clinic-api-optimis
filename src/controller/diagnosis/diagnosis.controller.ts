@@ -88,7 +88,7 @@ export class DiagnosisController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );
@@ -161,7 +161,7 @@ export class DiagnosisController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );
@@ -239,7 +239,7 @@ export class DiagnosisController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );
@@ -318,7 +318,7 @@ export class DiagnosisController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );

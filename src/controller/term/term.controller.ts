@@ -51,7 +51,7 @@ export class TermController {
             500,
             false,
             null,
-            error.message || error,
+            error || error,
             'Failed to retrieve tickets',
             null,
           ),
@@ -87,7 +87,7 @@ export class TermController {
             'Bad Request',
             null,
             'Failed to create term',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -132,7 +132,7 @@ export class TermController {
             'Bad Request',
             null,
             'Failed to update term',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -165,7 +165,7 @@ export class TermController {
             'Bad Request',
             null,
             'Failed to retrieve terms',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -205,7 +205,7 @@ export class TermController {
             'Bad Request',
             null,
             'Failed to retrieve term',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -239,7 +239,7 @@ export class TermController {
             'Bad Request',
             null,
             'Failed to delete term',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -272,7 +272,7 @@ export class TermController {
             400,
             false,
             null,
-            error.message || error,
+            error || error,
             'Failed to send ticket',
             null,
           ),

@@ -66,7 +66,7 @@ export class SummaryController {
     } catch (error) {
       console.error('Server Error:', error);
       return res.status(400).json(
-        format_json(400, false, true, null, 'Server Error '+error.message, error)
+        format_json(400, false, true, null, 'Server Error '+error, error)
       );
     }
   }
@@ -115,7 +115,7 @@ export class SummaryController {
     } catch (error) {
       console.error('Server Error:', error);
       return res.status(400).json(
-        format_json(400, false, true, null, 'Server Error '+error.message, error)
+        format_json(400, false, true, null, 'Server Error '+error, error)
       );
     }
   }

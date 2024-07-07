@@ -54,7 +54,7 @@ export class BankController {
             'Bad Request',
             null,
             'Failed to create bank',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -100,7 +100,7 @@ export class BankController {
             'Bad Request',
             null,
             'Failed to update bank',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -133,7 +133,7 @@ export class BankController {
             'Internal Server Error',
             null,
             'Failed to retrieve banks',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -173,7 +173,7 @@ export class BankController {
             'Internal Server Error',
             null,
             'Failed to retrieve bank',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -206,7 +206,7 @@ export class BankController {
             'Internal Server Error',
             null,
             'Failed to delete bank',
-            error.message || error,
+            error || error,
           ),
         );
     }

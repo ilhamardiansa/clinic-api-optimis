@@ -48,19 +48,17 @@ export class CategoryController {
         );
     } catch (error) {
       return res
-        .status(error.getStatus ? error.getStatus() : 400)
-        .json(
-          format_json(
-            error.getStatus ? error.getStatus() : 400,
-            false,
-            error.getResponse ? error.getResponse()['errors'] : 'Bad Request',
-            null,
-            error.getResponse
-              ? error.getResponse()['message']
-              : 'Failed to create category',
-            null,
-          ),
-        );
+      .status(400)
+      .json(
+        format_json(
+          400,
+          false,
+          'Bad Request',
+          null,
+           error,
+          null,
+        ),
+      );
     }
   }
 
@@ -91,19 +89,17 @@ export class CategoryController {
         );
     } catch (error) {
       return res
-        .status(error.getStatus ? error.getStatus() : 400)
-        .json(
-          format_json(
-            error.getStatus ? error.getStatus() : 400,
-            false,
-            error.getResponse ? error.getResponse()['errors'] : 'Bad Request',
-            null,
-            error.getResponse
-              ? error.getResponse()['message']
-              : 'Failed to update category',
-            null,
-          ),
-        );
+      .status(400)
+      .json(
+        format_json(
+          400,
+          false,
+          'Bad Request',
+          null,
+           error,
+          null,
+        ),
+      );
     }
   }
 
@@ -134,7 +130,7 @@ export class CategoryController {
             'Internal Server Error',
             null,
             'Failed to retrieve categories',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -181,7 +177,7 @@ export class CategoryController {
             'Internal Server Error',
             null,
             'Failed to retrieve category',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -214,7 +210,7 @@ export class CategoryController {
             'Internal Server Error',
             null,
             'Failed to delete category',
-            error.message || error,
+            error || error,
           ),
         );
     }

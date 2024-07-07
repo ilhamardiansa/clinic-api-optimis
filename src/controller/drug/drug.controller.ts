@@ -50,14 +50,14 @@ export class DrugController {
         );
     } catch (error) {
       return res
-        .status(error.getStatus ? error.getStatus() : 400)
+        .status(400)
         .json(
           format_json(
-            error.getStatus ? error.getStatus() : 400,
+            400,
             false,
-            error.getResponse ? error.getResponse()['errors'] : 'Bad Request',
+            'Bad Request',
             null,
-            error.getResponse ? error.getResponse()['message'] : error.message,
+             error,
             null,
           ),
         );
@@ -89,16 +89,14 @@ export class DrugController {
         );
     } catch (error) {
       return res
-        .status(error.getStatus ? error.getStatus() : 400)
+        .status(400)
         .json(
           format_json(
-            error.getStatus ? error.getStatus() : 400,
+            400,
             false,
-            error.getResponse ? error.getResponse()['errors'] : 'Bad Request',
+            error,
             null,
-            error.getResponse
-              ? error.getResponse()['message']
-              : 'Failed to update drug',
+            error,
             null,
           ),
         );
@@ -133,7 +131,7 @@ export class DrugController {
             'Internal Server Error',
             null,
             'Failed to retrieve drugs',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -174,7 +172,7 @@ export class DrugController {
             'Internal Server Error',
             null,
             'Failed to retrieve drug',
-            error.message || error,
+            error || error,
           ),
         );
     }
@@ -201,7 +199,7 @@ export class DrugController {
             'Internal Server Error',
             null,
             'Failed to delete drug',
-            error.message || error,
+            error || error,
           ),
         );
     }

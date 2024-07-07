@@ -58,7 +58,7 @@ export class ScheduleController {
     } catch (error) {
       return res
         .status(400)
-        .json(format_json(400,false, true, null, 'Server Error '+error.message, error));
+        .json(format_json(400,false, true, null, 'Server Error '+error, error));
     }
   }
 
@@ -111,7 +111,7 @@ export class ScheduleController {
     } catch (error) {
       return res
         .status(400)
-        .json(format_json(400,false, true, null, 'Server Error '+error.message, error));
+        .json(format_json(400,false, true, null, 'Server Error '+error, error));
     }
   }
 
@@ -168,7 +168,7 @@ export class ScheduleController {
     } catch (error) {
       return res
         .status(400)
-        .json(format_json(400,false, true, null, 'Server Error '+error.message, error));
+        .json(format_json(400,false, true, null, 'Server Error '+error, error));
     }
   }
   
@@ -224,7 +224,7 @@ export class ScheduleController {
     } catch (error) {
       return res
         .status(400)
-        .json(format_json(400,false, true, null, 'Server Error '+error.message, error));
+        .json(format_json(400,false, true, null, 'Server Error '+error, error));
     }
   }
 
@@ -284,7 +284,7 @@ export class ScheduleController {
     } catch (error) {
       return res
         .status(400)
-        .json(format_json(400,false, true, null, 'Server Error '+error.message, error));
+        .json(format_json(400,false, true, null, 'Server Error '+error, error));
     }
   }
 
@@ -332,7 +332,7 @@ export class ScheduleController {
     } catch (error) {
       return res
         .status(400)
-        .json(format_json(400, false, true, null, 'Server Error '+error.message, error));
+        .json(format_json(400, false, true, null, 'Server Error '+error, error));
     }
   }
 }

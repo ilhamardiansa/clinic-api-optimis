@@ -122,8 +122,8 @@ export class SchedulesService {
     } catch (error) {
       return {
         status: false,
-        message: error.message,
-        data: error.message,
+        message: error,
+        data: error,
       };
     }
   }
@@ -166,7 +166,7 @@ export class SchedulesService {
     } catch (error) {
       return {
         status: false,
-        message: error.message,
+        message: error,
         data: null,
       };
     }
@@ -256,7 +256,7 @@ export class SchedulesService {
       console.error('Error in Create method:', error);
       return {
         status: false,
-        message: error.message,
+        message: error,
         data: null,
       };
     }

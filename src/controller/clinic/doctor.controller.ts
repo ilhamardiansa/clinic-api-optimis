@@ -56,7 +56,7 @@ export class DoctorController {
             'Bad Request',
             null,
             'Failed to create doctor',
-            error.message,
+            error,
           ),
         );
     }
@@ -98,7 +98,7 @@ export class DoctorController {
             'Bad Request',
             null,
             'Failed to update doctor',
-            error.message,
+            error,
           ),
         );
     }
@@ -143,7 +143,7 @@ export class DoctorController {
             'Internal Server Error',
             null,
             'Failed to retrieve doctors',
-            error.message,
+            error,
           ),
         );
     }
@@ -177,7 +177,7 @@ export class DoctorController {
             'Internal Server Error',
             null,
             'Failed to retrieve doctor',
-            error.message,
+            error,
           ),
         );
     }
@@ -211,7 +211,7 @@ export class DoctorController {
             'Internal Server Error',
             null,
             'Failed to delete doctor',
-            error.message,
+            error,
           ),
         );
     }

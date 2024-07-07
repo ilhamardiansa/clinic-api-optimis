@@ -36,7 +36,7 @@ export class WilayahController {
         success: false,
         errors: true,
         message: 'Internal Server Error',
-        error: error.message,
+        error: error,
       };
     }
   }

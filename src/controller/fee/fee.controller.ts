@@ -59,7 +59,7 @@ export class FeeController {
             'Bad Request',
             null,
             'Failed to create fee',
-            error.message,
+            error,
           ),
         );
     }
@@ -106,7 +106,7 @@ export class FeeController {
             'Bad Request',
             null,
             'Failed to update fee',
-            error.message,
+            error,
           ),
         );
     }
@@ -140,7 +140,7 @@ export class FeeController {
             'Internal Server Error',
             null,
             'Failed to retrieve fees',
-            error.message,
+            error,
           ),
         );
     }
@@ -176,7 +176,7 @@ export class FeeController {
             'Internal Server Error',
             null,
             'Failed to retrieve fee',
-            error.message,
+            error,
           ),
         );
     }
@@ -214,7 +214,7 @@ export class FeeController {
             'Internal Server Error',
             null,
             'Failed to delete fee',
-            error.message,
+            error,
           ),
         );
     }

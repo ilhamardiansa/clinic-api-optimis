@@ -85,7 +85,7 @@ export class RedeemController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );
@@ -156,7 +156,7 @@ export class RedeemController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );
@@ -239,7 +239,7 @@ export class RedeemController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );
@@ -324,7 +324,7 @@ export class RedeemController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );
@@ -402,7 +402,7 @@ export class RedeemController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );

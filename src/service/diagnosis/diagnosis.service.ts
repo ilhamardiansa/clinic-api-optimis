@@ -89,7 +89,7 @@ export class DiagnosisService {
         };
     }
     } catch (error) {
-      return { status: false, message: error.message, data: null };
+      return { status: false, message: error, data: null };
     }
 }
 
@@ -142,7 +142,7 @@ async update(token: string, id: number, data: DiagnosisDTO) {
     } catch (error) {
         return {
             status: false,
-            message: error.message,
+            message: error,
             data: null,
         };
     }
@@ -179,7 +179,7 @@ async delete(token: string, id:number) {
         };
     }
     } catch (error) {
-      return { status: false, message: error.message, data: null };
+      return { status: false, message: error, data: null };
     }
 }
 

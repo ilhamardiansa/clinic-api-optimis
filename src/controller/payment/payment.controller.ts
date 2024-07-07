@@ -86,8 +86,8 @@ export class PaymentController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
-            error.message,
+            'Server Error ' + error,
+            error,
           ),
         );
     }
@@ -159,7 +159,7 @@ export class PaymentController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );
@@ -234,7 +234,7 @@ export class PaymentController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );
@@ -312,7 +312,7 @@ export class PaymentController {
             false,
             true,
             null,
-            'Server Error ' + error.message,
+            'Server Error ' + error,
             error,
           ),
         );
