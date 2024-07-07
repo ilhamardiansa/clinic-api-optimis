@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, UseGuards, UploadedFile, UsePipes, Res } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, UploadedFile, UsePipes, Res, Get, Put } from '@nestjs/common';
 import { AuthDTO } from 'src/dto/auth/auth.dto';
 import { format_json } from 'src/env';
 import { v2 as cloudinary } from 'cloudinary';
@@ -9,6 +9,8 @@ import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { AuthenticationService } from 'src/service/auth/Authentication.service';
 import { VerifikasiDTO } from 'src/dto/auth/verifikasi.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ProfileService } from 'src/service/auth/profile.service';
+import { ProfileDto } from 'src/dto/auth/profile.dto';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -18,6 +20,7 @@ export function generateRandomNumber(min: number, max: number): number {
 export class AuthController {
   constructor(
     private readonly AuthenticationService: AuthenticationService,
+    private readonly profileService: ProfileService,
   ) {}
 
   @Post('auth/register')
@@ -36,7 +39,7 @@ export class AuthController {
       } else {
         return res
           .status(400)
-          .json(format_json(400, false, true, null, user.message, null));
+          .json(format_json(400, false, true, user.errors, user.message, null));
       }
     } catch (error) {
       return res
@@ -100,7 +103,148 @@ export class AuthController {
         return res
           .status(400)
           .json(
-            format_json(400, false, null, null, verifikasiotp.message, null),
+            format_json(400, false, null, verifikasiotp.errors, verifikasiotp.message, null),
+          );
+      }
+    } catch (error) {
+      return res
+        .status(400)
+        .json(format_json(400, false, true, null, 'Server Error ', error));
+    }
+  }
+
+  @Get('auth/personal-data')
+  @UseGuards(AuthGuard('jwt'))
+  async getpersonaldata(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      const authorizationHeader = req.headers['authorization'];
+
+      if (!authorizationHeader) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Authorization header is missing',
+              null,
+            ),
+          );
+      }
+
+      const token = authorizationHeader.split(' ')[1];
+
+      if (!token) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Bearer token is missing',
+              null,
+            ),
+          );
+      }
+      const getprofile = await this.profileService.findprofile(token);
+      if (getprofile.status == true) {
+        return res.status(200).json(
+          format_json(200, true, null, null, getprofile.message, getprofile.users)
+        );
+      } else {
+        return res
+          .status(400)
+          .json(
+            format_json(400, false, getprofile.errors, null, getprofile.message, null),
+          );
+      }
+    } catch (error) {
+      return res
+        .status(400)
+        .json(format_json(400, false, true, null, 'Server Error ', error));
+    }
+  }
+
+  @Put('auth/personal-data')
+  @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
+  async updatepersonaldata(
+    @Body() ProfileDTO : ProfileDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      const authorizationHeader = req.headers['authorization'];
+
+      if (!authorizationHeader) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Authorization header is missing',
+              null,
+            ),
+          );
+      }
+
+      const token = authorizationHeader.split(' ')[1];
+
+      if (!token) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Bearer token is missing',
+              null,
+            ),
+          );
+      }
+
+      const dataprofile = {
+        fullname: ProfileDTO.fullname,
+        phoneNumber: ProfileDTO.phoneNumber,
+        noIdentity: ProfileDTO.noIdentity,
+        birthDate: ProfileDTO.birthDate,
+        birthPlace: ProfileDTO.birthPlace,
+        address: ProfileDTO.address,
+        gender: ProfileDTO.gender,
+        workIn: ProfileDTO.workIn,
+        bloodType: ProfileDTO.bloodType,
+        maritalStatus: ProfileDTO.maritalStatus,
+        nationality: ProfileDTO.nationality,
+        religion: ProfileDTO.religion,
+        cityId: ProfileDTO.cityId,
+        neighborhoodNo: ProfileDTO.neighborhoodNo,
+        citizenNo: ProfileDTO.citizenNo,
+        areaCode: ProfileDTO.areaCode,
+        responsible_for_costs: ProfileDTO.responsible_for_costs,
+      };
+
+      const getprofile = await this.profileService.updatecreate(dataprofile,token);
+      if (getprofile.status == true) {
+        return res.status(200).json(
+          format_json(200, true, null, null, getprofile.message, getprofile.users)
+        );
+      } else {
+        return res
+          .status(400)
+          .json(
+            format_json(400, false, getprofile.errors, null, getprofile.message, null),
           );
       }
     } catch (error) {

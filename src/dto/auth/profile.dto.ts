@@ -14,41 +14,36 @@ export class ProfileDto {
   @IsNotEmpty({ message: 'full name should not be empty' })
   fullname: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'phone number should not be empty' })
   @IsPhoneNumber('ID')
-  phone_number: string;
+  phoneNumber: string;
 
-  @IsInt()
   @IsNotEmpty({ message: 'no identity should not be empty' })
-  no_identity: string;
+  noIdentity: string;
 
-  @IsDate()
-  @IsNotEmpty({ message: 'birth date should not be empty' })
-  birth_date: Date;
+  @IsOptional()
+  birthDate: Date;
 
-  @IsInt()
-  @IsNotEmpty({ message: 'birth place should not be empty' })
-  birth_place: string;
+  @IsOptional()
+  birthPlace: string;
 
-  @IsString()
   @IsNotEmpty({ message: 'address should not be empty' })
   address: string;
 
-  @IsString()
   @IsNotEmpty({ message: 'gender should not be empty' })
   gender: string;
 
   @IsOptional()
   @IsString()
-  work_in: string;
+  workIn: string;
 
   @IsOptional()
   @IsString()
-  blood_type: string;
+  bloodType: string;
 
   @IsOptional()
   @IsString()
-  marital_status: string;
+  maritalStatus: string;
 
   @IsOptional()
   @IsString()
@@ -60,19 +55,19 @@ export class ProfileDto {
 
   @IsOptional()
   @IsInt()
-  city_id: number;
+  cityId: number;
 
   @IsOptional()
   @IsInt()
-  neighborhood_no: number;
+  neighborhoodNo: number;
 
   @IsOptional()
   @IsInt()
-  citizen_no: number;
+  citizenNo: number;
 
   @IsOptional()
   @IsInt()
-  area_code: number;
+  areaCode: number;
 
   @IsOptional()
   @IsString()
