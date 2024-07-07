@@ -9,10 +9,11 @@ import { TokenBlacklistMiddleware } from './middleware/token-blacklist.middlewar
 import { PrismaModule } from './prisma.module';
 import { AuthController } from './controller/auth/auth.controller';
 import { AuthenticationService } from './service/auth/Authentication.service';
+import { mailService } from './service/mailer/mailer.service';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthenticationService],
+  providers: [AuthenticationService, mailService],
   imports: [
     ConfigModule.forRoot(),
     PrismaModule,

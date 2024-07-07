@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { PrismaService } from 'src/prisma.service';
 import { AuthDTO } from 'src/dto/auth/auth.dto';
 import { ZodError, z } from 'zod';
+import { mailService } from '../mailer/mailer.service';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -10,7 +11,10 @@ export function generateRandomNumber(min: number, max: number): number {
 
 @Injectable()
 export class AuthenticationService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly mailService: mailService,
+  ) {}
 
   async register(
     AuthDTO : AuthDTO){
@@ -23,6 +27,22 @@ export class AuthenticationService {
 
     try {
       const validatedData = RegisterSchema.parse(AuthDTO);
+
+      const checkuser = await this.prisma.user.findUnique({
+        where: { 
+          email: AuthDTO.email,
+          phone_number: AuthDTO.phone_number
+         },
+      })
+      if(checkuser) {
+        return {
+          status: false,
+          message: 'Akun sudah tersedia',
+          users: null,
+          token: null,
+        };
+      }
+
       const userData = {
         email: AuthDTO.email,
         phone_number: AuthDTO.phone_number,
@@ -60,6 +80,20 @@ export class AuthenticationService {
       };
       
       const profile = await this.prisma.profile.create({ data: dataprofile })
+
+      const otp = generateRandomNumber(100000,999999);
+
+      const sendemail = this.mailService.sendMail(
+        user.email,
+        'Verifikasi email',
+        otp,
+        dataprofile.fullname,
+      );
+
+      const saveotp = await this.prisma.otp.create({ data: {
+        kode_otp: otp,
+        userId : user.id,
+      } })
 
       const token = jwt.sign(
         { userId: user.id, verifikasi: false },

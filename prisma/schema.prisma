@@ -23,6 +23,7 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   profile Profile? @relation
+  otp Otp[] @relation
 }
 
 model Profile {
@@ -49,3 +50,15 @@ model Profile {
   responsibleForCosts String?   
 }
 
+
+model Otp {
+  id       Int     @id @default(autoincrement())
+  kode_otp Int
+  userId   Int   
+  user     User     @relation(fields: [userId], references: [id])
+  status Int @default(0)
+  created_at DateTime @default(now())
+
+  @@index([userId], name: "user_index")
+
+}
