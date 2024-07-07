@@ -11,11 +11,13 @@ import { VerifikasiDTO } from 'src/dto/auth/verifikasi.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ProfileService } from 'src/service/auth/profile.service';
 import { ProfileDto } from 'src/dto/auth/profile.dto';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+@ApiTags('Auth')
 @Controller('api')
 export class AuthController {
   constructor(
@@ -25,6 +27,8 @@ export class AuthController {
 
   @Post('auth/register')
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'Register' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async register(@Body() authDTO: AuthDTO, @UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     try {
       const { fullname, email, phone_number, password } = authDTO;
@@ -51,6 +55,8 @@ export class AuthController {
   @Post('auth/verification')
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'Verifikasi akun' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async verifikasiEmail(
     @Body() verifikasiDTO: VerifikasiDTO,
     @Req() req: Request,
@@ -115,6 +121,8 @@ export class AuthController {
 
   @Get('auth/personal-data')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get personal data' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async getpersonaldata(
     @Req() req: Request,
     @Res() res: Response,
@@ -175,6 +183,8 @@ export class AuthController {
   @Put('auth/personal-data')
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'Update personal data' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async updatepersonaldata(
     @Body() ProfileDTO : ProfileDto,
     @Req() req: Request,
