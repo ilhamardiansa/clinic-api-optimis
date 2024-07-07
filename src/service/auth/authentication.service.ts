@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma.service';
 import { AuthDTO } from 'src/dto/auth/auth.dto';
 import { ZodError, z } from 'zod';
 import { mailService } from '../mailer/mailer.service';
+import { VerifikasiDTO } from 'src/dto/auth/verifikasi.dto';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -16,8 +17,7 @@ export class AuthenticationService {
     private readonly mailService: mailService,
   ) {}
 
-  async register(
-    AuthDTO : AuthDTO){
+  async register(AuthDTO){
     const RegisterSchema = z.object({
       fullname: z.string().max(64).min(1),
       email: z.string().email().min(1),
@@ -116,21 +116,166 @@ export class AuthenticationService {
               },
               token: token,
             };
-    } catch (e) {
+    } catch (e : any) {
       if (e instanceof ZodError) {
+        const errorMessages = e.errors.map(error => ({
+          field: error.path.join('.'),
+          message: error.message,
+        }));
+    
         return {
           status: false,
-          message: e.errors.map(error => error).join(', '),
+          message: 'Validasi gagal',
+          errors: errorMessages,
           users: null,
           token: null,
         };
       }
       return {
         status: false,
-        message: e,
+        message: e.message || 'Terjadi kesalahan',
         users: null,
         token: null,
       };
     }
   }
+
+  async verifikasi(VerifikasiDTO, tokenjwt) {
+    const RegisterSchema = z.object({
+      kode_otp: z.string().min(6)
+    });
+  
+    try {
+      const validatedData = RegisterSchema.parse(VerifikasiDTO);
+  
+      const extracttoken = jwt.verify(tokenjwt, process.env.JWT_SECRET);
+  
+      if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+        var userId = extracttoken.userId;
+      }
+  
+      const checkuser = await this.prisma.user.findUnique({
+        where: { 
+          id: userId
+        },
+      });
+
+      if(!checkuser) {
+        return {
+          status: false,
+          message: 'Akun tidak terdaftar',
+          users: {
+            id: null,
+            full_name: null,
+            image: null,
+            email: null,
+            phone_number: null,
+            verifikasi: null,
+          },
+          token: null,
+        };
+      }
+
+      const getprofile = await this.prisma.profile.findUnique({
+        where: { 
+          userId: userId
+        },
+      });
+  
+      if (checkuser.verifed == 1) {
+        return {
+          status: false,
+          message: 'Akun telah di verifikasi',
+          users: {
+            id: checkuser.id,
+            full_name: getprofile.fullname,
+            image: getprofile.profilImage,
+            email: checkuser.email,
+            phone_number: checkuser.phone_number,
+            verifikasi: checkuser.verifed === 1,
+          },
+          token: null,
+        };
+      }
+
+      const otpExists = await this.prisma.otp.findFirst({
+        where: { 
+          kode_otp: parseInt(VerifikasiDTO.kode_otp),
+          userId: checkuser.id,
+          status: 0
+        }
+      });
+
+      if (!otpExists) {
+        return {
+          status: false,
+          message: 'OTP Salah',
+          users: {
+            id: checkuser.id,
+            full_name: getprofile.fullname,
+            image: getprofile.profilImage,
+            email: checkuser.email,
+            phone_number: checkuser.phone_number,
+            verifikasi: checkuser.verifed === 1,
+          },
+          token: null,
+        };
+      }
+
+      const updateotp = await this.prisma.otp.update({
+        where: { id : otpExists.id},
+        data: { status: 1 }
+      });
+
+      const updateuser = await this.prisma.user.update({
+        where: { id : checkuser.id},
+        data: { verifed: 1 }
+      });
+
+
+      const newToken = jwt.sign(
+        { userId: checkuser.id, verifikasi: false },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: '7d',
+        },
+      );
+  
+      return {
+        status: true,
+        message: 'Berhasil',
+        users: {
+          id: checkuser.id,
+          full_name: getprofile.fullname,
+          image: getprofile.profilImage,
+          email: checkuser.email,
+          phone_number: checkuser.phone_number,
+          verifikasi: checkuser.verifed === 1,
+        },
+        token: newToken,
+      };
+    } catch (e : any) {
+      if (e instanceof ZodError) {
+        const errorMessages = e.errors.map(error => ({
+          field: error.path.join('.'),
+          message: error.message,
+        }));
+    
+        return {
+          status: false,
+          message: 'Validasi gagal',
+          errors: errorMessages,
+          users: null,
+          token: null,
+        };
+      }
+      return {
+        status: false,
+        message: e.message || 'Terjadi kesalahan',
+        users: null,
+        token: null,
+      };
+    }
+  }
+  
 }

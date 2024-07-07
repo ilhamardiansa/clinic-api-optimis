@@ -10,10 +10,11 @@ import { PrismaModule } from './prisma.module';
 import { AuthController } from './controller/auth/auth.controller';
 import { AuthenticationService } from './service/auth/Authentication.service';
 import { mailService } from './service/mailer/mailer.service';
+import { JwtStrategy } from './middleware/jwt.strategy';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthenticationService, mailService],
+  providers: [AuthenticationService, mailService, JwtStrategy],
   imports: [
     ConfigModule.forRoot(),
     PrismaModule,
