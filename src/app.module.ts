@@ -52,31 +52,13 @@ import { BankCategoryModule } from './modules/bank/bank.category.module';
 import { configurationsModule } from './modules/configurations.module';
 import { FeeModule } from './modules/fee/fee.module';
 import { PaymentDetailsModule } from './modules/payment/payment.details.module';
+import { PrismaService } from './prisma.service';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, mailService, JwtStrategy],
+  providers: [AuthService, mailService, JwtStrategy, PrismaService],
+  exports: [PrismaService],
   imports: [
-    TypeOrmModule.forFeature([User, Otp, Profile]),
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT, 10),
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      entities: DATABASE_ENTITIES,
-      timezone: 'Asia/Jakarta',
-      ssl: {
-        ca: fs.readFileSync(
-          path.join(__dirname, '..', 'certs', 'ca_aivenclinic.pem'),
-        ),
-      },
-      synchronize: true,
-    }),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
@@ -99,44 +81,10 @@ import { PaymentDetailsModule } from './modules/payment/payment.details.module';
           strict: true,
         },
       },
-    }),
-    BankModule,
-    CategoryModule,
-    ClinicModule,
-    DoctorModule,
-    DocumentModule,
-    DrugModule,
-    LastMedicalRecordModule,
-    LastRedeemModule,
-    MedicalRecordDrugModule,
-    MedicalRecordModule,
-    MenuModule,
-    PolyModule,
-    ProfileModule,
-    RecordModule,
-    ReplyModule,
-    ReviewModule,
-    RoleModule,
-    RoomModule,
-    ScheduleModule,
-    SummaryModule,
-    TermModule,
-    TermCategoryModule,
-    TransactionModule,
-    LocationModule,
-    UserModule,
-    SymptomModule,
-    Authmodule,
-    RedeemModule,
-    paymentModule,
-    FeedbackModule,
-    DiagnosisModule,
-    BankCategoryModule,
-    configurationsModule,
-    FeeModule,
-    PaymentDetailsModule,
+    })
   ],
 })
+
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(TokenBlacklistMiddleware).forRoutes('*');
