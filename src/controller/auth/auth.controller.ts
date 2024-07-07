@@ -1,4 +1,15 @@
-import { Controller, Post, Body, Req, UseGuards, UploadedFile, UsePipes, Res, Get, Put } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Req,
+  UseGuards,
+  UploadedFile,
+  UsePipes,
+  Res,
+  Get,
+  Put,
+} from '@nestjs/common';
 import { AuthDTO } from 'src/dto/auth/auth.dto';
 import { format_json } from 'src/env';
 import { v2 as cloudinary } from 'cloudinary';
@@ -29,7 +40,11 @@ export class AuthController {
   @UsePipes(CustomValidationPipe)
   @ApiOperation({ summary: 'Register' })
   @ApiResponse({ status: 200, description: 'Success' })
-  async register(@Body() authDTO: AuthDTO, @UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+  async register(
+    @Body() authDTO: AuthDTO,
+    @UploadedFile() file: Express.Multer.File,
+    @Res() res: Response,
+  ) {
     try {
       const { fullname, email, phone_number, password } = authDTO;
       const user = await this.AuthenticationService.register(authDTO);
@@ -48,7 +63,9 @@ export class AuthController {
     } catch (error) {
       return res
         .status(400)
-        .json(format_json(400, false, true, null, 'Server Error '+error, error));
+        .json(
+          format_json(400, false, true, null, 'Server Error ' + error, error),
+        );
     }
   }
 
@@ -97,7 +114,10 @@ export class AuthController {
             ),
           );
       }
-      const verifikasiotp = await this.AuthenticationService.verifikasi(verifikasiDTO, token);
+      const verifikasiotp = await this.AuthenticationService.verifikasi(
+        verifikasiDTO,
+        token,
+      );
       if (verifikasiotp.status == true) {
         return res.status(200).json(
           format_json(200, true, null, null, verifikasiotp.message, {
@@ -109,7 +129,14 @@ export class AuthController {
         return res
           .status(400)
           .json(
-            format_json(400, false, null, verifikasiotp.errors, verifikasiotp.message, null),
+            format_json(
+              400,
+              false,
+              null,
+              verifikasiotp.errors,
+              verifikasiotp.message,
+              null,
+            ),
           );
       }
     } catch (error) {
@@ -123,10 +150,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get personal data' })
   @ApiResponse({ status: 200, description: 'Success' })
-  async getpersonaldata(
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
+  async getpersonaldata(@Req() req: Request, @Res() res: Response) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
@@ -163,14 +187,30 @@ export class AuthController {
       }
       const getprofile = await this.profileService.findprofile(token);
       if (getprofile.status == true) {
-        return res.status(200).json(
-          format_json(200, true, null, null, getprofile.message, getprofile.users)
-        );
+        return res
+          .status(200)
+          .json(
+            format_json(
+              200,
+              true,
+              null,
+              null,
+              getprofile.message,
+              getprofile.users,
+            ),
+          );
       } else {
         return res
           .status(400)
           .json(
-            format_json(400, false, getprofile.errors, null, getprofile.message, null),
+            format_json(
+              400,
+              false,
+              getprofile.errors,
+              null,
+              getprofile.message,
+              null,
+            ),
           );
       }
     } catch (error) {
@@ -186,7 +226,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Update personal data' })
   @ApiResponse({ status: 200, description: 'Success' })
   async updatepersonaldata(
-    @Body() ProfileDTO : ProfileDto,
+    @Body() ProfileDTO: ProfileDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -245,22 +285,97 @@ export class AuthController {
         responsible_for_costs: ProfileDTO.responsible_for_costs,
       };
 
-      const getprofile = await this.profileService.updatecreate(dataprofile,token);
+      const getprofile = await this.profileService.updatecreate(
+        dataprofile,
+        token,
+      );
       if (getprofile.status == true) {
-        return res.status(200).json(
-          format_json(200, true, null, null, getprofile.message, getprofile.users)
-        );
+        return res
+          .status(200)
+          .json(
+            format_json(
+              200,
+              true,
+              null,
+              null,
+              getprofile.message,
+              getprofile.users,
+            ),
+          );
       } else {
         return res
           .status(400)
           .json(
-            format_json(400, false, getprofile.errors, null, getprofile.message, null),
+            format_json(
+              400,
+              false,
+              getprofile.errors,
+              null,
+              getprofile.message,
+              null,
+            ),
           );
       }
     } catch (error) {
       return res
         .status(400)
         .json(format_json(400, false, true, null, 'Server Error ', error));
+    }
+  }
+
+  @Post('auth/signin')
+  async signin(@Body() authDTO: AuthDTO, @Res() res: Response) {
+    try {
+      const user = await this.AuthenticationService.signin(authDTO);
+      if (user.status) {
+        return res.status(200).json(
+          format_json(200, true, false, null, 'User signed in successfully', {
+            user: user.users,
+            token: user.token,
+          }),
+        );
+      } else {
+        return res
+          .status(400)
+          .json(format_json(400, false, true, null, user.message, null));
+      }
+    } catch (error) {
+      return res
+        .status(400)
+        .json(
+          format_json(400, false, true, null, 'Server Error ' + error, error),
+        );
+    }
+  }
+
+  @Post('auth/signout')
+  async signout(@Body() authDTO: AuthDTO, @Res() res: Response) {
+    try {
+      const user = await this.AuthenticationService.signout(authDTO);
+      if (user.status) {
+        return res
+          .status(200)
+          .json(
+            format_json(
+              200,
+              true,
+              false,
+              null,
+              'User signed out successfully',
+              null,
+            ),
+          );
+      } else {
+        return res
+          .status(400)
+          .json(format_json(400, false, true, null, user.message, null));
+      }
+    } catch (error) {
+      return res
+        .status(400)
+        .json(
+          format_json(400, false, true, null, 'Server Error ' + error, error),
+        );
     }
   }
 }
