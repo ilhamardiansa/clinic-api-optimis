@@ -19,19 +19,19 @@ export class ProfileDto {
   @IsNotEmpty({ message: 'phone number should not be empty' })
   @IsPhoneNumber('ID')
   @ApiProperty()
-  phoneNumber: string;
+  phone_number: string;
 
   @IsNotEmpty({ message: 'no identity should not be empty' })
   @ApiProperty()
-  noIdentity: string;
+  no_identity: string;
 
   @IsOptional()
   @ApiProperty()
-  birthDate: Date;
+  birth_date: Date;
 
   @IsOptional()
   @ApiProperty()
-  birthPlace: string;
+  birth_place: string;
 
   @IsNotEmpty({ message: 'address should not be empty' })
   @ApiProperty()
@@ -44,17 +44,17 @@ export class ProfileDto {
   @IsOptional()
   @IsString()
   @ApiProperty()
-  workIn: string;
+  work_in: string;
 
   @IsOptional()
   @IsString()
   @ApiProperty()
-  bloodType: string;
+  blood_type: string;
 
   @IsOptional()
   @IsString()
   @ApiProperty()
-  maritalStatus: string;
+  marital_status: string;
 
   @IsOptional()
   @IsString()
@@ -69,7 +69,7 @@ export class ProfileDto {
   @IsOptional()
   @IsInt()
   @ApiProperty()
-  cityId: number;
+  city_id: number;
 
   @IsOptional()
   @IsInt()
@@ -79,15 +79,15 @@ export class ProfileDto {
   @IsOptional()
   @IsInt()
   @ApiProperty()
-  citizenNo: number;
+  citizen_no: number;
 
   @IsOptional()
   @IsInt()
   @ApiProperty()
-  areaCode: number;
+  area_code: number;
 
   @IsOptional()
   @IsString()
   @ApiProperty()
-  responsible_for_costs: string;
+  responsibleForCosts: string;
 }

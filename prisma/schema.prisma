@@ -29,24 +29,24 @@ model User {
 model Profile {
   id       Int     @id @default(autoincrement())
   fullname String
-  phoneNumber String
-  profilImage   String?   
-  noIdentity   String?   
-  birthDate   DateTime?  
-  birthPlace  String?   
+  phone_number String
+  profil_image   String?   
+  no_identity   String?   
+  birth_date   DateTime?  
+  birth_place  String?   
   address     String?   
   gender      String?   
-  workIn      String?   
-  bloodType   String?   
-  maritalStatus String?   
+  work_in      String?   
+  blood_type   String?   
+  marital_status String?   
   nationality String?   
   religion    String?   
-  userId      Int      @unique
-  user        User     @relation(fields: [userId], references: [id])
-  cityId      Int?
-  neighborhoodNo Int?     
-  citizenNo    Int?     
-  areaCode     Int?     
+  user_id      Int      @unique
+  user        User     @relation(fields: [user_id], references: [id])
+  city_id      Int?
+  neighborhood_no Int?     
+  citizen_no    Int?     
+  area_code     Int?     
   responsibleForCosts String?   
 }
 
@@ -54,11 +54,11 @@ model Profile {
 model Otp {
   id       Int     @id @default(autoincrement())
   kode_otp Int
-  userId   Int   
-  user     User     @relation(fields: [userId], references: [id])
+  user_id   Int   
+  user     User     @relation(fields: [user_id], references: [id])
   status Int @default(0)
   created_at DateTime @default(now())
 
-  @@index([userId], name: "user_index")
+  @@index([user_id], name: "user_index")
 
 }

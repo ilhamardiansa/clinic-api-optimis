@@ -25,7 +25,7 @@ export class ProfileService {
 
         const getprofile = await this.prisma.profile.findUnique({
             where: { 
-              userId: userId
+              user_id: userId
             },
             include: {
                 user: true,
@@ -80,22 +80,22 @@ export class ProfileService {
   
       const profileSchema = z.object({
         fullname: z.string().max(64).min(1),
-        phoneNumber: z.string().min(1),
-        noIdentity: z.string().min(1),
-        birthDate: z.string(),
-        birthPlace: z.string().optional(),
+        phone_number: z.string().min(1),
+        no_identity: z.string().min(1),
+        birth_date: z.string(),
+        birth_place: z.string().optional(),
         address: z.string().min(1),
         gender: z.string().min(1),
-        workIn: z.string().optional(),
-        bloodType: z.string().optional(),
-        maritalStatus: z.string().optional(),
+        work_in: z.string().optional(),
+        blood_type: z.string().optional(),
+        marital_status: z.string().optional(),
         nationality: z.string().optional(),
         religion: z.string().optional(),
-        cityId: z.number().int().optional(),
-        neighborhoodNo: z.number().int().optional(),
-        citizenNo: z.number().int().optional(),
-        areaCode: z.number().int().optional(),
-        responsible_for_costs: z.string().optional(),
+        city_id: z.number().int().optional(),
+        neighborhood_no: z.number().int().optional(),
+        citizen_no: z.number().int().optional(),
+        area_code: z.number().int().optional(),
+        responsibleForCosts: z.string().optional(),
       });
   
       const validatedData = profileSchema.parse(profileData);
@@ -107,7 +107,7 @@ export class ProfileService {
   
       const getprofile = await this.prisma.profile.findUnique({
         where: {
-          userId: userId
+          user_id: userId
         },
       });
   
@@ -122,7 +122,7 @@ export class ProfileService {
       }
   
       const updateprofile = await this.prisma.profile.update({
-        where: { userId: userId },
+        where: { user_id: userId },
         data: profileData,
         include: {
           user: true,

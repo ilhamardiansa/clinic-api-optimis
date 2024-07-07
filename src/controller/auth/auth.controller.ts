@@ -267,22 +267,22 @@ export class AuthController {
 
       const dataprofile = {
         fullname: ProfileDTO.fullname,
-        phoneNumber: ProfileDTO.phoneNumber,
-        noIdentity: ProfileDTO.noIdentity,
-        birthDate: ProfileDTO.birthDate,
-        birthPlace: ProfileDTO.birthPlace,
+        phone_number: ProfileDTO.phone_number,
+        no_identity: ProfileDTO.no_identity,
+        birth_date: ProfileDTO.birth_date,
+        birth_place: ProfileDTO.birth_place,
         address: ProfileDTO.address,
         gender: ProfileDTO.gender,
-        workIn: ProfileDTO.workIn,
-        bloodType: ProfileDTO.bloodType,
-        maritalStatus: ProfileDTO.maritalStatus,
+        work_in: ProfileDTO.work_in,
+        blood_type: ProfileDTO.blood_type,
+        marital_status: ProfileDTO.marital_status,
         nationality: ProfileDTO.nationality,
         religion: ProfileDTO.religion,
-        cityId: ProfileDTO.cityId,
+        city_id: ProfileDTO.city_id,
         neighborhoodNo: ProfileDTO.neighborhoodNo,
-        citizenNo: ProfileDTO.citizenNo,
-        areaCode: ProfileDTO.areaCode,
-        responsible_for_costs: ProfileDTO.responsible_for_costs,
+        citizen_no: ProfileDTO.citizen_no,
+        area_code: ProfileDTO.area_code,
+        responsibleForCosts: ProfileDTO.responsibleForCosts,
       };
 
       const getprofile = await this.profileService.updatecreate(

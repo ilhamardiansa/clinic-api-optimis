@@ -72,18 +72,18 @@ export class AuthenticationService {
 
       const dataprofile = {
         fullname: AuthDTO.fullname,
-        phoneNumber: AuthDTO.phone_number,
-        profilImage:
+        phone_number: AuthDTO.phone_number,
+        profil_image:
           'https://api.dicebear.com/8.x/notionists/svg?seed=' +
           AuthDTO.fullname,
-        noIdentity: null,
-        birthDate: null,
-        birthPlace: null,
+        no_identity: null,
+        birth_date: null,
+        birth_place: null,
         address: null,
         gender: null,
-        workIn: null,
-        bloodType: null,
-        maritalStatus: null,
+        work_in: null,
+        blood_type: null,
+        marital_status: null,
         nationality: null,
         religion: null,
         user: {
@@ -91,10 +91,10 @@ export class AuthenticationService {
             id: user.id,
           },
         },
-        cityId: null,
-        neighborhoodNo: null,
-        citizenNo: null,
-        areaCode: null,
+        city_id: null,
+        neighborhood_no: null,
+        citizen_no: null,
+        area_code: null,
         responsibleForCosts: null,
       };
 
@@ -112,7 +112,7 @@ export class AuthenticationService {
       const saveotp = await this.prisma.otp.create({
         data: {
           kode_otp: otp,
-          userId: user.id,
+          user_id: user.id,
         },
       });
 
@@ -130,7 +130,7 @@ export class AuthenticationService {
         users: {
           id: user.id,
           full_name: profile.fullname,
-          image: profile.profilImage,
+          image: profile.profil_image,
           email: user.email,
           phone_number: user.phone_number,
           verifikasi: user.verifed === 1,
@@ -199,7 +199,7 @@ export class AuthenticationService {
 
       const getprofile = await this.prisma.profile.findUnique({
         where: {
-          userId: userId,
+          user_id: userId,
         },
       });
 
@@ -210,7 +210,7 @@ export class AuthenticationService {
           users: {
             id: checkuser.id,
             full_name: getprofile.fullname,
-            image: getprofile.profilImage,
+            image: getprofile.profil_image,
             email: checkuser.email,
             phone_number: checkuser.phone_number,
             verifikasi: checkuser.verifed === 1,
@@ -222,7 +222,7 @@ export class AuthenticationService {
       const otpExists = await this.prisma.otp.findFirst({
         where: {
           kode_otp: parseInt(VerifikasiDTO.kode_otp),
-          userId: checkuser.id,
+          user_id: checkuser.id,
           status: 0,
         },
       });
@@ -234,7 +234,7 @@ export class AuthenticationService {
           users: {
             id: checkuser.id,
             full_name: getprofile.fullname,
-            image: getprofile.profilImage,
+            image: getprofile.profil_image,
             email: checkuser.email,
             phone_number: checkuser.phone_number,
             verifikasi: checkuser.verifed === 1,
@@ -267,7 +267,7 @@ export class AuthenticationService {
         users: {
           id: checkuser.id,
           full_name: getprofile.fullname,
-          image: getprofile.profilImage,
+          image: getprofile.profil_image,
           email: checkuser.email,
           phone_number: checkuser.phone_number,
           verifikasi: checkuser.verifed === 1,
