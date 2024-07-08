@@ -22,7 +22,9 @@ import { DoctorService } from 'src/service/clinic/doctor.service';
 import { UpdateDoctorDto } from 'src/dto/clinic/update.doctor.dto';
 import { DoctorDto } from 'src/dto/clinic/doctor.dto';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Doctor')
 @Controller('api/doctors')
 export class DoctorController {
   constructor(private readonly doctorService: DoctorService) {}
@@ -31,6 +33,8 @@ export class DoctorController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Create' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async create(@Body() doctorDto: DoctorDto, @Res() res: Response) {
     try {
       const createdDoctor = await this.doctorService.createDoctor(doctorDto);
@@ -66,6 +70,8 @@ export class DoctorController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Update' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async update(
     @Param('id') id: string,
     @Body() updateDoctorDto: UpdateDoctorDto,
@@ -107,6 +113,8 @@ export class DoctorController {
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
+  @ApiOperation({ summary: 'Get' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findAll(
     @Query('q') query: string = '',
     @Query('page') page: number = null,
@@ -152,6 +160,8 @@ export class DoctorController {
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
+  @ApiOperation({ summary: 'Details' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const doctor = await this.doctorService.findOne(id);
@@ -186,6 +196,8 @@ export class DoctorController {
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Delete' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       await this.doctorService.removeDoctor(id);

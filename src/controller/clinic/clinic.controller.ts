@@ -21,16 +21,19 @@ import { format_json } from 'src/env';
 import { ClinicDto } from 'src/dto/clinic/clinic.dto';
 import { Request, Response } from 'express';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Clinic')
 @Controller('api/clinics')
 export class ClinicController {
   constructor(private readonly clinicService: ClinicService) {}
 
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Create' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async create(
     @Body() clinicDto: ClinicDto,
     @Req() req: Request,
@@ -68,9 +71,10 @@ export class ClinicController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Update' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async update(
     @Param('id') id: string,
     @Body() updateClinicDto: UpdateClinicDto,
@@ -118,6 +122,8 @@ export class ClinicController {
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
+  @ApiOperation({ summary: 'Get' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findAll(@Req() req: Request, @Res() res: Response) {
     try {
       const clinics = await this.clinicService.findAll();
@@ -152,6 +158,8 @@ export class ClinicController {
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
+  @ApiOperation({ summary: 'Detail' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findOne(
     @Param('id') id: string,
     @Req() req: Request,
@@ -195,6 +203,8 @@ export class ClinicController {
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Delete' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async remove(
     @Param('id') id: string,
     @Req() req: Request,
