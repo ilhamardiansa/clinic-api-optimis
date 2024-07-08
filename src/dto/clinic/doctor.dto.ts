@@ -8,6 +8,30 @@ export class DoctorDto {
   @ApiProperty()
   doctor_name: string;
 
+  @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
+  @ApiProperty()
+  place_of_birth:string;
+
+  @IsNotEmpty({ message: 'should not be empty' })
+  @ApiProperty()
+  date_of_birth: Date;
+
+  @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
+  @ApiProperty()
+  specialist: String
+
+  @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
+  @ApiProperty()
+  bio: String
+
+  @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
+  @ApiProperty()
+  graduate_of: String
+
   @IsOptional()
   @IsString()
   @IsNotEmpty({ message: 'should not be empty' })
@@ -49,15 +73,13 @@ export class DoctorDto {
   @ApiProperty()
   education: string;
 
-  @IsInt()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  poly_id: number;
+  poly_id: string;
 
-  @IsInt()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  wilayah_id: number;
+  wilayah_id: BigInt;
 
   poly: {
     id: number;

@@ -73,7 +73,7 @@ export class DoctorController {
   ) {
     try {
       const updatedDoctor = await this.doctorService.updateDoctor(
-        +id,
+        id,
         updateDoctorDto,
       );
       return res
@@ -111,7 +111,7 @@ export class DoctorController {
     @Query('q') query: string = '',
     @Query('page') page: number = null,
     @Query('limit') limit: number = null,
-    @Query('order') order: 'ASC' | 'DESC' = 'ASC',
+    @Query('order') order: 'asc' | 'desc' = 'asc',
     @Res() res: Response,
   ) {
     try {
@@ -154,7 +154,7 @@ export class DoctorController {
   @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
-      const doctor = await this.doctorService.findOne(+id);
+      const doctor = await this.doctorService.findOne(id);
       return res
         .status(200)
         .json(
@@ -188,7 +188,7 @@ export class DoctorController {
   @Roles('admin', 'manager', 'operator')
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
-      await this.doctorService.removeDoctor(+id);
+      await this.doctorService.removeDoctor(id);
       return res
         .status(200)
         .json(

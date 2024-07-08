@@ -86,7 +86,7 @@ export class ClinicService {
 
     try {
       const validatedData = schema.parse(updateClinicDto);
-      const create = this.prisma.clinic.update({
+      const update = this.prisma.clinic.update({
         where: { id: id },
         data  : {
           clinic_name: validatedData.clinic_name,
@@ -106,7 +106,7 @@ export class ClinicService {
         }
       })
 
-      return create;
+      return update;
 
     } catch (e: any) {
       if (e instanceof ZodError) {
