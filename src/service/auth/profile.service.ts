@@ -167,5 +167,106 @@ export class ProfileService {
     }
   }
   
+
+  async update_avatar(token: string,image: string,){
+    const RegisterSchema = z.object({
+      image: z.string().min(1),
+    });
+
+    try {
+      const validatedData = RegisterSchema.parse(image);
+
+      const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+
+      if (
+        typeof extracttoken !== 'string' &&
+        'userId' in extracttoken &&
+        'verifikasi' in extracttoken
+      ) {
+        const userId = extracttoken.userId;
+        const userVerifikasi = extracttoken.verifikasi;
+
+        if (userVerifikasi == false) {
+          return {
+            status: false,
+            message: 'Silakan verifikasi akun anda',
+            users: {
+              id: null,
+              full_name: null,
+              image: null,
+              email: null,
+              phone_number: null,
+              verifikasi: userVerifikasi,
+            },
+            token: null,
+          };
+        }
+
+        const checkuser = await this.prisma.user.findUnique({
+          where: {
+            id: userId,
+          },
+        });
+
+        if (!checkuser) {
+          return {
+            status: false,
+            message: 'User tidak di temukan',
+            users: {
+              id: null,
+              email: null,
+              verifikasi: checkuser.verifed === 1,
+            },
+            token: null,
+          };
+        }
+        
+        const updateprofile = await this.prisma.profile.update({
+          where: { user_id: userId },
+          data: { 
+            profil_image: image
+          },
+          include: {
+            user: true,
+          },
+        });
+
+        return {
+          status: true,
+          message: 'Avatar berhasil di ubah',
+          users: updateprofile,
+          token: null,
+        };
+      } else {
+        return {
+          status: false,
+          message: 'Invalid Payload',
+          users: null,
+          token: null,
+        };
+      }
+    } catch (e: any) {
+      if (e instanceof ZodError) {
+        const errorMessages = e.errors.map((error) => ({
+          field: error.path.join('.'),
+          message: error.message,
+        }));
+
+        return {
+          status: false,
+          message: 'Validasi gagal',
+          errors: errorMessages,
+          users: null,
+          token: null,
+        };
+      }
+      return {
+        status: false,
+        message: e.message || 'Terjadi kesalahan',
+        users: null,
+        token: null,
+      };
+    }
+  }
   
 }

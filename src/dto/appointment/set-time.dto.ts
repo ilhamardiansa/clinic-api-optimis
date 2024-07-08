@@ -1,25 +1,31 @@
 import { IsInt, IsDate, IsArray, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class setTimeDTO {
     
     @IsInt()
     @IsNotEmpty({ message: 'should not be empty' })
+    @ApiProperty()
     doctor_id: number;
 
     @IsInt()
     @IsNotEmpty({ message: 'should not be empty' })
+    @ApiProperty()
     poly_id: number;
 
     @IsInt()
     @IsNotEmpty({ message: 'should not be empty' })
+    @ApiProperty()
     clinic_id: number;
 
     @IsDate()
     @IsNotEmpty({ message: 'should not be empty' })
+    @ApiProperty()
     date: Date;
 
     @IsArray()
     @IsNotEmpty({ message: 'should not be empty' })
+    @ApiProperty()
     time: string;
 }

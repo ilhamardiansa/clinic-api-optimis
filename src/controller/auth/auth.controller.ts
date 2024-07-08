@@ -9,6 +9,7 @@ import {
   Res,
   Get,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthDTO } from 'src/dto/auth/auth.dto';
 import { format_json } from 'src/env';
@@ -23,10 +24,20 @@ import { AuthGuard } from '@nestjs/passport';
 import { ProfileService } from 'src/service/auth/profile.service';
 import { ProfileDto } from 'src/dto/auth/profile.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { v4 as uuidv4 } from 'uuid';
+import * as fs from 'fs';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+const storage = diskStorage({
+  destination: './uploads',
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + extname(file.originalname));
+  },
+});
 
 @ApiTags('Auth')
 @Controller('api')
@@ -410,6 +421,171 @@ export class AuthController {
         .json(
           format_json(400, false, true, null, 'Server Error ' + error, error),
         );
+    }
+  }
+
+  @Post('auth/resend')
+  @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
+  async resendOTP(@Req() req: Request, @Res() res: Response) {
+    try {
+      const authorizationHeader = req.headers['authorization'];
+
+      if (!authorizationHeader) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Authorization header is missing',
+              null,
+            ),
+          );
+      }
+
+      const token = authorizationHeader.split(' ')[1];
+
+      if (!token) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Bearer token is missing',
+              null,
+            ),
+          );
+      }
+
+      const resendotp = await this.AuthenticationService.resendotp(token);
+      if (resendotp.status == true) {
+        return res.status(200).json(
+          format_json(200, true, null, null, resendotp.message, {
+            user: resendotp.users,
+            token: resendotp.token,
+          }),
+        );
+      } else {
+        return res
+          .status(400)
+          .json(format_json(400, false, null, null, resendotp.message, null));
+      }
+    } catch (error) {
+      return res
+        .status(400)
+        .json(format_json(400, false, true, null, 'Server Error '+error, error));
+    }
+  }
+
+  @Put('users/update/avatar')
+  @UseGuards(AuthGuard('jwt'))
+  @UsePipes(CustomValidationPipe)
+  @UseInterceptors(FileInterceptor('profil_image', { storage }))
+  async update_avatar(
+    @Req() req: Request,
+    @UploadedFile() profil_image: Express.Multer.File,
+    @Res() res: Response,
+  ) {
+    try {
+      const authorizationHeader = req.headers['authorization'];
+
+      if (!authorizationHeader) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Authorization header is missing',
+              null,
+            ),
+          );
+      }
+
+      const token = authorizationHeader.split(' ')[1];
+
+      if (!token) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Bearer token is missing',
+              null,
+            ),
+          );
+      }
+
+      cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET,
+      });
+
+      try {
+        const get_name_file = basename(
+          profil_image.filename,
+          extname(profil_image.filename),
+        );
+        const uploadResult = await cloudinary.uploader.upload(
+          profil_image.path,
+          { public_id: get_name_file },
+        );
+        var get_url_profile = uploadResult.secure_url;
+
+        const filePath = profil_image.path;
+        fs.unlinkSync(path.resolve(filePath));
+        
+      } catch (error) {
+        console.error(error);
+        console.error(profil_image);
+        console.error(profil_image.path);
+        const publicId = uuidv4().replace(/-/g, '');
+        get_url_profile =
+          'https://api.dicebear.com/8.x/adventurer/svg?seed=' + publicId;
+      }
+
+      const updateProfile = this.profileService.update_avatar(
+        token,
+        get_url_profile,
+      );
+
+      if ((await updateProfile).status == true) {
+        return res.status(200).json(
+          format_json(200, true, null, null, (await updateProfile).message, {
+            user: (await updateProfile).users,
+            token: (await updateProfile).token,
+          }),
+        );
+      } else {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              (await updateProfile).message,
+              null,
+            ),
+          );
+      }
+    } catch (error) {
+      return res
+        .status(400)
+        .json(format_json(400, false, true, null, 'Server Error '+error, error));
     }
   }
 }
