@@ -78,16 +78,14 @@ export class ClinicController {
     @Res() res: Response,
   ) {
     try {
-      const clinic = await this.clinicService.findOne(+id);
+      const clinic = await this.clinicService.findOne(id);
       if (!clinic) {
         return res
           .status(404)
           .json(format_json(404, false, null, null, 'Clinic not found', null));
       }
 
-      const updatedClinic = await this.clinicService.updateClinic(
-        +id,
-        updateClinicDto,
+      const updatedClinic = await this.clinicService.updateClinic(id,updateClinicDto,
       );
       return res
         .status(200)
@@ -160,7 +158,7 @@ export class ClinicController {
     @Res() res: Response,
   ) {
     try {
-      const clinic = await this.clinicService.findOne(+id);
+      const clinic = await this.clinicService.findOne(id);
       if (!clinic) {
         return res
           .status(404)
@@ -203,14 +201,14 @@ export class ClinicController {
     @Res() res: Response,
   ) {
     try {
-      const clinic = await this.clinicService.findOne(+id);
+      const clinic = await this.clinicService.findOne(id);
       if (!clinic) {
         return res
           .status(404)
           .json(format_json(404, false, null, null, 'Clinic not found', null));
       }
 
-      await this.clinicService.removeClinic(+id);
+      await this.clinicService.removeClinic(id);
       return res
         .status(200)
         .json(

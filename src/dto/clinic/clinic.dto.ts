@@ -35,8 +35,7 @@ export class ClinicDto {
   @ApiProperty()
   longitude: number;
 
-  @IsNumber()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  city_id: number;
+  city_id: BigInt;
 }
