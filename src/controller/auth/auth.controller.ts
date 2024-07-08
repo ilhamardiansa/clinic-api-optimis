@@ -349,9 +349,43 @@ export class AuthController {
   }
 
   @Post('auth/signout')
-  async signout(@Body() authDTO: AuthDTO, @Res() res: Response) {
+  async signout(@Req() req: Request, @Res() res: Response) {
     try {
-      const user = await this.AuthenticationService.signout(authDTO);
+      const authorizationHeader = req.headers['authorization'];
+
+      if (!authorizationHeader) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Authorization header is missing',
+              null,
+            ),
+          );
+      }
+
+      const token = authorizationHeader.split(' ')[1];
+
+      if (!token) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Bearer token is missing',
+              null,
+            ),
+          );
+      }
+      
+      const user = await this.AuthenticationService.signout(token);
       if (user.status) {
         return res
           .status(200)

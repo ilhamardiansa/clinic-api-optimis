@@ -339,48 +339,59 @@ export class AuthenticationService {
         },
         token: token,
       };
-    } catch (e) {
+    } catch (e: any) {
       if (e instanceof ZodError) {
+        const errorMessages = e.errors.map((error) => ({
+          field: error.path.join('.'),
+          message: error.message,
+        }));
+
         return {
           status: false,
-          message: e.errors.map((error) => error.message).join(', '),
+          message: 'Validasi gagal',
+          errors: errorMessages,
           users: null,
           token: null,
         };
       }
       return {
         status: false,
-        message: (e as Error).message,
+        message: e.message || 'Terjadi kesalahan',
         users: null,
         token: null,
       };
     }
   }
 
-  async signout(authDTO: AuthDTO) {
-    const SignoutSchema = z.object({
-      token: z.string().min(1),
-    });
+  async signout(tokenjwt : string) {
 
     try {
-      const validatedData = SignoutSchema.parse(authDTO);
-
-      this.addToBlacklist(validatedData.token);
+      this.addToBlacklist(tokenjwt);
 
       return {
         status: true,
         message: 'Berhasil signout',
       };
-    } catch (e) {
+    } catch (e: any) {
       if (e instanceof ZodError) {
+        const errorMessages = e.errors.map((error) => ({
+          field: error.path.join('.'),
+          message: error.message,
+        }));
+
         return {
           status: false,
-          message: e.errors.map((error) => error.message).join(', '),
+          message: 'Validasi gagal',
+          errors: errorMessages,
+          users: null,
+          token: null,
         };
       }
       return {
         status: false,
-        message: (e as Error).message,
+        message: e.message || 'Terjadi kesalahan',
+        users: null,
+        token: null,
       };
     }
   }
