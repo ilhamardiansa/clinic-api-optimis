@@ -168,13 +168,13 @@ export class ProfileService {
   }
   
 
-  async update_avatar(token: string,image: string,){
+  async update_avatar(token: string,profil_image: string,){
     const RegisterSchema = z.object({
-      image: z.string().min(1),
+      profil_image: z.string().min(1),
     });
 
     try {
-      const validatedData = RegisterSchema.parse(image);
+      const validatedData = RegisterSchema.parse(profil_image);
 
       const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -224,7 +224,7 @@ export class ProfileService {
         const updateprofile = await this.prisma.profile.update({
           where: { user_id: userId },
           data: { 
-            profil_image: image
+            profil_image: profil_image
           },
           include: {
             user: true,

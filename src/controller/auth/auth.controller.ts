@@ -27,6 +27,8 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
+import { Updateavatar } from 'src/dto/auth/updateavatar.dto';
+import { ChangePassDTO } from 'src/dto/auth/change.pass.dto';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -335,6 +337,8 @@ export class AuthController {
   }
 
   @Post('auth/signin')
+  @ApiOperation({ summary: 'Sign in' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async signin(@Body() authDTO: AuthDTO, @Res() res: Response) {
     try {
       const user = await this.AuthenticationService.signin(authDTO);
@@ -360,6 +364,8 @@ export class AuthController {
   }
 
   @Post('auth/signout')
+  @ApiOperation({ summary: 'Sign out' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async signout(@Req() req: Request, @Res() res: Response) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -427,6 +433,8 @@ export class AuthController {
   @Post('auth/resend')
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'Resend' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async resendOTP(@Req() req: Request, @Res() res: Response) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -487,7 +495,10 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
   @UseInterceptors(FileInterceptor('profil_image', { storage }))
+  @ApiOperation({ summary: 'Update avatar' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async update_avatar(
+    @Body() update_avatar : Updateavatar,
     @Req() req: Request,
     @UploadedFile() profil_image: Express.Multer.File,
     @Res() res: Response,
@@ -578,6 +589,81 @@ export class AuthController {
               null,
               null,
               (await updateProfile).message,
+              null,
+            ),
+          );
+      }
+    } catch (error) {
+      return res
+        .status(400)
+        .json(format_json(400, false, true, null, 'Server Error '+error, error));
+    }
+  }
+
+  @Post('users/change-password')
+  @UsePipes(CustomValidationPipe)
+  @UseGuards(AuthGuard('jwt'))
+  async change_password(
+    @Body() ChangePassDTO: ChangePassDTO,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      const authorizationHeader = req.headers['authorization'];
+
+      if (!authorizationHeader) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Authorization header is missing',
+              null,
+            ),
+          );
+      }
+
+      const token = authorizationHeader.split(' ')[1];
+
+      if (!token) {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Bearer token is missing',
+              null,
+            ),
+          );
+      }
+
+      const { password, confirmPassword } = ChangePassDTO;
+
+      const change_password = this.AuthenticationService.change_pass(token, password);
+
+      if ((await change_password).status === true) {
+        return res.status(200).json(
+          format_json(200, true, null, null, (await change_password).message, {
+            user: (await change_password).users,
+            token: (await change_password).token,
+          }),
+        );
+      } else {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              (await change_password).message,
               null,
             ),
           );
