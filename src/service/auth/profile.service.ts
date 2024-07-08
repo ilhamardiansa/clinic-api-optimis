@@ -31,6 +31,15 @@ export class ProfileService {
                 user: true,
               },
           });
+
+          const checkuser = await this.prisma.user.findUnique({
+            where: {
+              id: getprofile.user_id,
+            },
+            include: {
+              role: true
+            }
+          });
         
           if(!getprofile){
             return {
@@ -44,8 +53,14 @@ export class ProfileService {
         return {
             status: true,
             message: 'Berhasil',
-            users: getprofile,
-            token: null,
+            users: {
+              id: checkuser.id,
+              email: checkuser.email,
+              is_verified: checkuser.verifed === 1,
+              role: checkuser.role,
+              profile: getprofile,
+              token: null,
+            },
         };
 
     } catch (e : any) {
@@ -128,12 +143,27 @@ export class ProfileService {
           user: true,
         },
       });
+
+      const checkuser = await this.prisma.user.findUnique({
+        where: {
+          id: updateprofile.user_id,
+        },
+        include: {
+          role: true
+        }
+      });
   
       return {
         status: true,
         message: 'Berhasil',
-        users: updateprofile,
-        token: null,
+        users: {
+          id: checkuser.id,
+          email: checkuser.email,
+          is_verified: checkuser.verifed === 1,
+          role: checkuser.role,
+          profile: updateprofile,
+          token: null,
+        },
       };
   
     } catch (e : any) {
@@ -192,13 +222,11 @@ export class ProfileService {
             message: 'Silakan verifikasi akun anda',
             users: {
               id: null,
-              full_name: null,
-              image: null,
               email: null,
-              phone_number: null,
-              verifikasi: userVerifikasi,
+              is_verified: null,
+              role: null,
+              token: null,
             },
-            token: null,
           };
         }
 
@@ -206,6 +234,9 @@ export class ProfileService {
           where: {
             id: userId,
           },
+          include: {
+            role: true
+          }
         });
 
         if (!checkuser) {
@@ -215,9 +246,10 @@ export class ProfileService {
             users: {
               id: null,
               email: null,
-              verifikasi: checkuser.verifed === 1,
+              is_verified: null,
+              role: null,
+              token: null,
             },
-            token: null,
           };
         }
         
@@ -230,12 +262,19 @@ export class ProfileService {
             user: true,
           },
         });
+        
 
         return {
           status: true,
           message: 'Avatar berhasil di ubah',
-          users: updateprofile,
-          token: null,
+          users: {
+            id: checkuser.id,
+            email: checkuser.email,
+            is_verified: checkuser.verifed === 1,
+            role: checkuser.role,
+            profile: updateprofile,
+            token: null,
+          },
         };
       } else {
         return {

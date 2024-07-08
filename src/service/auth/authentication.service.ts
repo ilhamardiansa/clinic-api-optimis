@@ -50,6 +50,9 @@ export class AuthenticationService {
         where: {
           email: AuthDTO.email
         },
+        include: {
+          role: true
+        }
       });
       if (checkuser) {
         return {
@@ -67,7 +70,9 @@ export class AuthenticationService {
         verifed: 0,
       };
 
-      const user = await this.prisma.user.create({ data: userData });
+      const user = await this.prisma.user.create({ data: userData, include: {
+        role: true
+      } });
 
       const dataprofile = {
         fullname: AuthDTO.fullname,
@@ -132,9 +137,10 @@ export class AuthenticationService {
         users: {
           id: user.id,
           email: user.email,
-          verifikasi: user.verifed === 1,
+          is_verified: user.verifed === 1,
+          role: user.role,
+          token: token,
         },
-        token: token,
       };
     } catch (e: any) {
       if (e instanceof ZodError) {
@@ -170,6 +176,9 @@ export class AuthenticationService {
         where: {
           id: userId,
         },
+        include: {
+          role: true
+        }
       });
 
       if (!checkuser) {
@@ -177,11 +186,12 @@ export class AuthenticationService {
           status: false,
           message: 'Akun tidak ditemukan',
           users: {
-            id: checkuser.id,
-            email: checkuser.email,
-            verifikasi: null,
+            id: null,
+            email: null,
+            is_verified: null,
+            role: null,
+            token: null,
           },
-          token: null,
         };
       }
 
@@ -198,9 +208,10 @@ export class AuthenticationService {
           users: {
             id: checkuser.id,
             email: checkuser.email,
-            verifikasi: checkuser.verifed === 1,
+            is_verified: checkuser.verifed === 1,
+            role: checkuser.role,
+            token: null,
           },
-          token: null,
         };
       }
 
@@ -226,9 +237,10 @@ export class AuthenticationService {
         users: {
           id: checkuser.id,
           email: checkuser.email,
-          verifikasi: checkuser.verifed === 1,
+          is_verified: checkuser.verifed === 1,
+          role: checkuser.role,
+          token: null,
         },
-        token: null,
       };
     } else {
       return {
@@ -263,6 +275,9 @@ export class AuthenticationService {
         where: {
           id: userId,
         },
+        include: {
+          role: true
+        }
       });
 
       if (!checkuser) {
@@ -272,9 +287,10 @@ export class AuthenticationService {
           users: {
             id: null,
             email: null,
-            verifikasi: null,
+            is_verified: null,
+            role: null,
+            token: null,
           },
-          token: null,
         };
       }
 
@@ -291,9 +307,10 @@ export class AuthenticationService {
           users: {
             id: checkuser.id,
             email: checkuser.email,
-            verifikasi: checkuser.verifed === 1,
+            is_verified: checkuser.verifed === 1,
+            role: checkuser.role,
+            token: null,
           },
-          token: null,
         };
       }
 
@@ -312,9 +329,10 @@ export class AuthenticationService {
           users: {
             id: checkuser.id,
             email: checkuser.email,
-            verifikasi: checkuser.verifed === 1,
+            is_verified: checkuser.verifed === 1,
+            role: checkuser.role,
+            token: null,
           },
-          token: null,
         };
       }
 
@@ -342,9 +360,10 @@ export class AuthenticationService {
         users: {
           id: checkuser.id,
           email: checkuser.email,
-          verifikasi: checkuser.verifed === 1,
+          is_verified: checkuser.verifed === 1,
+          role: checkuser.role,
+          token: newToken,
         },
-        token: newToken,
       };
     } catch (e: any) {
       if (e instanceof ZodError) {
@@ -381,6 +400,9 @@ export class AuthenticationService {
 
       const user = await this.prisma.user.findUnique({
         where: { email: authDTO.email },
+        include: {
+          role: true
+        }
       });
 
       if (!user || user.password !== authDTO.password) {
@@ -406,9 +428,10 @@ export class AuthenticationService {
         users: {
           id: user.id,
           email: user.email,
-          verifikasi: user.verifed === 1,
+          is_verified: user.verifed === 1,
+          role: user.role,
+          token: token,
         },
-        token: token,
       };
     } catch (e: any) {
       if (e instanceof ZodError) {
@@ -499,13 +522,11 @@ export class AuthenticationService {
             message: 'Silakan verifikasi akun anda',
             users: {
               id: null,
-              full_name: null,
-              image: null,
               email: null,
-              phone_number: null,
-              verifikasi: userVerifikasi,
+              is_verified: null,
+              role: null,
+              token: null,
             },
-            token: null,
           };
         }
 
@@ -513,6 +534,9 @@ export class AuthenticationService {
           where: {
             id: userId,
           },
+          include: {
+            role: true
+          }
         });
 
         if (!checkuser) {
@@ -522,9 +546,10 @@ export class AuthenticationService {
             users: {
               id: null,
               email: null,
-              verifikasi: checkuser.verifed === 1,
+              is_verified: null,
+              role: null,
+              token: null,
             },
-            token: null,
           };
         }
 
@@ -540,9 +565,10 @@ export class AuthenticationService {
             users: {
               id: checkuser.id,
               email: checkuser.email,
-              verifikasi: checkuser.verifed === 1,
+              is_verified: checkuser.verifed === 1,
+              role: checkuser.role,
+              token: null,
             },
-            token: null,
           };
         }
 
@@ -561,9 +587,10 @@ export class AuthenticationService {
           users: {
             id: checkuser.id,
             email: checkuser.email,
-            verifikasi: checkuser.verifed === 1,
+            is_verified: checkuser.verifed === 1,
+            role: checkuser.role,
+            token: null,
           },
-          token: null,
         };
       } else {
         return {

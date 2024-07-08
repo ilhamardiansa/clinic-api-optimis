@@ -63,10 +63,7 @@ export class AuthController {
       const user = await this.AuthenticationService.register(authDTO);
       if (user.status == true) {
         return res.status(200).json(
-          format_json(200, true, false, null, 'User signed up successfully', {
-            user: user.users,
-            token: user.token,
-          }),
+          format_json(200, true, false, null, 'User signed up successfully', user.users),
         );
       } else {
         return res
@@ -133,10 +130,7 @@ export class AuthController {
       );
       if (verifikasiotp.status == true) {
         return res.status(200).json(
-          format_json(200, true, null, null, verifikasiotp.message, {
-            user: verifikasiotp.users,
-            token: verifikasiotp.token,
-          }),
+          format_json(200, true, null, null, verifikasiotp.message, verifikasiotp.users),
         );
       } else {
         return res
@@ -344,10 +338,7 @@ export class AuthController {
       const user = await this.AuthenticationService.signin(authDTO);
       if (user.status) {
         return res.status(200).json(
-          format_json(200, true, false, null, 'User signed in successfully', {
-            user: user.users,
-            token: user.token,
-          }),
+          format_json(200, true, false, null, 'User signed in successfully', user.users),
         );
       } else {
         return res
@@ -474,10 +465,7 @@ export class AuthController {
       const resendotp = await this.AuthenticationService.resendotp(token);
       if (resendotp.status == true) {
         return res.status(200).json(
-          format_json(200, true, null, null, resendotp.message, {
-            user: resendotp.users,
-            token: resendotp.token,
-          }),
+          format_json(200, true, null, null, resendotp.message, resendotp.users),
         );
       } else {
         return res
@@ -574,10 +562,7 @@ export class AuthController {
 
       if ((await updateProfile).status == true) {
         return res.status(200).json(
-          format_json(200, true, null, null, (await updateProfile).message, {
-            user: (await updateProfile).users,
-            token: (await updateProfile).token,
-          }),
+          format_json(200, true, null, null, (await updateProfile).message, (await updateProfile).users),
         );
       } else {
         return res
@@ -649,10 +634,7 @@ export class AuthController {
 
       if ((await change_password).status === true) {
         return res.status(200).json(
-          format_json(200, true, null, null, (await change_password).message, {
-            user: (await change_password).users,
-            token: (await change_password).token,
-          }),
+          format_json(200, true, null, null, (await change_password).message, (await change_password).users),
         );
       } else {
         return res
