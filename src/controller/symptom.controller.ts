@@ -16,7 +16,9 @@ import { format_json } from 'src/env';
 import { SymptomService } from 'src/service/symptom.service';
 import { SymptomDto } from 'src/dto/symptom/symptom.dto';
 import { UpdateSymptomDto } from 'src/dto/symptom/update.symptom.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Symptoms')
 @Controller('api/symptoms')
 export class SymptomController {
   constructor(private readonly symptomService: SymptomService) {}
@@ -24,6 +26,8 @@ export class SymptomController {
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Create' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async create(@Body() symptomDto: SymptomDto) {
     try {
       const createdSymptom =
@@ -54,13 +58,15 @@ export class SymptomController {
   @Put(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Update' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async update(
     @Param('id') id: string,
     @Body() updateSymptomDto: UpdateSymptomDto,
   ) {
     try {
       const updatedSymptom = await this.symptomService.updateSymptom(
-        +id,
+        id,
         updateSymptomDto,
       );
       return format_json(
@@ -89,6 +95,8 @@ export class SymptomController {
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
+  @ApiOperation({ summary: 'Get' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findAll() {
     try {
       const symptoms = await this.symptomService.findAll();
@@ -118,9 +126,11 @@ export class SymptomController {
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
+  @ApiOperation({ summary: 'Details' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findOne(@Param('id') id: string) {
     try {
-      const symptom = await this.symptomService.findOne(+id);
+      const symptom = await this.symptomService.findOne(id);
       return format_json(
         200,
         true,
@@ -147,9 +157,11 @@ export class SymptomController {
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Delete' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async remove(@Param('id') id: string) {
     try {
-      await this.symptomService.removeSymptom(+id);
+      await this.symptomService.removeSymptom(id);
       return format_json(
         200,
         true,
