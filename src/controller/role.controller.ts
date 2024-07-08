@@ -9,10 +9,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { RoleService } from '../service/role.service';
-import { Role } from '../entity/role.entity';
 import { Roles } from 'src/middleware/role.decorator';
 import { RolesGuard } from 'src/middleware/role.guard';
+import { RoleDto } from 'src/dto/role.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Roles')
 @Controller('roles')
 @UseGuards(RolesGuard)
 export class RoleController {
@@ -20,31 +22,41 @@ export class RoleController {
 
   @Get()
   @Roles('admin', 'doctor', 'patient')
-  async findAll(): Promise<Role[]> {
+  @ApiOperation({ summary: 'Get' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async findAll() {
     return this.roleService.findAll();
   }
 
   @Get(':id')
   @Roles('admin', 'doctor', 'patient')
-  async findById(@Param('id') id: string): Promise<Role> {
-    return this.roleService.findById(parseInt(id, 10));
+  @ApiOperation({ summary: 'Details' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async findById(@Param('id') id: string) {
+    return this.roleService.findById(id);
   }
 
   @Post()
   @Roles('admin')
-  async create(@Body() role: Role): Promise<Role> {
+  @ApiOperation({ summary: 'Create' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async create(@Body() role: RoleDto) {
     return this.roleService.create(role);
   }
 
   @Put(':id')
   @Roles('admin')
-  async update(@Param('id') id: string, @Body() role: Role): Promise<Role> {
-    return this.roleService.update(parseInt(id, 10), role);
+  @ApiOperation({ summary: 'Update' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async update(@Param('id') id: string, @Body() role: RoleDto) {
+    return this.roleService.update(id, role);
   }
 
   @Delete(':id')
   @Roles('admin')
-  async delete(@Param('id') id: string): Promise<void> {
-    return this.roleService.delete(parseInt(id, 10));
+  @ApiOperation({ summary: 'Delete' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async delete(@Param('id') id: string) {
+    return this.roleService.delete(id);
   }
 }
