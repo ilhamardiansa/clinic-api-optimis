@@ -43,9 +43,8 @@ async function main() {
   const manajer = await prisma.user.create({
     data: {
       email: 'manager@gmail.com',
-      phone_number: '1234567890',
       password: managerpassword,
-      role_id: manajerrole.uuid,
+      role_id: manajerrole.id,
       verifed: 1,
     },
   });
@@ -53,9 +52,8 @@ async function main() {
   const doctor = await prisma.user.create({
     data: {
       email: 'doctor@gmail.com',
-      phone_number: '1234567891',
       password: doctorpassword,
-      role_id: doctorrole.uuid,
+      role_id: doctorrole.id,
       verifed: 1,
     },
   });
@@ -63,9 +61,8 @@ async function main() {
   const operator = await prisma.user.create({
     data: {
       email: 'operator@gmail.com',
-      phone_number: '1234567892',
       password: operatorpassword,
-      role_id: operatorrole.uuid,
+      role_id: operatorrole.id,
       verifed: 1,
     },
   });
@@ -73,9 +70,8 @@ async function main() {
   const patient = await prisma.user.create({
     data: {
       email: 'patient@gmail.com',
-      phone_number: '1234567893',
       password: patientpassword,
-      role_id: patientrole.uuid,
+      role_id: patientrole.id,
       verifed: 1,
     },
   });
@@ -83,9 +79,8 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       email: 'taztaz@gmail.com',
-      phone_number: '1234567894',
       password: adminpassword,
-      role_id: adminrole.uuid,
+      role_id: adminrole.id,
       verifed: 1,
     },
   });
@@ -93,8 +88,8 @@ async function main() {
   await prisma.profile.create({
     data: {
       fullname: 'Manager',
-      phone_number: manajer.phone_number,
-      user_id: manajer.uuid,
+      phone_number: '1234567890',
+      user_id: manajer.id,
       profil_image: 'https://api.dicebear.com/8.x/notionists/svg?seed=' + 'Manager',
       no_identity: null,
       birth_date: null,
@@ -117,8 +112,8 @@ async function main() {
   await prisma.profile.create({
     data: {
       fullname: 'Doctor',
-      phone_number: doctor.phone_number,
-      user_id: doctor.uuid,
+      phone_number: '1234567891',
+      user_id: doctor.id,
       profil_image: 'https://api.dicebear.com/8.x/notionists/svg?seed=' + 'Doctor',
       no_identity: null,
       birth_date: null,
@@ -141,8 +136,8 @@ async function main() {
   await prisma.profile.create({
     data: {
       fullname: 'Operator',
-      phone_number: operator.phone_number,
-      user_id: operator.uuid,
+      phone_number: '1234567892',
+      user_id: operator.id,
       profil_image: 'https://api.dicebear.com/8.x/notionists/svg?seed=' + 'Operator',
       no_identity: null,
       birth_date: null,
@@ -165,8 +160,8 @@ async function main() {
   await prisma.profile.create({
     data: {
       fullname: 'Patient',
-      phone_number: patient.phone_number,
-      user_id: patient.uuid,
+      phone_number: '1234567893',
+      user_id: patient.id,
       profil_image: 'https://api.dicebear.com/8.x/notionists/svg?seed=' + 'Patient',
       no_identity: null,
       birth_date: null,
@@ -189,8 +184,8 @@ async function main() {
   await prisma.profile.create({
     data: {
       fullname: 'Admin',
-      phone_number: admin.phone_number,
-      user_id: admin.uuid,
+      phone_number: '1234567894',
+      user_id: admin.id,
       profil_image: 'https://api.dicebear.com/8.x/notionists/svg?seed=' + 'Admin',
       no_identity: null,
       birth_date: null,
