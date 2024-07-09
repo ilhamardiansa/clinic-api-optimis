@@ -21,7 +21,7 @@ export class SymptomService {
 
     try {
       const validatedData = schema.parse(symptomDto);
-      const create = this.prisma.symptom.create({
+      const create = await this.prisma.symptom.create({
         data  : {
           name: validatedData.name,
           description: validatedData.description,
@@ -53,20 +53,9 @@ export class SymptomService {
           message: error.message,
         }));
 
-        return {
-          status: false,
-          message: 'Validasi gagal',
-          errors: errorMessages,
-          users: null,
-          token: null,
-        };
+        return errorMessages;
       }
-      return {
-        status: false,
-        message: e.message || 'Terjadi kesalahan',
-        users: null,
-        token: null,
-      };
+      return e.message || 'Terjadi kesalahan';
     }
   }
 
@@ -82,7 +71,7 @@ export class SymptomService {
 
     try {
       const validatedData = schema.parse(updateSymptomDto);
-      const update = this.prisma.symptom.update({
+      const update = await this.prisma.symptom.update({
         where: {id : id},
         data  : {
           name: validatedData.name,
@@ -115,20 +104,9 @@ export class SymptomService {
           message: error.message,
         }));
 
-        return {
-          status: false,
-          message: 'Validasi gagal',
-          errors: errorMessages,
-          users: null,
-          token: null,
-        };
+        return errorMessages;
       }
-      return {
-        status: false,
-        message: e.message || 'Terjadi kesalahan',
-        users: null,
-        token: null,
-      };
+      return e.message || 'Terjadi kesalahan';
     }
   }
 

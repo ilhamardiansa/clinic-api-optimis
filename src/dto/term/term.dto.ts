@@ -8,10 +8,9 @@ import {
 } from 'class-validator';
 
 export class TermDto {
-  @IsNumber()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  term_category_id: number;
+  term_category_id: string;
 
   @IsString()
   @IsNotEmpty({ message: 'should not be empty' })
@@ -23,10 +22,4 @@ export class TermDto {
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
   content: string;
-
-  @IsString()
-  @IsNotEmpty({ message: 'should not be empty' })
-  @IsEmail()
-  @ApiProperty()
-  email: string;
 }

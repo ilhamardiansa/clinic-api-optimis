@@ -28,7 +28,7 @@ export class RoleService {
 
     try {
       const validatedData = schema.parse(role);
-      const create = this.prisma.role.create({
+      const create = await this.prisma.role.create({
         data  : {
           name: validatedData.name,
           description: validatedData.description
@@ -44,20 +44,9 @@ export class RoleService {
           message: error.message,
         }));
 
-        return {
-          status: false,
-          message: 'Validasi gagal',
-          errors: errorMessages,
-          users: null,
-          token: null,
-        };
+        return errorMessages;
       }
-      return {
-        status: false,
-        message: e.message || 'Terjadi kesalahan',
-        users: null,
-        token: null,
-      };
+      return e.message || 'Terjadi kesalahan';
     }
   }
 
@@ -69,7 +58,7 @@ export class RoleService {
 
     try {
       const validatedData = schema.parse(role);
-      const update = this.prisma.role.update({
+      const update = await this.prisma.role.update({
         where: { id: id },
         data  : {
           name: validatedData.name,
@@ -86,25 +75,14 @@ export class RoleService {
           message: error.message,
         }));
 
-        return {
-          status: false,
-          message: 'Validasi gagal',
-          errors: errorMessages,
-          users: null,
-          token: null,
-        };
+        return errorMessages;
       }
-      return {
-        status: false,
-        message: e.message || 'Terjadi kesalahan',
-        users: null,
-        token: null,
-      };
+      return e.message || 'Terjadi kesalahan';
     }
   }
 
   async delete(id: string) {
-    return this.prisma.role.delete({
+    return await this.prisma.role.delete({
       where: {
         id: id,
       },

@@ -10,6 +10,7 @@ import {
   Req,
   Res,
   UsePipes,
+  HttpStatus,
 } from '@nestjs/common';
 
 import { ClinicService } from 'src/service/clinic/clinic.service';
@@ -53,20 +54,20 @@ export class ClinicController {
             createdClinic,
           ),
         );
-    } catch (error) {
-      return res
-        .status(400)
-        .json(
-          format_json(
-            400,
-            false,
-            'Bad Request',
-            null,
-            'Failed to create clinic',
-            error,
-          ),
-        );
-    }
+      } catch (error:any) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json(
+            format_json(
+              500,
+              false,
+              true,
+              null,
+              'Server Error ' + error,
+              error.message,
+            ),
+          );
+      }
   }
 
   @Put(':id')
@@ -103,20 +104,20 @@ export class ClinicController {
             updatedClinic,
           ),
         );
-    } catch (error) {
-      return res
-        .status(400)
-        .json(
-          format_json(
-            400,
-            false,
-            'Bad Request',
-            null,
-            'Failed to update clinic',
-            error,
-          ),
-        );
-    }
+      } catch (error:any) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json(
+            format_json(
+              500,
+              false,
+              true,
+              null,
+              'Server Error ' + error,
+              error.message,
+            ),
+          );
+      }
   }
 
   @Get()
@@ -139,20 +140,20 @@ export class ClinicController {
             clinics,
           ),
         );
-    } catch (error) {
-      return res
-        .status(500)
-        .json(
-          format_json(
-            500,
-            false,
-            'Internal Server Error',
-            null,
-            'Failed to retrieve clinics',
-            error,
-          ),
-        );
-    }
+      } catch (error:any) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json(
+            format_json(
+              500,
+              false,
+              true,
+              null,
+              'Server Error ' + error,
+              error.message,
+            ),
+          );
+      }
   }
 
   @Get(':id')
@@ -184,20 +185,20 @@ export class ClinicController {
             clinic,
           ),
         );
-    } catch (error) {
-      return res
-        .status(500)
-        .json(
-          format_json(
-            500,
-            false,
-            'Internal Server Error',
-            null,
-            'Failed to retrieve clinic',
-            error,
-          ),
-        );
-    }
+      } catch (error:any) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json(
+            format_json(
+              500,
+              false,
+              true,
+              null,
+              'Server Error ' + error,
+              error.message,
+            ),
+          );
+      }
   }
 
   @Delete(':id')
@@ -231,19 +232,19 @@ export class ClinicController {
             null,
           ),
         );
-    } catch (error) {
-      return res
-        .status(500)
-        .json(
-          format_json(
-            500,
-            false,
-            'Internal Server Error',
-            null,
-            'Failed to delete clinic',
-            error,
-          ),
-        );
-    }
+      } catch (error:any) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json(
+            format_json(
+              500,
+              false,
+              true,
+              null,
+              'Server Error ' + error,
+              error.message,
+            ),
+          );
+      }
   }
 }

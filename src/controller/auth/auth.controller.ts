@@ -70,11 +70,11 @@ export class AuthController {
           .status(400)
           .json(format_json(400, false, true, user.errors, user.message, null));
       }
-    } catch (error) {
+    } catch (error: any) {
       return res
         .status(400)
         .json(
-          format_json(400, false, true, null, 'Server Error ' + error, error),
+          format_json(400, false, true, null, 'Server Error ', error.message),
         );
     }
   }
@@ -146,10 +146,12 @@ export class AuthController {
             ),
           );
       }
-    } catch (error) {
+    } catch (error: any) {
       return res
         .status(400)
-        .json(format_json(400, false, true, null, 'Server Error ', error));
+        .json(
+          format_json(400, false, true, null, 'Server Error ', error.message),
+        );
     }
   }
 
@@ -220,10 +222,12 @@ export class AuthController {
             ),
           );
       }
-    } catch (error) {
+    } catch (error: any) {
       return res
         .status(400)
-        .json(format_json(400, false, true, null, 'Server Error ', error));
+        .json(
+          format_json(400, false, true, null, 'Server Error ', error.message),
+        );
     }
   }
 
@@ -323,10 +327,12 @@ export class AuthController {
             ),
           );
       }
-    } catch (error) {
+    } catch (error: any) {
       return res
         .status(400)
-        .json(format_json(400, false, true, null, 'Server Error ', error));
+        .json(
+          format_json(400, false, true, null, 'Server Error ', error.message),
+        );
     }
   }
 
@@ -345,11 +351,11 @@ export class AuthController {
           .status(400)
           .json(format_json(400, false, true, null, user.message, null));
       }
-    } catch (error) {
+    } catch (error: any) {
       return res
         .status(400)
         .json(
-          format_json(400, false, true, null, 'Server Error ' + error, error),
+          format_json(400, false, true, null, 'Server Error ', error.message),
         );
     }
   }
@@ -412,11 +418,11 @@ export class AuthController {
           .status(400)
           .json(format_json(400, false, true, null, user.message, null));
       }
-    } catch (error) {
+    } catch (error: any) {
       return res
         .status(400)
         .json(
-          format_json(400, false, true, null, 'Server Error ' + error, error),
+          format_json(400, false, true, null, 'Server Error ', error.message),
         );
     }
   }
@@ -472,10 +478,12 @@ export class AuthController {
           .status(400)
           .json(format_json(400, false, null, null, resendotp.message, null));
       }
-    } catch (error) {
+    } catch (error: any) {
       return res
         .status(400)
-        .json(format_json(400, false, true, null, 'Server Error '+error, error));
+        .json(
+          format_json(400, false, true, null, 'Server Error ', error.message),
+        );
     }
   }
 
@@ -578,10 +586,12 @@ export class AuthController {
             ),
           );
       }
-    } catch (error) {
+    } catch (error: any) {
       return res
         .status(400)
-        .json(format_json(400, false, true, null, 'Server Error '+error, error));
+        .json(
+          format_json(400, false, true, null, 'Server Error ', error.message),
+        );
     }
   }
 
@@ -650,10 +660,12 @@ export class AuthController {
             ),
           );
       }
-    } catch (error) {
+    } catch (error: any) {
       return res
         .status(400)
-        .json(format_json(400, false, true, null, 'Server Error '+error, error));
+        .json(
+          format_json(400, false, true, null, 'Server Error ', error.message),
+        );
     }
   }
 }

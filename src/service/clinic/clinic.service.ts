@@ -25,7 +25,7 @@ export class ClinicService {
 
     try {
       const validatedData = schema.parse(clinicDto);
-      const create = this.prisma.clinic.create({
+      const create = await this.prisma.clinic.create({
         data  : {
           clinic_name: validatedData.clinic_name,
           description: validatedData.description,
@@ -86,7 +86,7 @@ export class ClinicService {
 
     try {
       const validatedData = schema.parse(updateClinicDto);
-      const update = this.prisma.clinic.update({
+      const update = await this.prisma.clinic.update({
         where: { id: id },
         data  : {
           clinic_name: validatedData.clinic_name,
@@ -152,7 +152,7 @@ export class ClinicService {
   }
 
   async removeClinic(id: string) {
-    return this.prisma.clinic.delete({
+    return await this.prisma.clinic.delete({
       where: {
         id: id,
       },

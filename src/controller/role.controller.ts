@@ -13,14 +13,15 @@ import { Roles } from 'src/middleware/role.decorator';
 import { RolesGuard } from 'src/middleware/role.guard';
 import { RoleDto } from 'src/dto/role.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Roles')
 @Controller('roles')
-@UseGuards(RolesGuard)
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Get()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'doctor', 'patient')
   @ApiOperation({ summary: 'Get' })
   @ApiResponse({ status: 200, description: 'Success' })
@@ -29,6 +30,7 @@ export class RoleController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'doctor', 'patient')
   @ApiOperation({ summary: 'Details' })
   @ApiResponse({ status: 200, description: 'Success' })
@@ -37,6 +39,7 @@ export class RoleController {
   }
 
   @Post()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
   @ApiOperation({ summary: 'Create' })
   @ApiResponse({ status: 200, description: 'Success' })
@@ -45,6 +48,7 @@ export class RoleController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
   @ApiOperation({ summary: 'Update' })
   @ApiResponse({ status: 200, description: 'Success' })
@@ -53,6 +57,7 @@ export class RoleController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
   @ApiOperation({ summary: 'Delete' })
   @ApiResponse({ status: 200, description: 'Success' })

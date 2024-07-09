@@ -4,6 +4,7 @@ import { Request } from 'express';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { configurationsDTO } from 'src/dto/configurations.dto';
 import { format_json } from 'src/env';
+import { RolesGuard } from 'src/middleware/role.guard';
 import { configurationsService } from 'src/service/configurations.service';
 
 @Controller('api')
@@ -11,7 +12,7 @@ export class configurationsController {
   constructor(private readonly configurationsService: configurationsService) {}
 
   @Get('configurations')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async Get(@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -46,7 +47,7 @@ export class configurationsController {
   }
 
   @Post('configurations')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UsePipes(CustomValidationPipe)
   async update(@Req() req: Request,@Body() data: configurationsDTO) {
     try {

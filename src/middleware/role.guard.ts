@@ -1,22 +1,18 @@
 import { Injectable, CanActivate, ExecutionContext, HttpException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/entity/profile/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Role } from 'src/entity/role.entity';
 import { format_json } from 'src/env';
 import { Response } from 'express';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly jwtService: JwtService,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>,
+    private prisma: PrismaService,
   ) {}
 
   async canActivate(
@@ -59,12 +55,12 @@ export class RolesGuard implements CanActivate {
     }
   }
 
-  async findUserById(userId: number): Promise<User> {
-    return this.userRepository.findOne({ where: { id: userId } });
+  async findUserById(userId: string) {
+    return this.prisma.user.findUnique({ where : { id: userId } });
   }
 
-  async findRole(role: string): Promise<Role> {
-    return this.roleRepository.findOne({ where: { name: role } });
+  async findRole(role: string){
+    return this.prisma.role.findFirst({ where : { name: role } });
   }
 
   private throwFormattedException(response: Response, status: number, message: string, exceptionType: string) {

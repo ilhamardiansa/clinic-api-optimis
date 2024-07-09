@@ -10,6 +10,7 @@ import {
   UseGuards,
   HttpException,
   UsePipes,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -48,20 +49,20 @@ export class PolyController {
             createdPoly,
           ),
         );
-    } catch (error) {
-      return res
-        .status(400)
-        .json(
-          format_json(
-            400,
-            false,
-            'Bad Request',
-            null,
-            'Failed to create poly',
-            error,
-          ),
-        );
-    }
+      } catch (error:any) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json(
+            format_json(
+              500,
+              false,
+              true,
+              null,
+              'Server Error ' + error,
+              error.message,
+            ),
+          );
+      }
   }
 
   @Put(':id')
@@ -89,20 +90,20 @@ export class PolyController {
             updatedPoly,
           ),
         );
-    } catch (error) {
-      return res
-        .status(400)
-        .json(
-          format_json(
-            400,
-            false,
-            'Bad Request',
-            null,
-            'Failed to update poly',
-            error,
-          ),
-        );
-    }
+      } catch (error:any) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json(
+            format_json(
+              500,
+              false,
+              true,
+              null,
+              'Server Error ' + error,
+              error.message,
+            ),
+          );
+      }
   }
 
   @Get()
@@ -125,20 +126,20 @@ export class PolyController {
             polies,
           ),
         );
-    } catch (error) {
-      return res
-        .status(500)
-        .json(
-          format_json(
-            500,
-            false,
-            'Internal Server Error',
-            null,
-            'Failed to retrieve polies',
-            error,
-          ),
-        );
-    }
+      } catch (error:any) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json(
+            format_json(
+              500,
+              false,
+              true,
+              null,
+              'Server Error ' + error,
+              error.message,
+            ),
+          );
+      }
   }
 
   @Get(':id')
@@ -161,20 +162,20 @@ export class PolyController {
             poly,
           ),
         );
-    } catch (error) {
-      return res
-        .status(500)
-        .json(
-          format_json(
-            500,
-            false,
-            'Internal Server Error',
-            null,
-            'Failed to retrieve poly',
-            error,
-          ),
-        );
-    }
+      } catch (error:any) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json(
+            format_json(
+              500,
+              false,
+              true,
+              null,
+              'Server Error ' + error,
+              error.message,
+            ),
+          );
+      }
   }
 
   @Delete(':id')
@@ -190,19 +191,19 @@ export class PolyController {
         .json(
           format_json(200, true, null, null, 'Poly deleted successfully', null),
         );
-    } catch (error) {
-      return res
-        .status(500)
-        .json(
-          format_json(
-            500,
-            false,
-            'Internal Server Error',
-            null,
-            'Failed to delete poly',
-            error,
-          ),
-        );
-    }
+      } catch (error:any) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json(
+            format_json(
+              500,
+              false,
+              true,
+              null,
+              'Server Error ' + error,
+              error.message,
+            ),
+          );
+      }
   }
 }

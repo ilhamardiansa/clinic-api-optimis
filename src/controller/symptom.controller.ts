@@ -31,7 +31,7 @@ export class SymptomController {
   async create(@Body() symptomDto: SymptomDto) {
     try {
       const createdSymptom =
-        await this.symptomService.createSymptom(symptomDto);
+      await this.symptomService.createSymptom(symptomDto);
       return format_json(
         201,
         true,
@@ -40,7 +40,7 @@ export class SymptomController {
         'Symptom created successfully',
         createdSymptom,
       );
-    } catch (error) {
+    } catch (error : any) {
       throw new HttpException(
         format_json(
           400,
@@ -48,7 +48,7 @@ export class SymptomController {
           'Bad Request',
           null,
           'Failed to create symptom',
-          null,
+          error.message,
         ),
         400,
       );
@@ -77,15 +77,15 @@ export class SymptomController {
         'Symptom updated successfully',
         updatedSymptom,
       );
-    } catch (error) {
+    } catch (error : any) {
       throw new HttpException(
         format_json(
           400,
           false,
           'Bad Request',
           null,
-          'Failed to update symptom',
-          null,
+          'Failed to create symptom',
+          error.message,
         ),
         400,
       );
@@ -108,17 +108,17 @@ export class SymptomController {
         'Symptoms retrieved successfully',
         symptoms,
       );
-    } catch (error) {
+    } catch (error : any) {
       throw new HttpException(
         format_json(
-          500,
+          400,
           false,
-          'Internal Server Error',
+          'Bad Request',
           null,
-          'Failed to retrieve symptoms',
-          null,
+          'Failed to create symptom',
+          error.message,
         ),
-        500,
+        400,
       );
     }
   }
@@ -139,17 +139,17 @@ export class SymptomController {
         'Symptom retrieved successfully',
         symptom,
       );
-    } catch (error) {
+    } catch (error : any) {
       throw new HttpException(
         format_json(
-          500,
+          400,
           false,
-          'Internal Server Error',
+          'Bad Request',
           null,
-          'Failed to retrieve symptom',
-          null,
+          'Failed to create symptom',
+          error.message,
         ),
-        500,
+        400,
       );
     }
   }
@@ -170,17 +170,17 @@ export class SymptomController {
         'Symptom deleted successfully',
         null,
       );
-    } catch (error) {
+    } catch (error : any) {
       throw new HttpException(
         format_json(
-          500,
+          400,
           false,
-          'Internal Server Error',
+          'Bad Request',
           null,
-          'Failed to delete symptom',
-          null,
+          'Failed to create symptom',
+          error.message,
         ),
-        500,
+        400,
       );
     }
   }

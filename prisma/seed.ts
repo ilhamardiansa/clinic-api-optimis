@@ -204,6 +204,23 @@ async function main() {
       responsibleForCosts: null,
     },
   });
+
+  await prisma.configuration.create({
+    data  : {
+      application_name: 'Clinic Ai',
+      application_version: '1.0.3',
+      application_content: 'Clinic Ai',
+      application_teams: 'Clinic Ai',
+      by_email: 'email',
+      by_email_username: 'by_email_username',
+      by_email_password: 'by_email_password',
+      to_email: 'to_email',
+      by_whatsapp: 'by_whatsapp',
+      by_whatsapp_secret: 'by_whatsapp_secret',
+      by_telegram: 'by_telegram',
+      by_telegram_secret: 'by_telegram_secret',
+    }
+  })
 }
 
 main()

@@ -21,7 +21,7 @@ export class PolyService {
 
     try {
       const validatedData = schema.parse(polyDto);
-      const create = this.prisma.poly.create({
+      const create = await this.prisma.poly.create({
         data  : {
           name: validatedData.name,
           description: validatedData.description,
@@ -75,7 +75,7 @@ export class PolyService {
 
     try {
       const validatedData = schema.parse(updatePolyDto);
-      const update = this.prisma.poly.update({
+      const update = await this.prisma.poly.update({
         where: {id : id},
         data  : {
           name: validatedData.name,
@@ -147,7 +147,7 @@ export class PolyService {
   }
 
   async removePoly(id: string) {
-    return this.prisma.poly.delete({
+    return await this.prisma.poly.delete({
       where: {
         id: id,
       },
