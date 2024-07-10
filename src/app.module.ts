@@ -12,6 +12,31 @@ import { AuthenticationService } from './service/auth/Authentication.service';
 import { mailService } from './service/mailer/mailer.service';
 import { JwtStrategy } from './middleware/jwt.strategy';
 import { ProfileService } from './service/auth/profile.service';
+import { ClinicModule } from './modules/clinic/clinic.module';
+import { DoctorModule } from './modules/clinic/doctor.module';
+import { PolyModule } from './modules/clinic/poly.module';
+import { BankCategoryModule } from './modules/bank/bank.category.module';
+import { BankModule } from './modules/bank/bank.module';
+import { DrugModule } from './modules/drug/drug.module';
+import { FeeModule } from './modules/fee/fee.module';
+import { LastMedicalRecordModule } from './modules/latest/last.medical.record.module';
+import { LastRedeemModule } from './modules/latest/last.redeem.module';
+import { LocationModule } from './modules/location/location.module';
+import { MedicalRecordModule } from './modules/medical record/medical.record.module';
+import { PaymentDetailsModule } from './modules/payment/payment.details.module';
+import { paymentModule } from './modules/payment/payment.module';
+import { RedeemModule } from './modules/redeem/redeem.module';
+import { SummaryModule } from './modules/summary/summary.module';
+import { TermCategoryModule } from './modules/term/term.category.module';
+import { TermModule } from './modules/term/term.module';
+import { CategoryModule } from './modules/category.module';
+import { configurationsModule } from './modules/configurations.module';
+import { DiagnosisModule } from './modules/diagnosis.module';
+import { FeedbackModule } from './modules/feedback.module';
+import { RoleModule } from './modules/role.module';
+import { ScheduleModule } from './modules/schedule.module';
+import { SymptomModule } from './modules/symptom.module';
+
 
 @Module({
   controllers: [AuthController],
@@ -20,6 +45,30 @@ import { ProfileService } from './service/auth/profile.service';
     ConfigModule.forRoot(),
     PrismaModule,
     Authmodule,
+    ClinicModule,
+    DoctorModule,
+    PolyModule,
+    BankCategoryModule,
+    BankModule,
+    DrugModule,
+    FeeModule,
+    LastMedicalRecordModule,
+    LastRedeemModule,
+    LocationModule,
+    MedicalRecordModule,
+    PaymentDetailsModule,
+    paymentModule,
+    RedeemModule,
+    SummaryModule,
+    TermCategoryModule,
+    TermModule,
+    CategoryModule,
+    configurationsModule,
+    DiagnosisModule,
+    FeedbackModule,
+    RoleModule,
+    ScheduleModule,
+    SymptomModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
@@ -46,4 +95,8 @@ import { ProfileService } from './service/auth/profile.service';
   ],
 })
 
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TokenBlacklistMiddleware).forRoutes('*');
+  }
+}

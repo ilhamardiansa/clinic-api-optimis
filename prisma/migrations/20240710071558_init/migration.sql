@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE `Wilayah` (
+CREATE TABLE `wilayah` (
     `id` BIGINT NOT NULL,
     `provinsi` VARCHAR(191) NOT NULL,
     `kabupaten` VARCHAR(191) NOT NULL,
@@ -181,6 +181,7 @@ CREATE TABLE `Fee` (
 CREATE TABLE `LastRedeem` (
     `id` VARCHAR(191) NOT NULL,
     `redemption_date_and_time` DATETIME(0) NOT NULL,
+    `list_of_medications` TEXT NOT NULL,
     `total_cost` VARCHAR(191) NOT NULL,
     `bank_transfer_name` VARCHAR(191) NOT NULL,
     `bank_id` VARCHAR(191) NOT NULL,
@@ -271,6 +272,7 @@ CREATE TABLE `Summary` (
 CREATE TABLE `ScheduleDoctor` (
     `id` VARCHAR(191) NOT NULL,
     `date` DATETIME(0) NOT NULL,
+    `time` VARCHAR(191) NOT NULL,
     `poly_id` VARCHAR(191) NOT NULL,
     `clinic_id` VARCHAR(191) NOT NULL,
     `doctor_id` VARCHAR(191) NOT NULL,
@@ -407,7 +409,7 @@ ALTER TABLE `User` ADD CONSTRAINT `User_role_id_fkey` FOREIGN KEY (`role_id`) RE
 ALTER TABLE `Profile` ADD CONSTRAINT `Profile_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Profile` ADD CONSTRAINT `Profile_city_id_fkey` FOREIGN KEY (`city_id`) REFERENCES `Wilayah`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Profile` ADD CONSTRAINT `Profile_city_id_fkey` FOREIGN KEY (`city_id`) REFERENCES `wilayah`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Otp` ADD CONSTRAINT `Otp_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -416,7 +418,7 @@ ALTER TABLE `Otp` ADD CONSTRAINT `Otp_user_id_fkey` FOREIGN KEY (`user_id`) REFE
 ALTER TABLE `Bank` ADD CONSTRAINT `Bank_bank_category_id_fkey` FOREIGN KEY (`bank_category_id`) REFERENCES `BankCategory`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Clinic` ADD CONSTRAINT `Clinic_city_id_fkey` FOREIGN KEY (`city_id`) REFERENCES `Wilayah`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Clinic` ADD CONSTRAINT `Clinic_city_id_fkey` FOREIGN KEY (`city_id`) REFERENCES `wilayah`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Poly` ADD CONSTRAINT `Poly_clinic_id_fkey` FOREIGN KEY (`clinic_id`) REFERENCES `Clinic`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -425,7 +427,7 @@ ALTER TABLE `Poly` ADD CONSTRAINT `Poly_clinic_id_fkey` FOREIGN KEY (`clinic_id`
 ALTER TABLE `Doctor` ADD CONSTRAINT `Doctor_poly_id_fkey` FOREIGN KEY (`poly_id`) REFERENCES `Poly`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Doctor` ADD CONSTRAINT `Doctor_wilayah_id_fkey` FOREIGN KEY (`wilayah_id`) REFERENCES `Wilayah`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Doctor` ADD CONSTRAINT `Doctor_wilayah_id_fkey` FOREIGN KEY (`wilayah_id`) REFERENCES `wilayah`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Drug` ADD CONSTRAINT `Drug_category_id_fkey` FOREIGN KEY (`category_id`) REFERENCES `DrugCategory`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

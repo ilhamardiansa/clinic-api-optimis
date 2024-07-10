@@ -12,7 +12,7 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-model Wilayah {
+model wilayah {
   id    BigInt     @id
   provinsi String
   kabupaten String
@@ -39,6 +39,7 @@ model User {
   profileconfiguration ProfileConfiguration[] @relation()
   schedule Schedule[] @relation()
   ticket Ticket[] @relation()
+  payment Payment[] @relation()
 }
 
 model Profile {
@@ -59,7 +60,7 @@ model Profile {
   user_id      String      @unique
   user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   city_id      BigInt?
-  city    Wilayah?     @relation(fields: [city_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  city    wilayah?     @relation(fields: [city_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   neighborhood_no Int?     
   citizen_no    Int?     
   area_code     Int?     
@@ -119,7 +120,7 @@ model Clinic {
   latitude Int
   longitude Int
   city_id BigInt
-  city    Wilayah     @relation(fields: [city_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  city    wilayah     @relation(fields: [city_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   poly Poly[] @relation()
   fee Fee[] @relation()
   record Record[] @relation()
@@ -159,7 +160,7 @@ model Doctor {
   poly_id String
   poly    Poly     @relation(fields: [poly_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   wilayah_id BigInt
-  city    Wilayah     @relation(fields: [wilayah_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  city    wilayah     @relation(fields: [wilayah_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   record Record[] @relation()
   summary Summary[] @relation()
   scheduledoctor ScheduleDoctor[] @relation()
@@ -201,6 +202,7 @@ model Fee {
 model LastRedeem {
   id String  @id @default(uuid())
   redemption_date_and_time DateTime @db.DateTime(0)
+  list_of_medications String @db.Text
   total_cost String
   bank_transfer_name String
   bank_id String
@@ -242,6 +244,8 @@ model Payment {
   redeem LastRedeem @relation(fields: [redeem_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   bank_id String
   bank Bank @relation(fields: [bank_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id String
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   status String
   paymentdetails PaymentDetails[] @relation()
   transaction Transaction[] @relation()

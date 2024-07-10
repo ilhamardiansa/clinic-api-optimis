@@ -102,7 +102,7 @@ export class RedeemController {
   @ApiOperation({ summary: 'detail' })
   @ApiResponse({ status: 200, description: 'Success' })
   async findOneRedeem(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -262,7 +262,7 @@ export class RedeemController {
   @ApiOperation({ summary: 'Update' })
   @ApiResponse({ status: 200, description: 'Success' })
   async UpdateRedeem(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() createDTO: CreateDTO,
     @Req() req: Request,
     @Res() res: Response,
@@ -347,7 +347,7 @@ export class RedeemController {
   @ApiOperation({ summary: 'Delete' })
   @ApiResponse({ status: 200, description: 'Success' })
   async deleteRedeem(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {
