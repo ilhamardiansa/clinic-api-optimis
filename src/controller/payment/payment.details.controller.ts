@@ -12,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { PaymentDetailsDto } from 'src/dto/payment/payment.details.dto';
@@ -22,6 +22,7 @@ import { Roles } from 'src/middleware/role.decorator';
 import { RolesGuard } from 'src/middleware/role.guard';
 import { PaymentDetailsService } from 'src/service/payment/payment.details.service';
 
+@ApiTags('Payment details')
 @Controller('api/payment-details')
 export class PaymentDetailsController {
   constructor(private readonly paymentDetailsService: PaymentDetailsService) {}

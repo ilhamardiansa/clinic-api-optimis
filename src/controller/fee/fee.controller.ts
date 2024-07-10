@@ -20,8 +20,9 @@ import { Roles } from 'src/middleware/role.decorator';
 import { RolesGuard } from 'src/middleware/role.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { FeeService } from 'src/service/fee/fee.service';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Fees')
 @Controller('api/fees')
 @UseGuards(RolesGuard)
 export class FeeController {

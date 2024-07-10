@@ -19,8 +19,9 @@ import { paymentDTO } from 'src/dto/payment/payment.dto';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { RolesGuard } from 'src/middleware/role.guard';
 import { Roles } from 'src/middleware/role.decorator';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Payment')
 @Controller('api/users')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class PaymentController {

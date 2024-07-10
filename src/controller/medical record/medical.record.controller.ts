@@ -20,8 +20,9 @@ import { UpdateMedicalRecordDto } from 'src/dto/medical record/update.medical.re
 import { RecordResponseDto } from 'src/dto/medical record/medical.record.response.dto';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { Roles } from 'src/middleware/role.decorator';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Medical Records')
 @Controller('api/medicalrecords')
 export class MedicalRecordController {
   constructor(private readonly medicalRecordService: MedicalRecordService) {}

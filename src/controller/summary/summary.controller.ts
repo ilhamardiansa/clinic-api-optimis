@@ -21,7 +21,7 @@ import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from 'src/middleware/role.guard';
 
-@ApiTags('Appointments')
+@ApiTags('Appointments / Summary')
 @Controller('api/users')
 export class SummaryController {
   constructor(private readonly summaryService: SummaryService) {}

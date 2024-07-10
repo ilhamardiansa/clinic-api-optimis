@@ -12,7 +12,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { configurationsDTO } from 'src/dto/configurations.dto';
@@ -20,6 +20,7 @@ import { format_json } from 'src/env';
 import { RolesGuard } from 'src/middleware/role.guard';
 import { configurationsService } from 'src/service/configurations.service';
 
+@ApiTags('Configurations')
 @Controller('api')
 export class configurationsController {
   constructor(private readonly configurationsService: configurationsService) {}

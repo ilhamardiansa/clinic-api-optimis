@@ -1,7 +1,8 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { WilayahService } from 'src/service/location/location.service';
 
+@ApiTags('Wilayah / City')
 @Controller('/api/v2/cities')
 export class WilayahController {
   constructor(private readonly wilayahService: WilayahService) {}
