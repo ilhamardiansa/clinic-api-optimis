@@ -20,6 +20,7 @@ import { UpdateMedicalRecordDto } from 'src/dto/medical record/update.medical.re
 import { RecordResponseDto } from 'src/dto/medical record/medical.record.response.dto';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { Roles } from 'src/middleware/role.decorator';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('api/medicalrecords')
 export class MedicalRecordController {
@@ -29,6 +30,8 @@ export class MedicalRecordController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'Create' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async create(
     @Body() medicalRecordDto: MedicalRecordDto,
     @Res() res: Response,
@@ -68,6 +71,8 @@ export class MedicalRecordController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'Update' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async update(
     @Param('id') id: string,
     @Body() updateMedicalRecordDto: MedicalRecordDto,
@@ -122,6 +127,8 @@ export class MedicalRecordController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiOperation({ summary: 'Get' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findAll(@Res() res: Response) {
     try {
       const records = await this.medicalRecordService.findAll();
@@ -155,6 +162,8 @@ export class MedicalRecordController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiOperation({ summary: 'Details' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const record = await this.medicalRecordService.findOne(id);
@@ -202,6 +211,8 @@ export class MedicalRecordController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiOperation({ summary: 'Delete' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       const record = await this.medicalRecordService.findOne(id);

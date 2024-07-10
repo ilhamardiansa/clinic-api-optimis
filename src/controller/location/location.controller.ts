@@ -1,4 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { WilayahService } from 'src/service/location/location.service';
 
 @Controller('/api/v2/cities')
@@ -6,6 +7,8 @@ export class WilayahController {
   constructor(private readonly wilayahService: WilayahService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findAllCities(
     @Query('q') query: string = '',
     @Query('page') page: number = 1,
@@ -28,7 +31,7 @@ export class WilayahController {
           limit,
           order,
         },
-        data: cities
+        data: cities,
       };
     } catch (error: any) {
       return {

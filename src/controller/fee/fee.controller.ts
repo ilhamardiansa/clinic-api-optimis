@@ -20,6 +20,7 @@ import { Roles } from 'src/middleware/role.decorator';
 import { RolesGuard } from 'src/middleware/role.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { FeeService } from 'src/service/fee/fee.service';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('api/fees')
 @UseGuards(RolesGuard)
@@ -30,6 +31,8 @@ export class FeeController {
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Create' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async create(
     @Body() feeDto: FeeDto,
     @Req() req: Request,
@@ -69,6 +72,8 @@ export class FeeController {
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Update' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async update(
     @Param('id') id: string,
     @Body() updateFeeDto: UpdateFeeDto,
@@ -115,6 +120,8 @@ export class FeeController {
   @Get()
   @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findAll(@Req() req: Request, @Res() res: Response) {
     try {
       const fees = await this.feeService.findAll();
@@ -149,6 +156,8 @@ export class FeeController {
   @Get(':id')
   @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Details' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findOne(
     @Param('id') id: string,
     @Req() req: Request,
@@ -185,6 +194,8 @@ export class FeeController {
   @Delete(':id')
   @Roles('admin', 'manager', 'operator')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Delete' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async remove(
     @Param('id') id: string,
     @Req() req: Request,

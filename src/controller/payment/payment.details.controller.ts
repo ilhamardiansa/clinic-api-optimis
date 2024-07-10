@@ -9,12 +9,17 @@ import {
   Req,
   Res,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { PaymentDetailsDto } from 'src/dto/payment/payment.details.dto';
 import { UpdatePaymentDetailsDto } from 'src/dto/payment/update.payment.details.dto';
 import { format_json } from 'src/env';
+import { Roles } from 'src/middleware/role.decorator';
+import { RolesGuard } from 'src/middleware/role.guard';
 import { PaymentDetailsService } from 'src/service/payment/payment.details.service';
 
 @Controller('api/payment-details')
@@ -22,7 +27,11 @@ export class PaymentDetailsController {
   constructor(private readonly paymentDetailsService: PaymentDetailsService) {}
 
   @Post()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin', 'manager', 'operator')
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'Create' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async create(
     @Body() paymentDetailsDto: PaymentDetailsDto,
     @Req() req: Request,
@@ -62,7 +71,11 @@ export class PaymentDetailsController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin', 'manager', 'operator')
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'Update' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async update(
     @Param('id') id: string,
     @Body() updatePaymentDetailsDto: UpdatePaymentDetailsDto,
@@ -120,6 +133,10 @@ export class PaymentDetailsController {
   }
 
   @Get()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Get' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findAll(@Req() req: Request, @Res() res: Response) {
     try {
       const paymentDetailsList = await this.paymentDetailsService.findAll();
@@ -152,6 +169,10 @@ export class PaymentDetailsController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Details' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findOne(
     @Param('id') id: string,
     @Req() req: Request,
@@ -202,6 +223,10 @@ export class PaymentDetailsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Delete' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async remove(
     @Param('id') id: string,
     @Req() req: Request,
