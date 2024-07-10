@@ -172,7 +172,7 @@ export class PaymentController {
     @Put('payment/:id')
     @Roles('admin', 'manager', 'operator')
     async updatePayment(
-      @Param('id') id: number,
+      @Param('id') id: string,
       @Body() createDTO: paymentDTO,
       @Req() req: Request,
       @Res() res: Response,
@@ -244,7 +244,7 @@ export class PaymentController {
   @Delete('payment/:id')
   @Roles('admin', 'manager', 'operator')
   async deletePayment(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {

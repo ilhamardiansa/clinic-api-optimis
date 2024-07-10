@@ -26,7 +26,7 @@ export class BankController {
   constructor(private readonly bankService: BankService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
   async create(@Body() bankDto: BankDto, @Res() res: Response) {
@@ -61,7 +61,7 @@ export class BankController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
   async update(
@@ -70,7 +70,7 @@ export class BankController {
     @Res() res: Response,
   ) {
     try {
-      const updatedBank = await this.bankService.updateBank(+id, updateBankDto);
+      const updatedBank = await this.bankService.updateBank(id, updateBankDto);
       if (!updatedBank) {
         return res
           .status(404)
@@ -108,6 +108,7 @@ export class BankController {
 
   @Get()
   @Roles('admin', 'manager', 'operator')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async findAll(@Res() res: Response) {
     try {
       const banks = await this.bankService.findAll();
@@ -141,9 +142,10 @@ export class BankController {
 
   @Get(':id')
   @Roles('admin', 'manager', 'operator')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
-      const bank = await this.bankService.findOne(+id);
+      const bank = await this.bankService.findOne(id);
       if (!bank) {
         return res
           .status(404)
@@ -181,9 +183,10 @@ export class BankController {
 
   @Delete(':id')
   @Roles('admin', 'manager', 'operator')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
-      const deletedBank = await this.bankService.removeBank(+id);
+      const deletedBank = await this.bankService.removeBank(id);
       if (!deletedBank) {
         return res
           .status(404)

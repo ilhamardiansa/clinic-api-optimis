@@ -19,14 +19,19 @@ import { CreateDTO } from 'src/dto/redeem/create.dto';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { RolesGuard } from 'src/middleware/role.guard';
 import { Roles } from 'src/middleware/role.decorator';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Redeem')
 @Controller('api/users')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class RedeemController {
   constructor(private readonly lastRedeemService: LastRedeemService) {}
 
+  
   @Get('redeem')
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'get' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async getRedeem(@Req() req: Request, @Res() res: Response) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -94,6 +99,8 @@ export class RedeemController {
 
   @Get('redeem/:id')
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'detail' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findOneRedeem(
     @Param('id') id: number,
     @Req() req: Request,
@@ -167,6 +174,8 @@ export class RedeemController {
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Create' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async createRedeem(
     @Body() createDTO: CreateDTO,
     @Req() req: Request,
@@ -250,6 +259,8 @@ export class RedeemController {
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Update' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async UpdateRedeem(
     @Param('id') id: number,
     @Body() createDTO: CreateDTO,
@@ -333,6 +344,8 @@ export class RedeemController {
 
   @Delete('redeem/:id')
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Delete' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async deleteRedeem(
     @Param('id') id: number,
     @Req() req: Request,

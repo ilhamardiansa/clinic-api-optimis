@@ -70,12 +70,12 @@ export class MedicalRecordController {
   @UsePipes(CustomValidationPipe)
   async update(
     @Param('id') id: string,
-    @Body() updateMedicalRecordDto: UpdateMedicalRecordDto,
+    @Body() updateMedicalRecordDto: MedicalRecordDto,
     @Res() res: Response,
   ) {
     try {
       const updatedRecord = await this.medicalRecordService.updateRecord(
-        +id,
+        id,
         updateMedicalRecordDto,
       );
       if (!updatedRecord) {
@@ -157,7 +157,7 @@ export class MedicalRecordController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
-      const record = await this.medicalRecordService.findOne(+id);
+      const record = await this.medicalRecordService.findOne(id);
       if (!record) {
         return res
           .status(404)
@@ -204,7 +204,7 @@ export class MedicalRecordController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
-      const record = await this.medicalRecordService.findOne(+id);
+      const record = await this.medicalRecordService.findOne(id);
       if (!record) {
         return res
           .status(404)
@@ -219,7 +219,7 @@ export class MedicalRecordController {
             ),
           );
       }
-      await this.medicalRecordService.removeRecord(+id);
+      await this.medicalRecordService.removeRecord(id);
       return res
         .status(200)
         .json(

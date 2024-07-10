@@ -65,7 +65,7 @@ export class SummaryController {
         );
       } else {
         return res.status(400).json(
-          format_json(400, false, null, null, 'Error Server', null)
+          format_json(400, false, null, null, 'Error Server', getdata.data)
         );
       }
     } catch (error) {
@@ -116,7 +116,7 @@ export class SummaryController {
         );
       } else {
         return res.status(400).json(
-          format_json(400, false, null, null, 'Error Server', null)
+          format_json(400, false, null, null, 'Error Server', create.data)
         );
       }
     } catch (error) {

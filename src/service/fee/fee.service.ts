@@ -5,7 +5,7 @@ import { FeeDto } from 'src/dto/fee/fee.dto';
 import { UpdateFeeDto } from 'src/dto/fee/update.fee.dto';
 
 @Injectable()
-export class ClinicService {
+export class FeeService {
   constructor(private prisma: PrismaService) {}
 
   async createFee(feeDto: FeeDto) {
@@ -94,26 +94,26 @@ export class ClinicService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.clinic.findUnique({
+    return await this.prisma.fee.findUnique({
       where: {
         id: id,
       },
       include: {
-        city: true,
+        clinic: true,
       },
     });
   }
 
   async findAll() {
-    return await this.prisma.clinic.findMany({
+    return await this.prisma.fee.findMany({
       include: {
-        city: true,
+        clinic: true,
       },
     });
   }
 
-  async removeClinic(id: string) {
-    return this.prisma.clinic.delete({
+  async removefee(id: string) {
+    return this.prisma.fee.delete({
       where: {
         id: id,
       },

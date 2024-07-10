@@ -3,13 +3,17 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { LastRedeemService } from 'src/service/latest/last.redeem.service';
 import { format_json } from 'src/env';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Last redeem')
 @Controller('api/users')
 export class LastRedeemController {
   constructor(private readonly lastRedeemService: LastRedeemService) {}
 
   @Get('last-redeem')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'get' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async getLastRedeem(@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];

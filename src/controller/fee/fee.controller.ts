@@ -16,10 +16,10 @@ import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { format_json } from 'src/env';
 import { FeeDto } from 'src/dto/fee/fee.dto';
 import { UpdateFeeDto } from 'src/dto/fee/update.fee.dto';
-import { FeeService } from 'src/service/fee/fee.service';
 import { Roles } from 'src/middleware/role.decorator';
 import { RolesGuard } from 'src/middleware/role.guard';
 import { AuthGuard } from '@nestjs/passport';
+import { FeeService } from 'src/service/fee/fee.service';
 
 @Controller('api/fees')
 @UseGuards(RolesGuard)
@@ -76,14 +76,14 @@ export class FeeController {
     @Res() res: Response,
   ) {
     try {
-      const fee = await this.feeService.findOne(+id);
+      const fee = await this.feeService.findOne(id);
       if (!fee) {
         return res
           .status(404)
           .json(format_json(404, false, null, null, 'Fee not found', null));
       }
 
-      const updatedFee = await this.feeService.updateFee(+id, updateFeeDto);
+      const updatedFee = await this.feeService.updateFee(id, updateFeeDto);
       return res
         .status(200)
         .json(
@@ -155,7 +155,7 @@ export class FeeController {
     @Res() res: Response,
   ) {
     try {
-      const fee = await this.feeService.findOne(+id);
+      const fee = await this.feeService.findOne(id);
       if (!fee) {
         return res
           .status(404)
@@ -191,14 +191,14 @@ export class FeeController {
     @Res() res: Response,
   ) {
     try {
-      const fee = await this.feeService.findOne(+id);
+      const fee = await this.feeService.findOne(id);
       if (!fee) {
         return res
           .status(404)
           .json(format_json(404, false, null, null, 'Fee not found', null));
       }
 
-      await this.feeService.removeFee(+id);
+      await this.feeService.removefee(id);
       return res
         .status(200)
         .json(

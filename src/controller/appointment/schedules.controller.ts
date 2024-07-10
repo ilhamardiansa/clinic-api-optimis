@@ -10,14 +10,18 @@ import { SchedulesService } from 'src/service/appointment/schedules.service';
 import { Response } from 'express';
 import { Roles } from 'src/middleware/role.decorator';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from 'src/middleware/role.guard';
 
-
+@ApiTags('Schedules')
 @Controller('api')
 export class ScheduleController {
   constructor(private readonly SchedulesServices: SchedulesService) {}
 
   @Get('schedules/get-approval-token')
-  @UseGuards(AuthGuard('jwt'))
+ @UseGuards(AuthGuard('jwt'), RolesGuard)
+ @ApiOperation({ summary: 'Get approval token' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async getapprovaltoken(@Res() res: Response,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -62,8 +66,10 @@ export class ScheduleController {
   }
 
   @Post('schedules/approval-token/:code')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'approval token' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async aspprovaltoken(@Res() res: Response,@Body() approvaltokenDTO: approvaltokenDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -115,9 +121,11 @@ export class ScheduleController {
   }
 
   @Post('schedules/set-time')
-  @UseGuards(AuthGuard('jwt'))
+ @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('doctor')
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'Set time' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async SetTime(@Res() res: Response,@Body() setTimeDTO: setTimeDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -173,9 +181,11 @@ export class ScheduleController {
   
 
   @Post('schedules')
-  @UseGuards(AuthGuard('jwt'))
+ @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('doctor')
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'Create schdules doctor' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async CreateSchedule(@Res() res: Response,@Body() scheduleDTO: SchedulesDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -225,9 +235,11 @@ export class ScheduleController {
   }
 
   @Put('schedules/:id')
-  @UseGuards(AuthGuard('jwt'))
+ @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('doctor')
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'update schedules doctor' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async UpdateSchedule(@Res() res: Response,@Param('id') id: string, @Body() scheduleDTO: SchedulesUpdateDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -285,7 +297,9 @@ export class ScheduleController {
   }
 
   @Get('schedules/:doctor_id?/:date?')
-  @UseGuards(AuthGuard('jwt'))
+ @UseGuards(AuthGuard('jwt'), RolesGuard)
+ @ApiOperation({ summary: 'Get schedules' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async GetSchedule(@Res() res: Response, @Req() req: Request, @Param('doctor_id') doctor_id: string, @Param('date') date: string) {
     try {
       const authorizationHeader = req.headers['authorization'];

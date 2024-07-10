@@ -23,13 +23,13 @@ import { Roles } from 'src/middleware/role.decorator';
 import { RolesGuard } from 'src/middleware/role.guard';
 
 @Controller('api')
-@UseGuards(RolesGuard)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class DiagnosisController {
   constructor(private readonly diagnosisService: DiagnosisService) {}
 
   @Get('diagnosis')
   @Roles('admin', 'manager', 'operator')
-  @UseGuards(AuthGuard('jwt'))
+ @UseGuards(AuthGuard('jwt'), RolesGuard)
   async find(@Res() res: Response, @Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -97,7 +97,7 @@ export class DiagnosisController {
 
   @Post('diagnosis')
   @Roles('admin', 'manager', 'operator')
-  @UseGuards(AuthGuard('jwt'))
+ @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UsePipes(CustomValidationPipe)
   async create(
     @Body() diagnosisDTO: DiagnosisDTO,
@@ -170,10 +170,10 @@ export class DiagnosisController {
 
   @Put('diagnosis/:id')
   @Roles('admin', 'manager', 'operator')
-  @UseGuards(AuthGuard('jwt'))
+ @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UsePipes(CustomValidationPipe)
   async update(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() diagnosisDTO: DiagnosisDTO,
     @Res() res: Response,
     @Req() req: Request,
@@ -248,9 +248,9 @@ export class DiagnosisController {
 
   @Delete('diagnosis/:id')
   @Roles('admin', 'manager', 'operator')
-  @UseGuards(AuthGuard('jwt'))
+ @UseGuards(AuthGuard('jwt'), RolesGuard)
   async deletepayment(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {

@@ -74,7 +74,7 @@ export class DrugController {
     @Res() res: Response,
   ) {
     try {
-      const updatedDrug = await this.drugService.updateDrug(+id, updateDrugDto);
+      const updatedDrug = await this.drugService.updateDrug(id, updateDrugDto);
       return res
         .status(200)
         .json(
@@ -142,7 +142,7 @@ export class DrugController {
   @Roles('admin', 'manager', 'operator')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
-      const drug = await this.drugService.findOne(+id);
+      const drug = await this.drugService.findOne(id);
       if (!drug) {
         return res
           .status(404)
@@ -183,7 +183,7 @@ export class DrugController {
   @Roles('admin', 'manager', 'operator')
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
-      await this.drugService.removeDrug(+id);
+      await this.drugService.removeDrug(id);
       return res
         .status(200)
         .json(

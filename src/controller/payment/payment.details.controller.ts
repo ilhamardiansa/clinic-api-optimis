@@ -70,7 +70,7 @@ export class PaymentDetailsController {
     @Res() res: Response,
   ) {
     try {
-      const paymentDetails = await this.paymentDetailsService.findOne(+id);
+      const paymentDetails = await this.paymentDetailsService.findOne(id);
       if (!paymentDetails) {
         return res
           .status(404)
@@ -88,7 +88,7 @@ export class PaymentDetailsController {
 
       const updatedPaymentDetails =
         await this.paymentDetailsService.updatePaymentDetails(
-          +id,
+          id,
           updatePaymentDetailsDto,
         );
       return res
@@ -158,7 +158,7 @@ export class PaymentDetailsController {
     @Res() res: Response,
   ) {
     try {
-      const paymentDetails = await this.paymentDetailsService.findOne(+id);
+      const paymentDetails = await this.paymentDetailsService.findOne(id);
       if (!paymentDetails) {
         return res
           .status(404)
@@ -208,7 +208,7 @@ export class PaymentDetailsController {
     @Res() res: Response,
   ) {
     try {
-      const paymentDetails = await this.paymentDetailsService.findOne(+id);
+      const paymentDetails = await this.paymentDetailsService.findOne(id);
       if (!paymentDetails) {
         return res
           .status(404)
@@ -224,7 +224,7 @@ export class PaymentDetailsController {
           );
       }
 
-      await this.paymentDetailsService.removePaymentDetails(+id);
+      await this.paymentDetailsService.removePaymentDetails(id);
       return res
         .status(200)
         .json(
