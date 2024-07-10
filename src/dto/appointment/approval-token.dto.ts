@@ -4,10 +4,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class approvaltokenDTO {
     
-    @IsInt()
     @IsNotEmpty({ message: 'should not be empty' })
     @ApiProperty()
-    doctor_id: number;
+    code: string;
 
     @IsNotEmpty({ message: 'Tidak boleh kosong' })
     @ApiProperty()

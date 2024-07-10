@@ -35,8 +35,11 @@ export class UpdateDrugDto {
   @ApiProperty()
   company_name: string;
 
-  @IsNumber()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  category_id: number;
+  category_id: string;
+
+  @IsNotEmpty({ message: 'should not be empty' })
+  @ApiProperty()
+  redeem_id: string;
 }

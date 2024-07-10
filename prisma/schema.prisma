@@ -292,6 +292,7 @@ model Summary {
 model ScheduleDoctor {
   id String  @id @default(uuid())
   date DateTime @db.DateTime(0)
+  time String
   poly_id String
   poly    Poly     @relation(fields: [poly_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   clinic_id String

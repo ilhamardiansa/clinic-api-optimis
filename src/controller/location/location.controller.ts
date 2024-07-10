@@ -10,7 +10,7 @@ export class WilayahController {
     @Query('q') query: string = '',
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
-    @Query('order') order: 'ASC' | 'DESC' = 'ASC',
+    @Query('order') order: 'asc' | 'desc' = 'asc',
   ) {
     try {
       const cities = await this.wilayahService.getCities(
@@ -30,13 +30,13 @@ export class WilayahController {
         },
         data: cities
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         status: 500,
         success: false,
         errors: true,
         message: 'Internal Server Error',
-        error: error,
+        error: error.message,
       };
     }
   }

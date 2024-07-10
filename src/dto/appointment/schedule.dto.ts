@@ -6,7 +6,7 @@ export class SchedulesDTO {
   @IsInt()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  doctor_id: number;
+  doctor_id: string;
 
   @IsString()
   @IsNotEmpty({ message: 'should not be empty' })
@@ -17,11 +17,6 @@ export class SchedulesDTO {
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
   poly_name: string;
-
-  @IsString()
-  @IsNotEmpty({ message: 'should not be empty' })
-  @ApiProperty()
-  approval: boolean;
 
   @IsDate()
   @Type(() => Date)

@@ -5,7 +5,6 @@ import { approvaltokenDTO } from 'src/dto/appointment/approval-token.dto';
 import { SchedulesDTO } from 'src/dto/appointment/schedule.dto';
 import { SchedulesUpdateDTO } from 'src/dto/appointment/scheduleupdate.dto';
 import { setTimeDTO } from 'src/dto/appointment/set-time.dto';
-import { ScheduleDto } from 'src/dto/schedule.dto';
 import { format_json } from 'src/env';
 import { SchedulesService } from 'src/service/appointment/schedules.service';
 import { Response } from 'express';
@@ -65,7 +64,7 @@ export class ScheduleController {
   @Post('schedules/approval-token/:code')
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(CustomValidationPipe)
-  async aspprovaltoken(@Res() res: Response,@Param('code') code: string,@Body() approvaltokenDTO: approvaltokenDTO,@Req() req: Request) {
+  async aspprovaltoken(@Res() res: Response,@Body() approvaltokenDTO: approvaltokenDTO,@Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
@@ -90,14 +89,14 @@ export class ScheduleController {
         .json(format_json(400,false, null, null, 'Bearer token is missing', null));
       }
 
-      const { doctor_id, approval } = approvaltokenDTO;
+      const { code, approval } = approvaltokenDTO;
 
       const Create = {
-        doctor_id: doctor_id,
+        code: code,
         approval: approval
     };
 
-      const createdata = await this.SchedulesServices.ApprovalToken(token,Create,code);
+      const createdata = await this.SchedulesServices.ApprovalToken(token,Create);
 
       if (createdata.status) {
         return res
@@ -204,13 +203,10 @@ export class ScheduleController {
 
       const { doctor_id, clinic_name, poly_name, date, time } = scheduleDTO;
 
-      const Schedules = {
-        doctor_id: doctor_id,
-        date: date,
-        time: time,
+      const Schedules = { doctor_id, clinic_name,poly_name,date,time,
     };
 
-      const createdata = await this.SchedulesServices.Create(token,Schedules,clinic_name,poly_name);
+      const createdata = await this.SchedulesServices.Create(token,Schedules);
 
       if (createdata.status) {
         return res
@@ -315,7 +311,7 @@ export class ScheduleController {
         .json(format_json(400, false, null, null, 'Bearer token is missing', null));
       }
 
-      const doctorId = doctor_id ? parseInt(doctor_id, 10) : null;
+      const doctorId = doctor_id ? doctor_id : null;
       const parsedDate = date ? new Date(date) : null;
 
       const gettallRecords = await this.SchedulesServices.getAll(token, doctorId, parsedDate);
