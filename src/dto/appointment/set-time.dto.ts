@@ -4,20 +4,17 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class setTimeDTO {
     
-    @IsInt()
     @IsNotEmpty({ message: 'should not be empty' })
     @ApiProperty()
-    doctor_id: number;
+    doctor_id: string;
 
-    @IsInt()
     @IsNotEmpty({ message: 'should not be empty' })
     @ApiProperty()
-    poly_id: number;
+    poly_id: string;
 
-    @IsInt()
     @IsNotEmpty({ message: 'should not be empty' })
     @ApiProperty()
-    clinic_id: number;
+    clinic_id: string;
 
     @IsDate()
     @IsNotEmpty({ message: 'should not be empty' })

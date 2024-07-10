@@ -266,7 +266,7 @@ export class ScheduleController {
         time: time,
     };
 
-      const createdata = await this.SchedulesServices.Update(token,Schedules);
+      const createdata = await this.SchedulesServices.Update(token,Schedules, id);
 
       if (createdata.status) {
         return res

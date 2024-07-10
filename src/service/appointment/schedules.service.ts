@@ -9,6 +9,8 @@ import { time } from 'console';
 import { SchedulesDTO } from 'src/dto/appointment/schedule.dto';
 import { connect } from 'http2';
 import { approvaltokenDTO } from 'src/dto/appointment/approval-token.dto';
+import { SchedulesUpdateDTO } from 'src/dto/appointment/scheduleupdate.dto';
+import { setTimeDTO } from 'src/dto/appointment/set-time.dto';
 
 @Injectable()
 export class SchedulesService {
@@ -450,64 +452,112 @@ export class SchedulesService {
     }
   }
 
-  async Update(token: string, updateData: Partial<ScheduleEntity>) {
-    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+  async Update(token: string, updateData: SchedulesUpdateDTO, id: string) {
+    const schema = z.object({
+      date: z.date(),
+      time: z.string().min(1),
+    });
+    try {
+      const validatedData = schema.parse(updateData);
+      const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
-      const userId = extracttoken.userId;
+      if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+        var userId = extracttoken.userId;
+      }
 
-      const Checkdatadouble = await this.scheduleReposity.findOne({
-        where: { time: updateData.time },
-      });
 
-      if (!Checkdatadouble) {
+      const find = await this.prisma.schedule.findFirst({
+        where: {
+          id: id,
+        },
+        include: {
+          user: true,
+          doctor: {
+            include: {
+              poly : {
+                include: {
+                  clinic: true
+                }
+              },
+              city: true,
+            }
+          },
+        }
+      })
+
+      if(!find) {
         return {
           status: false,
-          message: 'Data sudah tersedia.',
+          message: 'id tidak ditemukan',
           data: null,
         };
       }
 
-      const checkData = await this.scheduleReposity.findOne({
-        where: { id: updateData.id },
+      const update = await this.prisma.schedule.update({
+        where: {
+          id: find.id,
+        },
+        data: {
+          date: validatedData.date,
+          time: validatedData.time
+        },
+        include: {
+          user: true,
+          doctor: {
+            include: {
+              poly : {
+                include: {
+                  clinic: true
+                }
+              },
+              city: true,
+            }
+          },
+        }
       });
 
-      Object.assign(checkData, updateData);
+      return {
+        status: true,
+        message: 'Success',
+        data: update,
+      };
 
-      const save = await this.scheduleReposity.save(checkData);
+    } catch (e: any) {
+      if (e instanceof ZodError) {
+        const errorMessages = e.errors.map((error) => ({
+          field: error.path.join('.'),
+          message: error.message,
+        }));
 
-      if (save) {
-        const getdata = await this.scheduleReposity.findOne({
-          where: { time: updateData.time },
-          relations: ['user', 'doctor', 'doctor.poly', 'doctor.wilayah'],
-        });
-
-        return {
-          status: true,
-          message: 'Data berhasil di ubah.',
-          data: getdata,
-        };
-      } else {
         return {
           status: false,
-          message: 'Kesalahan!!, error to update data.',
-          data: null,
+          message: 'Sistem Error',
+          data: errorMessages,
         };
       }
-    } else {
       return {
         status: false,
-        message: 'Invalid token',
-        data: null,
+        message: 'Sistem Error',
+        data: e.message,
       };
     }
   }
 
-  async SetTime(token: string, createData: Partial<ScheduleDoctorEntity>) {
-    const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+  async SetTime(token: string, createData: setTimeDTO) {
+    const schema = z.object({
+      doctor_id: z.string().min(1),
+      poly_id: z.string().min(1),
+      clinic_id: z.string().min(1),
+      date: z.date(),
+      time: z.array(z.string()).nonempty('should not be empty')
+    });
+    try {
+      const validatedData = schema.parse(createData);
+      const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
-      const userId = extracttoken.userId;
+      if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+        var userId = extracttoken.userId;
+      }
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -522,7 +572,7 @@ export class SchedulesService {
 
       for (const timeSlot of createData.time) {
         try {
-          const checkdata = await this.scheduleDoctorReposity.findOne({
+          const checkdata = await this.prisma.scheduleDoctor.findFirst({
             where: {
               doctor_id: createData.doctor_id,
               date: createData.date,
@@ -531,15 +581,27 @@ export class SchedulesService {
           });
 
           if (!checkdata) {
-            const scheduleCreate = this.scheduleDoctorReposity.create({
-              doctor_id: createData.doctor_id,
-              clinic_id: createData.clinic_id,
-              poly_id: createData.poly_id,
+            const save = this.prisma.scheduleDoctor.create({
+             data: {
+              doctor: {
+                connect: {
+                  id: createData.doctor_id
+                }
+              },
+              clinic: {
+                connect: {
+                  id: createData.clinic_id
+                }
+              },
+              poly: {
+                connect : {
+                  id : createData.poly_id
+                }
+              },
               date: createData.date,
               time: timeSlot,
+             }
             });
-
-            const save = await this.scheduleDoctorReposity.save(scheduleCreate);
 
             if (!save) {
               return {
@@ -566,11 +628,24 @@ export class SchedulesService {
           time: createData.time,
         },
       };
-    } else {
+
+    } catch (e: any) {
+      if (e instanceof ZodError) {
+        const errorMessages = e.errors.map((error) => ({
+          field: error.path.join('.'),
+          message: error.message,
+        }));
+
+        return {
+          status: false,
+          message: 'Sistem Error',
+          data: errorMessages,
+        };
+      }
       return {
         status: false,
-        message: 'Token tidak valid',
-        data: null,
+        message: 'Sistem Error',
+        data: e.message,
       };
     }
   }
