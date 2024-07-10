@@ -219,6 +219,7 @@ CREATE TABLE `Payment` (
     `payment_name` VARCHAR(191) NOT NULL,
     `redeem_id` VARCHAR(191) NOT NULL,
     `bank_id` VARCHAR(191) NOT NULL,
+    `user_id` VARCHAR(191) NOT NULL,
     `status` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -461,6 +462,9 @@ ALTER TABLE `Payment` ADD CONSTRAINT `Payment_redeem_id_fkey` FOREIGN KEY (`rede
 
 -- AddForeignKey
 ALTER TABLE `Payment` ADD CONSTRAINT `Payment_bank_id_fkey` FOREIGN KEY (`bank_id`) REFERENCES `Bank`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Payment` ADD CONSTRAINT `Payment_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `PaymentDetails` ADD CONSTRAINT `PaymentDetails_payment_id_fkey` FOREIGN KEY (`payment_id`) REFERENCES `Payment`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

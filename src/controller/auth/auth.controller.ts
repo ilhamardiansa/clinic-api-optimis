@@ -18,7 +18,7 @@ import path, { basename, extname } from 'path';
 import { diskStorage } from 'multer';
 import { Response } from 'express';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
-import { AuthenticationService } from 'src/service/auth/Authentication.service';
+import { AuthenticationService } from 'src/service/auth/authentication.service';
 import { VerifikasiDTO } from 'src/dto/auth/verifikasi.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ProfileService } from 'src/service/auth/profile.service';

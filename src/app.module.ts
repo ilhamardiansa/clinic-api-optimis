@@ -8,7 +8,7 @@ import { join } from 'path';
 import { TokenBlacklistMiddleware } from './middleware/token-blacklist.middleware';
 import { PrismaModule } from './prisma.module';
 import { AuthController } from './controller/auth/auth.controller';
-import { AuthenticationService } from './service/auth/Authentication.service';
+import { AuthenticationService } from './service/auth/authentication.service';
 import { mailService } from './service/mailer/mailer.service';
 import { JwtStrategy } from './middleware/jwt.strategy';
 import { ProfileService } from './service/auth/profile.service';
