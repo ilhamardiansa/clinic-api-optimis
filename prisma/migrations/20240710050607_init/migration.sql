@@ -162,7 +162,7 @@ CREATE TABLE `Drug` (
     `image_url` VARCHAR(191) NULL,
     `company_name` VARCHAR(191) NOT NULL,
     `category_id` VARCHAR(191) NOT NULL,
-    `redeem_id` INTEGER NOT NULL,
+    `redeem_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -429,6 +429,9 @@ ALTER TABLE `Doctor` ADD CONSTRAINT `Doctor_wilayah_id_fkey` FOREIGN KEY (`wilay
 
 -- AddForeignKey
 ALTER TABLE `Drug` ADD CONSTRAINT `Drug_category_id_fkey` FOREIGN KEY (`category_id`) REFERENCES `DrugCategory`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Drug` ADD CONSTRAINT `Drug_redeem_id_fkey` FOREIGN KEY (`redeem_id`) REFERENCES `LastRedeem`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Fee` ADD CONSTRAINT `Fee_clinic_id_fkey` FOREIGN KEY (`clinic_id`) REFERENCES `Clinic`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

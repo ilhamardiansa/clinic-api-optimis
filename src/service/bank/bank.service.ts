@@ -27,14 +27,14 @@ export class BankService {
           service_charge: validatedData.service_charge,
           handling_fee: validatedData.handling_fee,
           bank_images: validatedData.bank_images,
-          bank: {
+          bank_category: {
             connect: {
               id: validatedData.bank_category_id,
             },
           },
         },
         include: {
-          bank: true,
+          bank_category: true,
         },
       });
 
@@ -81,7 +81,7 @@ export class BankService {
           service_charge: validatedData.service_charge,
           handling_fee: validatedData.handling_fee,
           bank_images: validatedData.bank_images,
-          bank: validatedData.bank_category_id
+          bank_category: validatedData.bank_category_id
             ? {
                 connect: {
                   id: validatedData.bank_category_id,
@@ -90,7 +90,7 @@ export class BankService {
             : undefined,
         },
         include: {
-          bank: true,
+          bank_category: true,
         },
       });
 
@@ -119,7 +119,7 @@ export class BankService {
     return await this.prisma.bank.findUnique({
       where: { id: id },
       include: {
-        bank: true,
+        bank_category: true,
       },
     });
   }
@@ -127,7 +127,7 @@ export class BankService {
   async findAll() {
     return await this.prisma.bank.findMany({
       include: {
-        bank: true,
+        bank_category: true,
       },
     });
   }

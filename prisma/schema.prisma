@@ -184,7 +184,8 @@ model Drug {
   company_name String
   category_id String
   category DrugCategory  @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  redeem_id Int
+  redeem_id String
+  redeem LastRedeem  @relation(fields: [redeem_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   paymentdetails PaymentDetails[] @relation()
 }
 
@@ -194,7 +195,7 @@ model Fee {
   cost String
   clinic_id String
   clinic Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-   paymentdetails PaymentDetails[] @relation()
+  paymentdetails PaymentDetails[] @relation()
 }
 
 model LastRedeem {
@@ -207,6 +208,7 @@ model LastRedeem {
   user_id String
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   payment Payment[] @relation()
+  drug Drug[] @relation()
 }
 
 model Record {

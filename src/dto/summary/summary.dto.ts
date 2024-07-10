@@ -5,12 +5,12 @@ export class SummaryDto {
   @IsString()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  poly_id: number;
+  poly_id: string;
 
   @IsString()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  doctor_id: number;
+  doctor_id: string;
 
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
@@ -57,5 +57,5 @@ export class SummaryDto {
   @ApiProperty()
   ai_token: string;
 
-  drug: { drug_id: number; qty: number }[];
+  drug: { drug_id: string; qty: number }[];
 }
