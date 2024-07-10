@@ -1,77 +1,226 @@
-import { Injectable, HttpException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Drug } from 'src/entity/drug/drug.entity';
-import { DrugDto } from 'src/dto/drug/drug.dto';
-import { UpdateDrugDto } from 'src/dto/drug/update.drug.dto';
-import { format_json } from 'src/env';
+// import { Injectable, HttpException } from '@nestjs/common';
+// import { PrismaService } from 'src/prisma.service';
+// import { DrugDto } from 'src/dto/drug/drug.dto';
+// import { UpdateDrugDto } from 'src/dto/drug/update.drug.dto';
+// import { format_json } from 'src/env';
+// import { ZodError, z } from 'zod';
 
-@Injectable()
-export class DrugService {
-  constructor(
-    @InjectRepository(Drug)
-    private drugRepository: Repository<Drug>,
-  ) {}
+// @Injectable()
+// export class DrugService {
+//   constructor(private prisma: PrismaService) {}
 
-  private async findDrugByNameAndCompany(
-    drug_name: string,
-    company_name: string,
-  ): Promise<Drug | undefined> {
-    return this.drugRepository.findOne({
-      where: { drug_name, company_name },
-      relations: ['category','redeem','redeem.bank','redeem.profile'],
-    });
-  }
+//   private async findDrugByNameAndCompany(
+//     drug_name: string,
+//     company_name: string,
+//   ): Promise<any | null> {
+//     return this.prisma.drug.findFirst({
+//       where: { drug_name, company_name },
+//       include: {
+//         category: true,
+//         // redeem: {
+//         //   include: {
+//         //     bank: true,
+//         //     profile: true,
+//         //   },
+//         // },
+//       },
+//     });
+//   }
 
-  async createDrug(drugDto: DrugDto): Promise<Drug> {
-    const existingDrug = await this.findDrugByNameAndCompany(
-      drugDto.drug_name,
-      drugDto.company_name,
-    );
-    if (existingDrug) {
-      throw new HttpException(
-        format_json(
-          400,
-          false,
-          'Bad Request',
-          null,
-          'Drug with this name and company already existss',
-          null,
-        ),
-        400,
-      );
-    }
-    const drug = this.drugRepository.create(drugDto);
-    await this.drugRepository.save(drug);
-    return this.drugRepository.findOne({ where: { id: drug.id }, relations: ['category','redeem','redeem.bank','redeem.profile'], });
-  }
+//   async createDrug(drugDto: DrugDto): Promise<any> {
+//     const schema = z.object({
+//       drug_name: z.string().min(1),
+//       stock: z.number().int().nonnegative(),
+//       drug_summary: z.string().min(1),
+//       buy_price: z.bigint().nonnegative(),
+//       sell_price: z.bigint().nonnegative(),
+//       image_url: z.string().url().optional(),
+//       company_name: z.string().min(1),
+//       category_id: z.string().min(1),
+//       redeem_id: z.number().int().nonnegative(),
+//     });
 
-  async updateDrug(id: number, updateDrugDto: UpdateDrugDto): Promise<Drug> {
-    await this.drugRepository.update(id, { ...updateDrugDto });
-    return this.drugRepository.findOne({
-      where: { id },
-      relations: ['category','redeem','redeem.bank','redeem.profile'],
-    });
-  }
+//     try {
+//       const validatedData = schema.parse(drugDto);
 
-  async findOne(id: number): Promise<Drug> {
-    return this.drugRepository.findOne({
-      where: { id },
-      relations: ['category','redeem','redeem.bank','redeem.profile'],
-    });
-  }
+//       const existingDrug = await this.findDrugByNameAndCompany(
+//         validatedData.drug_name,
+//         validatedData.company_name,
+//       );
 
-  async findAll(): Promise<Drug[]> {
-    return this.drugRepository.find({ relations: ['category','redeem','redeem.bank','redeem.profile'], });
-  }
+//       if (existingDrug) {
+//         throw new HttpException(
+//           format_json(
+//             400,
+//             false,
+//             'Bad Request',
+//             null,
+//             'Drug with this name and company already exists',
+//             null,
+//           ),
+//           400,
+//         );
+//       }
 
-  async removeDrug(id: number): Promise<void> {
-    const result = await this.drugRepository.delete(id);
-    if (result.affected === 0) {
-      throw new HttpException(
-        format_json(404, false, 'Not Found', null, 'Drug not found', null),
-        404,
-      );
-    }
-  }
-}
+//       const create = await this.prisma.drug.create({
+//         data: {
+//           drug_name: validatedData.drug_name,
+//           stock: validatedData.stock,
+//           drug_summary: validatedData.drug_summary,
+//           buy_price: validatedData.buy_price,
+//           sell_price: validatedData.sell_price,
+//           image_url: validatedData.image_url,
+//           company_name: validatedData.company_name,
+//           category: {
+//             connect: {
+//               id: validatedData.category_id,
+//             },
+//           },
+//           redeem: {
+//             connect: {
+//               id: validatedData.redeem_id,
+//             },
+//           },
+//         },
+//         include: {
+//           category: true,
+//           // redeem: {
+//           //   include: {
+//           //     bank: true,
+//           //     profile: true,
+//           //   },
+//           // },
+//         },
+//       });
+
+//       return create;
+//     } catch (e: any) {
+//       if (e instanceof ZodError) {
+//         const errorMessages = e.errors.map((error) => ({
+//           field: error.path.join('.'),
+//           message: error.message,
+//         }));
+
+//         return {
+//           status: false,
+//           message: 'Validasi gagal',
+//           errors: errorMessages,
+//         };
+//       }
+//       return {
+//         status: false,
+//         message: e.message || 'Terjadi kesalahan',
+//       };
+//     }
+//   }
+
+//   async updateDrug(id: string, updateDrugDto: UpdateDrugDto): Promise<any> {
+//     const schema = z.object({
+//       drug_name: z.string().min(1),
+//       stock: z.number().int().nonnegative(),
+//       drug_summary: z.string().min(1),
+//       buy_price: z.bigint().nonnegative(),
+//       sell_price: z.bigint().nonnegative(),
+//       image_url: z.string().url().optional(),
+//       company_name: z.string().min(1),
+//       category_id: z.string().min(1),
+//       redeem_id: z.number().int().nonnegative(),
+//     });
+
+//     try {
+//       const validatedData = schema.parse(updateDrugDto);
+//       const update = await this.prisma.drug.update({
+//         where: { id: id },
+//         data: {
+//           drug_name: validatedData.drug_name,
+//           stock: validatedData.stock,
+//           drug_summary: validatedData.drug_summary,
+//           buy_price: validatedData.buy_price,
+//           sell_price: validatedData.sell_price,
+//           image_url: validatedData.image_url,
+//           company_name: validatedData.company_name,
+//           category: {
+//             connect: {
+//               id: validatedData.category_id,
+//             },
+//           },
+//           redeem: {
+//             connect: {
+//               id: validatedData.redeem_id,
+//             },
+//           },
+//         },
+//         include: {
+//           category: true,
+//           // redeem: {
+//           //   include: {
+//           //     bank: true,
+//           //     profile: true,
+//           //   },
+//           // },
+//         },
+//       });
+
+//       return update;
+//     } catch (e: any) {
+//       if (e instanceof ZodError) {
+//         const errorMessages = e.errors.map((error) => ({
+//           field: error.path.join('.'),
+//           message: error.message,
+//         }));
+
+//         return {
+//           status: false,
+//           message: 'Validasi gagal',
+//           errors: errorMessages,
+//         };
+//       }
+//       return {
+//         status: false,
+//         message: e.message || 'Terjadi kesalahan',
+//       };
+//     }
+//   }
+
+//   async findOne(id: string): Promise<any> {
+//     return this.prisma.drug.findUnique({
+//       where: { id: id },
+//       include: {
+//         category: true,
+//         // redeem: {
+//         //   include: {
+//         //     bank: true,
+//         //     profile: true,
+//         //   },
+//         // },
+//       },
+//     });
+//   }
+
+//   async findAll(): Promise<any[]> {
+//     return this.prisma.drug.findMany({
+//       include: {
+//         category: true,
+//         // redeem: {
+//         //   include: {
+//         //     bank: true,
+//         //     profile: true,
+//         //   },
+//         // },
+//       },
+//     });
+//   }
+
+//   async removeDrug(id: string): Promise<void> {
+//     try {
+//       await this.prisma.drug.delete({
+//         where: { id: id },
+//       });
+//     } catch (e: any) {
+//       throw new HttpException(
+//         format_json(404, false, 'Not Found', null, 'Drug not found', null),
+//         404,
+//       );
+//     }
+//   }
+// }

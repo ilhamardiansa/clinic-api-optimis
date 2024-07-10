@@ -20,16 +20,15 @@ export class DiagnosisService {
 
       const diagnosis = await this.diagnosisReposity.find({
         relations: ['profile', 'profile.wilayah', 'profile.user'],
-        where: { user_id: userId }
+        where: { user_id: userId },
       });
 
       if (diagnosis.length > 0) {
-
-        const result = diagnosis.map(diagnosis => ({
-            user_id : diagnosis.user_id,
-            user : diagnosis.profile,
-            deaseas_name : diagnosis.deaseas_name
-          }));
+        const result = diagnosis.map((diagnosis) => ({
+          user_id: diagnosis.user_id,
+          user: diagnosis.profile,
+          deaseas_name: diagnosis.deaseas_name,
+        }));
 
         return {
           status: true,
@@ -52,135 +51,132 @@ export class DiagnosisService {
     }
   }
 
-
   async create(token: string, data: DiagnosisDTO) {
     try {
-        const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
-        if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
-      
-      const userId = extracttoken.userId;
-      
-      const create = this.diagnosisReposity.create({
-        user_id: userId,
-        deaseas_name: data.deaseas_name
-      });
+      const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+      if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+        const userId = extracttoken.userId;
 
-      const saved = await this.diagnosisReposity.save(create);
+        const create = this.diagnosisReposity.create({
+          user_id: userId,
+          deaseas_name: data.deaseas_name,
+        });
 
-      
-      if (saved) {
-        return {
-          status: true,
-          message: 'Data successfully created',
-          data: await this.diagnosisReposity.findOne({ where: { id: create.id }, relations: ['profile', 'profile.wilayah', 'profile.user'] }),
-        };
-      } else {
-        return {
-          status: false,
-          message: 'Data tidak bisa di gunakan',
-          data: null,
-        };
-      }
-    } else {
-        return {
-          status: false,
-          message: 'Invalid token',
-          data: null,
-        };
-    }
-    } catch (error) {
-      return { status: false, message: error, data: null };
-    }
-}
+        const saved = await this.diagnosisReposity.save(create);
 
-async update(token: string, id: number, data: DiagnosisDTO) {
-    try {
-        const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
-
-        if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
-            const userId = extracttoken.userId;
-
-            const diagnosis = await this.diagnosisReposity.findOne({
-                where: { id: id },
-                relations: ['profile', 'profile.wilayah', 'profile.user'],
-            });
-
-            if (!diagnosis) {
-                return {
-                    status: false,
-                    message: 'Diagnosis not found',
-                    data: null,
-                };
-            }
-
-            diagnosis.deaseas_name = data.deaseas_name;
-            const saved = await this.diagnosisReposity.save(diagnosis);
-            if (saved) {
-                return {
-                    status: true,
-                    message: 'Data successfully updated',
-                    data: {
-                        user_id: diagnosis.user_id,
-                        user: diagnosis.profile,
-                        diagnosis: diagnosis.deaseas_name
-                    },
-                };
-            } else {
-                return {
-                    status: false,
-                    message: 'Failed to save updated data',
-                    data: null,
-                };
-            }
+        if (saved) {
+          return {
+            status: true,
+            message: 'Data successfully created',
+            data: await this.diagnosisReposity.findOne({
+              where: { id: create.id },
+              relations: ['profile', 'profile.wilayah', 'profile.user'],
+            }),
+          };
         } else {
-            return {
-                status: false,
-                message: 'Invalid token',
-                data: null,
-            };
-        }
-    } catch (error) {
-        return {
+          return {
             status: false,
-            message: error,
+            message: 'Data tidak bisa di gunakan',
             data: null,
-        };
-    }
-}
-
-async delete(token: string, id:number) {
-    try {
-        const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
-        if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
-      
-      const userId = extracttoken.userId;
-
-      const saved = await this.diagnosisReposity.delete(id);
-
-      
-      if (saved) {
-        return {
-          status: true,
-          message: 'Data successfully deleted',
-          data: null,
-        };
+          };
+        }
       } else {
-        return {
-          status: false,
-          message: 'Data tidak bisa di gunakan',
-          data: null,
-        };
-      }
-    } else {
         return {
           status: false,
           message: 'Invalid token',
           data: null,
         };
-    }
+      }
     } catch (error) {
       return { status: false, message: error, data: null };
     }
-}
+  }
 
+  async update(token: string, id: number, data: DiagnosisDTO) {
+    try {
+      const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+
+      if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+        const userId = extracttoken.userId;
+
+        const diagnosis = await this.diagnosisReposity.findOne({
+          where: { id: id },
+          relations: ['profile', 'profile.wilayah', 'profile.user'],
+        });
+
+        if (!diagnosis) {
+          return {
+            status: false,
+            message: 'Diagnosis not found',
+            data: null,
+          };
+        }
+
+        diagnosis.deaseas_name = data.deaseas_name;
+        const saved = await this.diagnosisReposity.save(diagnosis);
+        if (saved) {
+          return {
+            status: true,
+            message: 'Data successfully updated',
+            data: {
+              user_id: diagnosis.user_id,
+              user: diagnosis.profile,
+              diagnosis: diagnosis.deaseas_name,
+            },
+          };
+        } else {
+          return {
+            status: false,
+            message: 'Failed to save updated data',
+            data: null,
+          };
+        }
+      } else {
+        return {
+          status: false,
+          message: 'Invalid token',
+          data: null,
+        };
+      }
+    } catch (error) {
+      return {
+        status: false,
+        message: error,
+        data: null,
+      };
+    }
+  }
+
+  async delete(token: string, id: number) {
+    try {
+      const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+      if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+        const userId = extracttoken.userId;
+
+        const saved = await this.diagnosisReposity.delete(id);
+
+        if (saved) {
+          return {
+            status: true,
+            message: 'Data successfully deleted',
+            data: null,
+          };
+        } else {
+          return {
+            status: false,
+            message: 'Data tidak bisa di gunakan',
+            data: null,
+          };
+        }
+      } else {
+        return {
+          status: false,
+          message: 'Invalid token',
+          data: null,
+        };
+      }
+    } catch (error) {
+      return { status: false, message: error, data: null };
+    }
+  }
 }

@@ -8,9 +8,7 @@ import { ZodError, z } from 'zod';
 
 @Injectable()
 export class CategoryService {
-  constructor(
-    private prisma: PrismaService
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async createCategory(categoryDto: CategoryDto) {
     const schema = z.object({
@@ -21,14 +19,13 @@ export class CategoryService {
     try {
       const validatedData = schema.parse(categoryDto);
       const create = await this.prisma.drugCategory.create({
-        data  : {
+        data: {
           category_name: validatedData.category_name,
-          description: validatedData.description
-          },
-        })
+          description: validatedData.description,
+        },
+      });
 
       return create;
-
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
@@ -42,10 +39,7 @@ export class CategoryService {
     }
   }
 
-  async updateCategory(
-    id: string,
-    updateCategoryDto: UpdateCategoryDto,
-  ) {
+  async updateCategory(id: string, updateCategoryDto: UpdateCategoryDto) {
     const schema = z.object({
       category_name: z.string().min(1),
       description: z.string().min(1),
@@ -54,15 +48,14 @@ export class CategoryService {
     try {
       const validatedData = schema.parse(updateCategoryDto);
       const update = await this.prisma.drugCategory.update({
-        where: {id : id},
-        data  : {
+        where: { id: id },
+        data: {
           category_name: validatedData.category_name,
-          description: validatedData.description
-          },
-        })
+          description: validatedData.description,
+        },
+      });
 
       return update;
-
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
@@ -82,7 +75,7 @@ export class CategoryService {
 
   async findOne(id: string) {
     return await this.prisma.drugCategory.findUnique({
-      where: {id : id}
+      where: { id: id },
     });
   }
 

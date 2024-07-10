@@ -8,9 +8,7 @@ import { ZodError, z } from 'zod';
 
 @Injectable()
 export class ClinicService {
-  constructor(
-    private prisma: PrismaService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async createClinic(clinicDto) {
     const schema = z.object({
@@ -26,7 +24,7 @@ export class ClinicService {
     try {
       const validatedData = schema.parse(clinicDto);
       const create = await this.prisma.clinic.create({
-        data  : {
+        data: {
           clinic_name: validatedData.clinic_name,
           description: validatedData.description,
           address: validatedData.address,
@@ -39,13 +37,12 @@ export class ClinicService {
             },
           },
         },
-        include : {
-          city: true
-        }
-      })
+        include: {
+          city: true,
+        },
+      });
 
       return create;
-
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
@@ -70,10 +67,7 @@ export class ClinicService {
     }
   }
 
-  async updateClinic(
-    id: string,
-    updateClinicDto: UpdateClinicDto,
-  ) {
+  async updateClinic(id: string, updateClinicDto: UpdateClinicDto) {
     const schema = z.object({
       clinic_name: z.string().min(1),
       description: z.string().min(1),
@@ -88,7 +82,7 @@ export class ClinicService {
       const validatedData = schema.parse(updateClinicDto);
       const update = await this.prisma.clinic.update({
         where: { id: id },
-        data  : {
+        data: {
           clinic_name: validatedData.clinic_name,
           description: validatedData.description,
           address: validatedData.address,
@@ -101,13 +95,12 @@ export class ClinicService {
             },
           },
         },
-        include : {
-          city: true
-        }
-      })
+        include: {
+          city: true,
+        },
+      });
 
       return update;
-
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
@@ -135,19 +128,19 @@ export class ClinicService {
   async findOne(id: string) {
     return await this.prisma.clinic.findUnique({
       where: {
-        id: id
+        id: id,
       },
-      include : {
-        city: true
-      }
+      include: {
+        city: true,
+      },
     });
   }
 
   async findAll() {
     return await this.prisma.clinic.findMany({
-      include : {
-        city: true
-      }
+      include: {
+        city: true,
+      },
     });
   }
 

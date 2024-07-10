@@ -105,7 +105,7 @@ model Bank {
   handling_fee Int?
   bank_images Int?
   bank_category_id String
-  bank     BankCategory     @relation(fields: [bank_category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bank_category     BankCategory     @relation(fields: [bank_category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lastredeem LastRedeem[] @relation()
   payment Payment[] @relation()
 }
