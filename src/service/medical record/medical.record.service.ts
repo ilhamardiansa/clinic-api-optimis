@@ -7,7 +7,7 @@ import { MedicalRecordDto } from 'src/dto/medical record/medical.record.dto';
 export class MedicalRecordService {
   constructor(private prisma: PrismaService) {}
 
-  async createRecord(doctorDto: MedicalRecordDto) {
+  async createRecord(medicalRecordDto: MedicalRecordDto) {
     const schema = z.object({
       consultation_date_time: z.string().datetime(),
       way_to_come: z.string().min(1),
@@ -29,7 +29,7 @@ export class MedicalRecordService {
     });
 
     try {
-      const validatedData = schema.parse(doctorDto);
+      const validatedData = schema.parse(medicalRecordDto);
       const create = await this.prisma.record.create({
         data: {
           consultation_date_time: new Date(
@@ -201,38 +201,8 @@ export class MedicalRecordService {
     });
   }
 
-  async findAll(
-    query: string,
-    page: number,
-    limit: number,
-    order: 'asc' | 'desc' = 'asc',
-  ) {
-    const skip = (page - 1) * limit;
-
-    const whereClause = query
-      ? {
-          OR: [
-            { way_to_come: { contains: query, mode: 'insensitive' } },
-            { transportation: { contains: query, mode: 'insensitive' } },
-            { reference: { contains: query, mode: 'insensitive' } },
-            { person_responsible: { contains: query, mode: 'insensitive' } },
-            { traumatic: { contains: query, mode: 'insensitive' } },
-            { non_traumatic: { contains: query, mode: 'insensitive' } },
-            { conditions: { contains: query, mode: 'insensitive' } },
-            { complaint: { contains: query, mode: 'insensitive' } },
-            { history_of_illness: { contains: query, mode: 'insensitive' } },
-            { solution: { contains: query, mode: 'insensitive' } },
-          ],
-        }
-      : {};
-
-    const records = await this.prisma.record.findMany({
-      where: whereClause,
-      take: limit || 10,
-      skip: skip || 0,
-      orderBy: {
-        consultation_date_time: order,
-      },
+  async findAll() {
+    return await this.prisma.record.findMany({
       include: {
         poly: {
           include: {
@@ -241,8 +211,6 @@ export class MedicalRecordService {
         },
       },
     });
-
-    return records;
   }
 
   async removeRecord(id: string) {

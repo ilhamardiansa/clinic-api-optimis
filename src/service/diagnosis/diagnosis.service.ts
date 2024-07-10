@@ -1,16 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { PrismaService } from 'src/prisma.service';
 import * as jwt from 'jsonwebtoken';
-import { DiagnosisEntity } from 'src/entity/diagnosis.entity';
+import { ZodError, z } from 'zod';
 import { DiagnosisDTO } from 'src/dto/diagnosis.dto';
 
 @Injectable()
 export class DiagnosisService {
-  constructor(
-    @InjectRepository(DiagnosisEntity)
-    private readonly diagnosisReposity: Repository<DiagnosisEntity>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async getdata(token: string) {
     const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
@@ -18,15 +14,17 @@ export class DiagnosisService {
     if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
       const userId = extracttoken.userId;
 
-      const diagnosis = await this.diagnosisReposity.find({
-        relations: ['profile', 'profile.wilayah', 'profile.user'],
+      const diagnosis = await this.prisma.diagnosis.findMany({
         where: { user_id: userId },
+        include: {
+          user: true,
+        },
       });
 
       if (diagnosis.length > 0) {
         const result = diagnosis.map((diagnosis) => ({
           user_id: diagnosis.user_id,
-          user: diagnosis.profile,
+          user: diagnosis.user,
           deaseas_name: diagnosis.deaseas_name,
         }));
 
@@ -38,7 +36,7 @@ export class DiagnosisService {
       } else {
         return {
           status: false,
-          message: 'No payment records found for this user',
+          message: 'No diagnosis records found for this user',
           data: null,
         };
       }
@@ -52,34 +50,31 @@ export class DiagnosisService {
   }
 
   async create(token: string, data: DiagnosisDTO) {
+    const schema = z.object({
+      deaseas_name: z.string().min(1),
+    });
+
     try {
+      const validatedData = schema.parse(data);
       const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
       if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
         const userId = extracttoken.userId;
 
-        const create = this.diagnosisReposity.create({
-          user_id: userId,
-          deaseas_name: data.deaseas_name,
+        const create = await this.prisma.diagnosis.create({
+          data: {
+            user_id: userId,
+            deaseas_name: validatedData.deaseas_name,
+          },
+          include: {
+            user: true,
+          },
         });
 
-        const saved = await this.diagnosisReposity.save(create);
-
-        if (saved) {
-          return {
-            status: true,
-            message: 'Data successfully created',
-            data: await this.diagnosisReposity.findOne({
-              where: { id: create.id },
-              relations: ['profile', 'profile.wilayah', 'profile.user'],
-            }),
-          };
-        } else {
-          return {
-            status: false,
-            message: 'Data tidak bisa di gunakan',
-            data: null,
-          };
-        }
+        return {
+          status: true,
+          message: 'Data successfully created',
+          data: create,
+        };
       } else {
         return {
           status: false,
@@ -87,21 +82,43 @@ export class DiagnosisService {
           data: null,
         };
       }
-    } catch (error) {
-      return { status: false, message: error, data: null };
+    } catch (e: any) {
+      if (e instanceof ZodError) {
+        const errorMessages = e.errors.map((error) => ({
+          field: error.path.join('.'),
+          message: error.message,
+        }));
+
+        return {
+          status: false,
+          message: 'Validasi gagal',
+          errors: errorMessages,
+        };
+      }
+      return {
+        status: false,
+        message: e.message || 'Terjadi kesalahan',
+      };
     }
   }
 
-  async update(token: string, id: number, data: DiagnosisDTO) {
+  async update(token: string, id: string, data: DiagnosisDTO) {
+    const schema = z.object({
+      deaseas_name: z.string().min(1),
+    });
+
     try {
+      const validatedData = schema.parse(data);
       const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
       if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
         const userId = extracttoken.userId;
 
-        const diagnosis = await this.diagnosisReposity.findOne({
+        const diagnosis = await this.prisma.diagnosis.findUnique({
           where: { id: id },
-          relations: ['profile', 'profile.wilayah', 'profile.user'],
+          include: {
+            user: true,
+          },
         });
 
         if (!diagnosis) {
@@ -112,25 +129,21 @@ export class DiagnosisService {
           };
         }
 
-        diagnosis.deaseas_name = data.deaseas_name;
-        const saved = await this.diagnosisReposity.save(diagnosis);
-        if (saved) {
-          return {
-            status: true,
-            message: 'Data successfully updated',
-            data: {
-              user_id: diagnosis.user_id,
-              user: diagnosis.profile,
-              diagnosis: diagnosis.deaseas_name,
-            },
-          };
-        } else {
-          return {
-            status: false,
-            message: 'Failed to save updated data',
-            data: null,
-          };
-        }
+        const update = await this.prisma.diagnosis.update({
+          where: { id: id },
+          data: {
+            deaseas_name: validatedData.deaseas_name,
+          },
+          include: {
+            user: true,
+          },
+        });
+
+        return {
+          status: true,
+          message: 'Data successfully updated',
+          data: update,
+        };
       } else {
         return {
           status: false,
@@ -138,36 +151,41 @@ export class DiagnosisService {
           data: null,
         };
       }
-    } catch (error) {
+    } catch (e: any) {
+      if (e instanceof ZodError) {
+        const errorMessages = e.errors.map((error) => ({
+          field: error.path.join('.'),
+          message: error.message,
+        }));
+
+        return {
+          status: false,
+          message: 'Validasi gagal',
+          errors: errorMessages,
+        };
+      }
       return {
         status: false,
-        message: error,
-        data: null,
+        message: e.message || 'Terjadi kesalahan',
       };
     }
   }
 
-  async delete(token: string, id: number) {
+  async delete(token: string, id: string) {
     try {
       const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
       if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
         const userId = extracttoken.userId;
 
-        const saved = await this.diagnosisReposity.delete(id);
+        const deleteResult = await this.prisma.diagnosis.delete({
+          where: { id: id },
+        });
 
-        if (saved) {
-          return {
-            status: true,
-            message: 'Data successfully deleted',
-            data: null,
-          };
-        } else {
-          return {
-            status: false,
-            message: 'Data tidak bisa di gunakan',
-            data: null,
-          };
-        }
+        return {
+          status: true,
+          message: 'Data successfully deleted',
+          data: deleteResult,
+        };
       } else {
         return {
           status: false,
@@ -175,8 +193,33 @@ export class DiagnosisService {
           data: null,
         };
       }
-    } catch (error) {
-      return { status: false, message: error, data: null };
+    } catch (error: any) {
+      if (error instanceof ZodError) {
+        const errorMessages = error.errors.map((error) => ({
+          field: error.path.join('.'),
+          message: error.message,
+        }));
+
+        return {
+          status: false,
+          message: 'Validasi gagal',
+          errors: errorMessages,
+        };
+      }
+
+      if (error instanceof Error) {
+        return {
+          status: false,
+          message: error.message || 'Terjadi kesalahan',
+          data: null,
+        };
+      }
+
+      return {
+        status: false,
+        message: 'Terjadi kesalahan yang tidak diketahui',
+        data: null,
+      };
     }
   }
 }
