@@ -18,10 +18,11 @@ import { Request, Response } from 'express';
 import { DiagnosisDTO } from 'src/dto/diagnosis.dto';
 import { DiagnosisService } from 'src/service/diagnosis/diagnosis.service';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
-  
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/middleware/role.decorator';
 import { RolesGuard } from 'src/middleware/role.guard';
 
+@ApiTags('Diagnosis')
 @Controller('api')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class DiagnosisController {
@@ -30,6 +31,8 @@ export class DiagnosisController {
   @Get('diagnosis')
   @Roles('admin', 'manager', 'operator')
  @UseGuards(AuthGuard('jwt'), RolesGuard)
+ @ApiOperation({ summary: 'Get' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async find(@Res() res: Response, @Req() req: Request) {
     try {
       const authorizationHeader = req.headers['authorization'];
@@ -98,6 +101,8 @@ export class DiagnosisController {
   @Post('diagnosis')
   @Roles('admin', 'manager', 'operator')
  @UseGuards(AuthGuard('jwt'), RolesGuard)
+ @ApiOperation({ summary: 'Create' })
+  @ApiResponse({ status: 200, description: 'Success' })
   @UsePipes(CustomValidationPipe)
   async create(
     @Body() diagnosisDTO: DiagnosisDTO,
@@ -172,6 +177,8 @@ export class DiagnosisController {
   @Roles('admin', 'manager', 'operator')
  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UsePipes(CustomValidationPipe)
+  @ApiOperation({ summary: 'Update' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async update(
     @Param('id') id: string,
     @Body() diagnosisDTO: DiagnosisDTO,
@@ -249,6 +256,8 @@ export class DiagnosisController {
   @Delete('diagnosis/:id')
   @Roles('admin', 'manager', 'operator')
  @UseGuards(AuthGuard('jwt'), RolesGuard)
+ @ApiOperation({ summary: 'Delete' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async deletepayment(
     @Param('id') id: string,
     @Req() req: Request,

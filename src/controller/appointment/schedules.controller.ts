@@ -18,7 +18,7 @@ import { RolesGuard } from 'src/middleware/role.guard';
 export class ScheduleController {
   constructor(private readonly SchedulesServices: SchedulesService) {}
 
-  @Get('schedules/get-approval-token')
+@Get('schedules/get-approval-token')
  @UseGuards(AuthGuard('jwt'), RolesGuard)
  @ApiOperation({ summary: 'Get approval token' })
   @ApiResponse({ status: 200, description: 'Success' })

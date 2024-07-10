@@ -19,7 +19,9 @@ import { UpdateBankCategoryDto } from 'src/dto/bank/update.bank.category.dto';
 import { BankCategoryService } from 'src/service/bank/bank.category.service';
 import { RolesGuard } from 'src/middleware/role.guard';
 import { Roles } from 'src/middleware/role.decorator';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Bank Categories')
 @Controller('api/bank-categories')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class BankCategoryController {
@@ -27,6 +29,8 @@ export class BankCategoryController {
 
   @Post()
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Create' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async create(@Body() bankCategoryDto: BankCategoryDto, @Res() res: Response) {
     try {
       const createdBankCategory =
@@ -43,6 +47,8 @@ export class BankCategoryController {
 
   @Put(':id')
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'Update' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async update(
     @Param('id') id: string,
     @Body() updateBankCategoryDto: UpdateBankCategoryDto,
@@ -69,6 +75,8 @@ export class BankCategoryController {
 
   @Get()
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'get' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findAll(@Res() res: Response) {
     try {
       const bankCategories = await this.bankCategoryService.findAll();
@@ -87,6 +95,8 @@ export class BankCategoryController {
 
   @Get(':id')
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'detail' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const bankCategory = await this.bankCategoryService.findOne(id);
@@ -105,6 +115,8 @@ export class BankCategoryController {
 
   @Delete(':id')
   @Roles('admin', 'manager', 'operator')
+  @ApiOperation({ summary: 'delete' })
+  @ApiResponse({ status: 200, description: 'Success' })
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       const isDeleted = await this.bankCategoryService.removeBankCategory(id);
