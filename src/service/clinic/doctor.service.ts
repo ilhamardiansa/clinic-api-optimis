@@ -31,7 +31,7 @@ export class DoctorService {
       experience : z.string().min(1),
       education : z.string().min(1),
       poly_id : z.string().min(1),
-      wilayah_id : z.bigint(),
+      wilayah_id : z.number().int().min(1),
     });
 
     try {
@@ -119,7 +119,7 @@ export class DoctorService {
       experience : z.string().min(1),
       education : z.string().min(1),
       poly_id : z.string().min(1),
-      wilayah_id : z.bigint(),
+      wilayah_id : z.number().int().min(1),
     });
 
     try {

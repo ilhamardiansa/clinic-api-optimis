@@ -25,7 +25,7 @@ export class MedicalRecordService {
       poly_id: z.string().min(1),
       clinic_id: z.string().min(1),
       doctor_id: z.string().min(1),
-      wilayah_id: z.bigint().optional(),
+      wilayah_id: z.number().int().min(1),
     });
 
     try {
@@ -115,7 +115,7 @@ export class MedicalRecordService {
       poly_id: z.string().min(1),
       clinic_id: z.string().min(1),
       doctor_id: z.string().min(1),
-      wilayah_id: z.bigint().optional(),
+      wilayah_id: z.number().int().min(1),
     });
 
     try {

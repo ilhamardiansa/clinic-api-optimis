@@ -18,7 +18,7 @@ export class ClinicService {
       post_code: z.string().min(1),
       latitude: z.number().int().min(1),
       longitude: z.number().int().min(1),
-      city_id: z.bigint(),
+      city_id: z.number().int().min(1),
     });
 
     try {
@@ -75,7 +75,7 @@ export class ClinicService {
       post_code: z.string().min(1),
       latitude: z.number().int().min(1),
       longitude: z.number().int().min(1),
-      city_id: z.bigint(),
+      city_id: z.number().int().min(1),
     });
 
     try {
