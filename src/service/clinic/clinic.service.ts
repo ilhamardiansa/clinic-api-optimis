@@ -146,7 +146,7 @@ export class ClinicService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.clinic.findUnique({
+    const get = await this.prisma.clinic.findUnique({
       where: {
         id: id,
       },
@@ -154,14 +154,36 @@ export class ClinicService {
         city: true,
       },
     });
+
+     const serializedResult = {
+        ...get,
+        city_id : Number(get.city_id),
+        city: {
+          ...get.city,
+          id: Number(get.city.id),
+        },
+      };
+
+    return serializedResult
   }
 
   async findAll() {
-    return await this.prisma.clinic.findMany({
+    const clinics = await this.prisma.clinic.findMany({
       include: {
         city: true,
       },
     });
+  
+    const result = clinics.map(clinics => ({
+      ...clinics,
+      city_id : Number(clinics.city_id),
+      city: {
+        ...clinics.city,
+        id: Number(clinics.city.id),
+      },
+    }));
+  
+    return result;
   }
 
   async removeClinic(id: string) {
