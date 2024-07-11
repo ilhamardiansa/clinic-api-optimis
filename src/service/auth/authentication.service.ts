@@ -232,7 +232,7 @@ export class AuthenticationService {
 
       return {
         status: true,
-        message: 'Berhasil mengirim ulang Kode OTP',
+        message: 'Success to resend verification otp',
         users: {
           id: checkuser.id,
           email: checkuser.email,
