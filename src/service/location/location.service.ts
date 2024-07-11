@@ -15,29 +15,32 @@ export class WilayahService {
     limit: number,
     order: 'asc' | 'desc' = 'asc',
   ) {
-    const skip = (page - 1) * limit;
-
+    const skip = Math.floor((page - 1) * limit);
+  
     const whereClause = query
-    ? {
-        OR: [
-          { provinsi: { contains: query, mode: 'insensitive' } },
-          { kabupaten: { contains: query, mode: 'insensitive' } },
-          { kecamatan: { contains: query, mode: 'insensitive' } },
-          { kelurahan: { contains: query, mode: 'insensitive' } },
-        ],
-      }
-    : {};
-
-    const result = this.prisma.wilayah.findMany({
+      ? {
+          OR: [
+            { provinsi: { contains: query.toLowerCase(), mode: undefined } },
+            { kabupaten: { contains: query.toLowerCase(), mode: undefined } },
+            { kecamatan: { contains: query.toLowerCase(), mode: undefined } },
+            { kelurahan: { contains: query.toLowerCase(), mode: undefined } },
+          ],
+        }
+      : {};
+  
+    if (!limit) {
+      limit = 10;
+    }
+  
+    const result = await this.prisma.wilayah.findMany({
       where: whereClause,
-      take: limit || 10,
-      skip: skip || 0,
+      take: limit,
+      skip: skip,
       orderBy: {
         kabupaten: order,
       },
-    })
-
-
+    });
+  
     return result;
   }
 }
