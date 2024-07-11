@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Clinic } from '@prisma/client';
 import { ClinicDto } from 'src/dto/clinic/clinic.dto';
 import { UpdateClinicDto } from 'src/dto/clinic/update.clinic.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -42,7 +43,17 @@ export class ClinicService {
         },
       });
 
-      return create;
+      const serializedResult = {
+        ...create,
+        city_id : Number(create.city_id),
+        city: {
+          ...create.city,
+          id: Number(create.city.id),
+        },
+      };
+      
+
+      return serializedResult;
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
@@ -100,7 +111,16 @@ export class ClinicService {
         },
       });
 
-      return update;
+      const serializedResult = {
+        ...update,
+        city_id : Number(update.city_id),
+        city: {
+          ...update.city,
+          id: Number(update.city.id),
+        },
+      };
+
+      return serializedResult;
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
