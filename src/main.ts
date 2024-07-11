@@ -12,11 +12,20 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   const config = new DocumentBuilder()
-    .setTitle('Documentasion Clinic Ai')
-    .setDescription('Clinic api Ai documentasion')
-    .setVersion('1.0')
-    .addTag('api')
-    .build();
+  .setTitle('Documentasion Clinic Ai')
+  .setDescription('Clinic api Ai documentasion')
+  .setVersion('1.0')
+  .addTag('api')
+  .addSecurity('bearer', {
+    type: 'http',
+    scheme: 'bearer',
+    bearerFormat: 'JWT',
+    name: 'JWT',
+    description: 'Enter JWT token',
+    in: 'header',
+  })
+  .addBearerAuth()
+  .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-swagger', app, document);
   await app.listen(3000);

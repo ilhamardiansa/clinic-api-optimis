@@ -22,7 +22,7 @@ import { format_json } from 'src/env';
 import { ClinicDto } from 'src/dto/clinic/clinic.dto';
 import { Request, Response } from 'express';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Clinic')
 @Controller('api/clinics')
@@ -76,6 +76,8 @@ export class ClinicController {
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Update' })
   @ApiResponse({ status: 200, description: 'Success' })
+  @ApiSecurity('bearer')
+  @ApiBearerAuth()
   async update(
     @Param('id') id: string,
     @Body() updateClinicDto: UpdateClinicDto,

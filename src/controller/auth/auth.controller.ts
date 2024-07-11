@@ -338,7 +338,27 @@ export class AuthController {
 
   @Post('auth/signin')
   @ApiOperation({ summary: 'Sign in' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'boolean' },
+        message: { type: 'string' },
+        users: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer', nullable: true },
+            email: { type: 'string', nullable: true },
+            role: { type: 'string', nullable: true },
+            verifikasi: { type: 'boolean', nullable: true },
+          }
+        },
+        token: { type: 'string', nullable: true }
+      }
+    }
+  })
   async signin(@Body() authDTO: AuthDTO, @Res() res: Response) {
     try {
       const user = await this.AuthenticationService.signin(authDTO);
