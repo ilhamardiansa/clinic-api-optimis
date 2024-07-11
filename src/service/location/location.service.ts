@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { wilayah } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { Repository, Like } from 'typeorm';
 
@@ -34,13 +35,18 @@ export class WilayahService {
   
     const result = await this.prisma.wilayah.findMany({
       where: whereClause,
-      take: limit,
+      take: Number(limit),
       skip: skip,
       orderBy: {
         kabupaten: order,
       },
     });
+
+    const serializedResult = result.map((item: wilayah) => ({
+      ...item,
+      id: Number(item.id), 
+    }));
   
-    return result;
+    return serializedResult;
   }
 }
