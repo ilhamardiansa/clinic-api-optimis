@@ -12,7 +12,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiSecurity,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
 import { PaymentDetailsDto } from 'src/dto/payment/payment.details.dto';
@@ -23,16 +29,31 @@ import { RolesGuard } from 'src/middleware/role.guard';
 import { PaymentDetailsService } from 'src/service/payment/payment.details.service';
 
 @ApiTags('Payment details')
+@ApiSecurity('bearer')
+@ApiBearerAuth()
 @Controller('api/payment-details')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class PaymentDetailsController {
   constructor(private readonly paymentDetailsService: PaymentDetailsService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
   @UsePipes(CustomValidationPipe)
-  @ApiOperation({ summary: 'Create' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiOperation({ summary: 'Create Payment Details' })
+  @ApiResponse({
+    status: 201,
+    description: 'PaymentDetails created successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        payment_id: { type: 'number' },
+        drug_id: { type: 'number' },
+        quantity: { type: 'number' },
+        fee_id: { type: 'number' },
+      },
+    },
+  })
   async create(
     @Body() paymentDetailsDto: PaymentDetailsDto,
     @Req() req: Request,
@@ -72,11 +93,23 @@ export class PaymentDetailsController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
   @UsePipes(CustomValidationPipe)
-  @ApiOperation({ summary: 'Update' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiOperation({ summary: 'Update Payment Details' })
+  @ApiResponse({
+    status: 200,
+    description: 'PaymentDetails updated successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        payment_id: { type: 'number' },
+        drug_id: { type: 'number' },
+        quantity: { type: 'number' },
+        fee_id: { type: 'number' },
+      },
+    },
+  })
   async update(
     @Param('id') id: string,
     @Body() updatePaymentDetailsDto: UpdatePaymentDetailsDto,
@@ -134,10 +167,25 @@ export class PaymentDetailsController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
-  @ApiOperation({ summary: 'Get' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiOperation({ summary: 'Get all Payment Details' })
+  @ApiResponse({
+    status: 200,
+    description: 'PaymentDetails retrieved successfully',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid' },
+          payment_id: { type: 'number' },
+          drug_id: { type: 'number' },
+          quantity: { type: 'number' },
+          fee_id: { type: 'number' },
+        },
+      },
+    },
+  })
   async findAll(@Req() req: Request, @Res() res: Response) {
     try {
       const paymentDetailsList = await this.paymentDetailsService.findAll();
@@ -170,10 +218,22 @@ export class PaymentDetailsController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
-  @ApiOperation({ summary: 'Details' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiOperation({ summary: 'Get Payment Details by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'PaymentDetails retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        payment_id: { type: 'number' },
+        drug_id: { type: 'number' },
+        quantity: { type: 'number' },
+        fee_id: { type: 'number' },
+      },
+    },
+  })
   async findOne(
     @Param('id') id: string,
     @Req() req: Request,
@@ -224,10 +284,22 @@ export class PaymentDetailsController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
-  @ApiOperation({ summary: 'Delete' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiOperation({ summary: 'Delete Payment Details' })
+  @ApiResponse({
+    status: 200,
+    description: 'PaymentDetails deleted successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        payment_id: { type: 'number' },
+        drug_id: { type: 'number' },
+        quantity: { type: 'number' },
+        fee_id: { type: 'number' },
+      },
+    },
+  })
   async remove(
     @Param('id') id: string,
     @Req() req: Request,

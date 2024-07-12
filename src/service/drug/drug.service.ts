@@ -20,9 +20,9 @@ export class DrugService {
         redeem: {
           include: {
             bank: {
-                include: {
-                    bank_category: true
-                }
+              include: {
+                bank_category: true,
+              },
             },
             user: true,
           },
@@ -86,19 +86,19 @@ export class DrugService {
             },
           },
         },
-         include: {
-        category: true,
-        redeem: {
-          include: {
-            bank: {
+        include: {
+          category: true,
+          redeem: {
+            include: {
+              bank: {
                 include: {
-                    bank_category: true
-                }
+                  bank_category: true,
+                },
+              },
+              user: true,
             },
-            user: true,
           },
         },
-      },
       });
 
       return create;
@@ -159,18 +159,18 @@ export class DrugService {
           },
         },
         include: {
-        category: true,
-        redeem: {
-          include: {
-            bank: {
+          category: true,
+          redeem: {
+            include: {
+              bank: {
                 include: {
-                    bank_category: true
-                }
+                  bank_category: true,
+                },
+              },
+              user: true,
             },
-            user: true,
           },
         },
-      },
       });
 
       return update;
@@ -202,9 +202,9 @@ export class DrugService {
         redeem: {
           include: {
             bank: {
-                include: {
-                    bank_category: true
-                }
+              include: {
+                bank_category: true,
+              },
             },
             user: true,
           },
@@ -215,19 +215,19 @@ export class DrugService {
 
   async findAll(): Promise<any[]> {
     return this.prisma.drug.findMany({
-        include: {
-            category: true,
-            redeem: {
+      include: {
+        category: true,
+        redeem: {
+          include: {
+            bank: {
               include: {
-                bank: {
-                    include: {
-                        bank_category: true
-                    }
-                },
-                user: true,
+                bank_category: true,
               },
             },
+            user: true,
           },
+        },
+      },
     });
   }
 

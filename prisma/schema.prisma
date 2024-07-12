@@ -193,7 +193,7 @@ model Drug {
 model Fee {
   id String  @id @default(uuid())
   activities String
-  cost String
+  cost Int
   clinic_id String
   clinic Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   paymentdetails PaymentDetails[] @relation()

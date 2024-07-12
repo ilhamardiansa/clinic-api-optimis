@@ -45,13 +45,12 @@ export class ClinicService {
 
       const serializedResult = {
         ...create,
-        city_id : Number(create.city_id),
+        city_id: Number(create.city_id),
         city: {
           ...create.city,
           id: Number(create.city.id),
         },
       };
-      
 
       return serializedResult;
     } catch (e: any) {
@@ -113,7 +112,7 @@ export class ClinicService {
 
       const serializedResult = {
         ...update,
-        city_id : Number(update.city_id),
+        city_id: Number(update.city_id),
         city: {
           ...update.city,
           id: Number(update.city.id),
@@ -155,16 +154,16 @@ export class ClinicService {
       },
     });
 
-     const serializedResult = {
-        ...get,
-        city_id : Number(get.city_id),
-        city: {
-          ...get.city,
-          id: Number(get.city.id),
-        },
-      };
+    const serializedResult = {
+      ...get,
+      city_id: Number(get.city_id),
+      city: {
+        ...get.city,
+        id: Number(get.city.id),
+      },
+    };
 
-    return serializedResult
+    return serializedResult;
   }
 
   async findAll() {
@@ -173,16 +172,16 @@ export class ClinicService {
         city: true,
       },
     });
-  
-    const result = clinics.map(clinics => ({
+
+    const result = clinics.map((clinics) => ({
       ...clinics,
-      city_id : Number(clinics.city_id),
+      city_id: Number(clinics.city_id),
       city: {
         ...clinics.city,
         id: Number(clinics.city.id),
       },
     }));
-  
+
     return result;
   }
 

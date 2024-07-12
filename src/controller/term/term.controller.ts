@@ -21,10 +21,18 @@ import { format_json } from 'src/env';
 import { TermService } from 'src/service/term/term.service';
 import { Roles } from 'src/middleware/role.decorator';
 import { RolesGuard } from 'src/middleware/role.guard';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Term and tickets')
+@ApiSecurity('bearer')
+@ApiBearerAuth()
 @Controller('api/terms')
 export class TermController {
   constructor(private readonly termService: TermService) {}
@@ -70,7 +78,25 @@ export class TermController {
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Create Term' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiResponse({
+    status: 201,
+    description: 'Term created successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        title: { type: 'string' },
+        content: { type: 'string' },
+        term_category: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            name: { type: 'string' },
+          },
+        },
+      },
+    },
+  })
   async create(@Body() termDto: TermDto, @Res() res: Response) {
     try {
       const createdTerm = await this.termService.createTerm(termDto);
@@ -86,20 +112,20 @@ export class TermController {
             createdTerm,
           ),
         );
-      } catch (error: any) {
-        return res
-          .status(400)
-          .json(
-            format_json(
-              500,
-              false,
-              null,
-              error || error,
-              'Server Error',
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(400)
+        .json(
+          format_json(
+            500,
+            false,
+            null,
+            error || error,
+            'Server Error',
+            error.message,
+          ),
+        );
+    }
   }
 
   @Put(':id')
@@ -107,7 +133,25 @@ export class TermController {
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Update term' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiResponse({
+    status: 200,
+    description: 'Term updated successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        title: { type: 'string' },
+        content: { type: 'string' },
+        term_category: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            name: { type: 'string' },
+          },
+        },
+      },
+    },
+  })
   async update(
     @Param('id') id: string,
     @Body() updateTermDto: UpdateTermDto,
@@ -134,27 +178,45 @@ export class TermController {
             updatedTerm,
           ),
         );
-      } catch (error: any) {
-        return res
-          .status(400)
-          .json(
-            format_json(
-              500,
-              false,
-              null,
-              error || error,
-              'Server Error',
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(400)
+        .json(
+          format_json(
+            500,
+            false,
+            null,
+            error || error,
+            'Server Error',
+            error.message,
+          ),
+        );
+    }
   }
 
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Get term' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiResponse({
+    status: 200,
+    description: 'Term retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        title: { type: 'string' },
+        content: { type: 'string' },
+        term_category: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            name: { type: 'string' },
+          },
+        },
+      },
+    },
+  })
   async findAll(@Res() res: Response) {
     try {
       const terms = await this.termService.findAll();
@@ -170,27 +232,45 @@ export class TermController {
             terms,
           ),
         );
-      } catch (error: any) {
-        return res
-          .status(400)
-          .json(
-            format_json(
-              500,
-              false,
-              null,
-              error || error,
-              'Server Error',
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(400)
+        .json(
+          format_json(
+            500,
+            false,
+            null,
+            error || error,
+            'Server Error',
+            error.message,
+          ),
+        );
+    }
   }
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Details term' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiResponse({
+    status: 200,
+    description: 'Term retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        title: { type: 'string' },
+        content: { type: 'string' },
+        term_category: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            name: { type: 'string' },
+          },
+        },
+      },
+    },
+  })
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const term = await this.termService.findOne(id);
@@ -213,27 +293,36 @@ export class TermController {
             term,
           ),
         );
-      } catch (error: any) {
-        return res
-          .status(400)
-          .json(
-            format_json(
-              500,
-              false,
-              null,
-              error || error,
-              'Server Error',
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(400)
+        .json(
+          format_json(
+            500,
+            false,
+            null,
+            error || error,
+            'Server Error',
+            error.message,
+          ),
+        );
+    }
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Delete term' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiResponse({
+    status: 200,
+    description: 'Term deleted successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        data: { type: 'null' },
+      },
+    },
+  })
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       const term = await this.termService.findOne(id);
@@ -250,20 +339,20 @@ export class TermController {
         .json(
           format_json(200, true, null, null, 'Term deleted successfully', null),
         );
-      } catch (error: any) {
-        return res
-          .status(400)
-          .json(
-            format_json(
-              500,
-              false,
-              null,
-              error || error,
-              'Server Error',
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(400)
+        .json(
+          format_json(
+            500,
+            false,
+            null,
+            error || error,
+            'Server Error',
+            error.message,
+          ),
+        );
+    }
   }
 
   @Post('send-a-ticket')
@@ -272,7 +361,11 @@ export class TermController {
   @Roles('admin')
   @ApiOperation({ summary: 'Create ticket' })
   @ApiResponse({ status: 200, description: 'Success' })
-  async sendTicket(@Body() ticketDto: TicketDto, @Req() req: Request, @Res() res: Response) {
+  async sendTicket(
+    @Body() ticketDto: TicketDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     try {
       const authorizationHeader = req.headers['authorization'];
 
@@ -321,19 +414,19 @@ export class TermController {
             ticket,
           ),
         );
-      } catch (error: any) {
-        return res
-          .status(400)
-          .json(
-            format_json(
-              500,
-              false,
-              null,
-              error || error,
-              'Server Error',
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(400)
+        .json(
+          format_json(
+            500,
+            false,
+            null,
+            error || error,
+            'Server Error',
+            error.message,
+          ),
+        );
+    }
   }
 }
