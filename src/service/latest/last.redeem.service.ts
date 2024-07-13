@@ -257,10 +257,12 @@ async createRedeem(token: string, data: CreateDTO) {
       var userId = extracttoken.userId;
     }
 
-    const create = this.prisma.lastRedeem.create({
+    const list_of_medications = JSON.stringify(validatedData.list_of_medications);
+
+    const create = await this.prisma.lastRedeem.create({
       data: {
         redemption_date_and_time: validatedData.redemption_date_and_time,
-        list_of_medications: validatedData.list_of_medications,
+        list_of_medications: list_of_medications,
         total_cost: validatedData.total_cost,
         bank_transfer_name: validatedData.bank_transfer_name,
         bank_id: validatedData.bank_id,
@@ -348,13 +350,15 @@ async updateRedeem(token: string, data: CreateDTO, id: string) {
       };
     }
 
-    const update = this.prisma.lastRedeem.update({
+    const list_of_medications = JSON.stringify(validatedData.list_of_medications);
+
+    const update = await this.prisma.lastRedeem.update({
       where: {
         id: find.id
       },
       data: {
         redemption_date_and_time: validatedData.redemption_date_and_time,
-        list_of_medications: validatedData.list_of_medications,
+        list_of_medications: list_of_medications,
         total_cost: validatedData.total_cost,
         bank_transfer_name: validatedData.bank_transfer_name,
         bank_id: validatedData.bank_id,
