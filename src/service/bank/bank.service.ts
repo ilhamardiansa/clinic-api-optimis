@@ -38,7 +38,11 @@ export class BankService {
         },
       });
 
-      return create;
+      return {
+        status: true,
+        message: 'Success',
+        data: create,
+      };
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
@@ -94,7 +98,11 @@ export class BankService {
         },
       });
 
-      return update;
+      return {
+        status: true,
+        message: 'Success',
+        data: update,
+      };
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({

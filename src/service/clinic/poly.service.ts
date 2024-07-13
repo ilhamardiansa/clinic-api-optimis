@@ -40,10 +40,9 @@ export class PolyService {
 
       const serializedResult = {
         ...create,
-        clinic_id: Number(create.clinic_id),
         clinic: {
           ...create.clinic,
-          id: Number(create.clinic.id),
+          city_id: Number(create.clinic.city_id),
           city: {
             ...create.clinic.city,
             id: Number(create.clinic.city.id),
@@ -51,7 +50,11 @@ export class PolyService {
         },
       };
 
-      return serializedResult;
+      return {
+        status: true,
+        message: 'Success',
+        data: serializedResult,
+      };
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
@@ -105,7 +108,23 @@ export class PolyService {
         },
       });
 
-      return update;
+      const serializedResult = {
+        ...update,
+        clinic: {
+          ...update.clinic,
+          city_id: Number(update.clinic.city_id),
+          city: {
+            ...update.clinic.city,
+            id: Number(update.clinic.city.id),
+          },
+        },
+      };
+
+      return {
+        status: true,
+        message: 'Success',
+        data: serializedResult,
+      };
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
@@ -131,7 +150,7 @@ export class PolyService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.poly.findUnique({
+    const get = await this.prisma.poly.findUnique({
       where: { id: id },
       include: {
         clinic: {
@@ -141,10 +160,24 @@ export class PolyService {
         },
       },
     });
+
+    const serializedResult = {
+      ...get,
+      clinic: {
+        ...get.clinic,
+        city_id: Number(get.clinic.city_id),
+        city: {
+          ...get.clinic.city,
+          id: Number(get.clinic.city.id),
+        },
+      },
+    };
+
+    return serializedResult
   }
 
   async findAll() {
-    return await this.prisma.poly.findMany({
+    const getall =  await this.prisma.poly.findMany({
       include: {
         clinic: {
           include: {
@@ -153,6 +186,20 @@ export class PolyService {
         },
       },
     });
+
+    const result = getall.map((poly) => ({
+      ...poly,
+      clinic: {
+        ...poly.clinic,
+        city_id: Number(poly.clinic.city_id),
+        city: {
+          ...poly.clinic.city,
+          id: Number(poly.clinic.city.id),
+        },
+      },
+    }));
+
+    return result
   }
 
   async removePoly(id: string) {

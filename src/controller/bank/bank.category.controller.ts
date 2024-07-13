@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpException,
   UsePipes,
+  Res,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { format_json } from 'src/env'; // Sesuaikan dengan path yang benar
@@ -25,6 +26,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 
 @ApiTags('Bank Categories')
 @ApiSecurity('bearer')
@@ -51,18 +53,30 @@ export class BankCategoryController {
       },
     },
   })
-  async create(@Body() bankCategoryDto: BankCategoryDto) {
+  async create(@Res() res: Response, @Body() bankCategoryDto: BankCategoryDto) {
     try {
       const createdBankCategory =
-        await this.bankCategoryService.createBankCategory(bankCategoryDto);
-      return format_json(
-        201,
-        true,
+      await this.bankCategoryService.createBankCategory(bankCategoryDto);
+    
+    if (createdBankCategory.status === true) {
+      return res.status(201).json(format_json(
+        200,
+        false,
         null,
         null,
-        'Bank category created successfully',
-        createdBankCategory,
-      );
+        'Bank category Created Success',
+        createdBankCategory.data,
+      ));
+    } else {
+      return res.status(400).json(format_json(
+        400,
+        false,
+        createdBankCategory.errors,
+        null,
+        createdBankCategory.message,
+        null,
+      ));
+    }
     } catch (error: any) {
       throw new HttpException(
         format_json(
@@ -97,6 +111,7 @@ export class BankCategoryController {
   })
   async update(
     @Param('id') id: string,
+    @Res() res: Response,
     @Body() updateBankCategoryDto: UpdateBankCategoryDto,
   ) {
     try {
@@ -105,14 +120,26 @@ export class BankCategoryController {
           id,
           updateBankCategoryDto,
         );
-      return format_json(
-        200,
-        true,
-        null,
-        null,
-        'Bank category updated successfully',
-        updatedBankCategory,
-      );
+
+        if (updatedBankCategory.status === true) {
+          return res.status(201).json(format_json(
+            200,
+            false,
+            null,
+            null,
+            'Bank category update Success',
+            updatedBankCategory.data,
+          ));
+        } else {
+          return res.status(400).json(format_json(
+            400,
+            false,
+            updatedBankCategory.errors,
+            null,
+            updatedBankCategory.message,
+            null,
+          ));
+        }
     } catch (error: any) {
       throw new HttpException(
         format_json(

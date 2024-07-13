@@ -52,7 +52,11 @@ export class ClinicService {
         },
       };
 
-      return serializedResult;
+      return {
+        status: true,
+        message: 'Success',
+        data: serializedResult,
+      };
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
@@ -119,7 +123,11 @@ export class ClinicService {
         },
       };
 
-      return serializedResult;
+      return {
+        status: true,
+        message: 'Success',
+        data: serializedResult,
+      };
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({

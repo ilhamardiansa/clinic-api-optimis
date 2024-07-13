@@ -244,7 +244,7 @@ export class LastRedeemService {
 
 async createRedeem(token: string, data: CreateDTO) {
   const schema = z.object({
-    redemption_date_and_time: z.date(),
+    redemption_date_and_time: z.string().min(1),
     list_of_medications: z.any(),
     total_cost: z.string().min(1),
     bank_transfer_name : z.string().min(1),
@@ -310,7 +310,7 @@ async createRedeem(token: string, data: CreateDTO) {
 
 async updateRedeem(token: string, data: CreateDTO, id: string) {
   const schema = z.object({
-    redemption_date_and_time: z.date(),
+    redemption_date_and_time: z.string().min(1),
     list_of_medications: z.any(),
     total_cost: z.string().min(1),
     bank_transfer_name : z.string().min(1),

@@ -66,18 +66,25 @@ export class BankController {
   async create(@Body() bankDto: BankDto, @Res() res: Response) {
     try {
       const createdBank = await this.bankService.createBank(bankDto);
-      return res
-        .status(201)
-        .json(
-          format_json(
-            201,
-            true,
-            null,
-            null,
-            'Bank created successfully',
-            createdBank,
-          ),
-        );
+      if (createdBank.status === true) {
+        return res.status(201).json(format_json(
+          200,
+          false,
+          null,
+          null,
+          'Bank Created Success',
+          createdBank.data,
+        ));
+      } else {
+        return res.status(400).json(format_json(
+          400,
+          false,
+          createdBank.errors,
+          null,
+          createdBank.message,
+          null,
+        ));
+      }
     } catch (error) {
       return res
         .status(400)
@@ -129,25 +136,25 @@ export class BankController {
   ) {
     try {
       const updatedBank = await this.bankService.updateBank(id, updateBankDto);
-      if (!updatedBank) {
-        return res
-          .status(404)
-          .json(
-            format_json(404, false, 'Not Found', null, 'Bank not found', null),
-          );
+      if (updatedBank.status === true) {
+        return res.status(201).json(format_json(
+          200,
+          false,
+          null,
+          null,
+          'Bank update Success',
+          updatedBank.data,
+        ));
+      } else {
+        return res.status(400).json(format_json(
+          400,
+          false,
+          updatedBank.errors,
+          null,
+          updatedBank.message,
+          null,
+        ));
       }
-      return res
-        .status(200)
-        .json(
-          format_json(
-            200,
-            true,
-            null,
-            null,
-            'Bank updated successfully',
-            updatedBank,
-          ),
-        );
     } catch (error) {
       return res
         .status(400)

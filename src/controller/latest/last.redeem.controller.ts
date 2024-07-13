@@ -40,7 +40,7 @@ export class LastRedeemController {
       if (getRedeemResult.status) {
         return format_json(200,true, null, null, getRedeemResult.message, getRedeemResult.data);
       } else {
-        return format_json(400,false, null, null, getRedeemResult.message, null);
+        return format_json(400,false, null, null, getRedeemResult.message, getRedeemResult.data);
       }
     } catch (error) {
       return format_json(400,false, true, null, 'Server Error '+error, error);

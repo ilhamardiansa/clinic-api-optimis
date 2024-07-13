@@ -582,7 +582,7 @@ export class AuthController {
       } else {
         return res
           .status(400)
-          .json(format_json(400, false, true, null, user.message, null));
+          .json(format_json(400, false, true, user.errors, user.message, null));
       }
     } catch (error: any) {
       return res
@@ -655,7 +655,7 @@ export class AuthController {
       } else {
         return res
           .status(400)
-          .json(format_json(400, false, true, null, user.message, null));
+          .json(format_json(400, false, true, user.errors, user.message, null));
       }
     } catch (error: any) {
       return res
@@ -985,7 +985,7 @@ export class AuthController {
               400,
               false,
               null,
-              null,
+              (await change_password).errors,
               (await change_password).message,
               null,
             ),
