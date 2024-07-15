@@ -19,24 +19,22 @@ export class WilayahService {
     const skip = Math.floor((page - 1) * limit);
   
     const whereClause = query
-      ? {
-          OR: [
-            { provinsi: { contains: query.toLowerCase(), mode: undefined } },
-            { kabupaten: { contains: query.toLowerCase(), mode: undefined } },
-            { kecamatan: { contains: query.toLowerCase(), mode: undefined } },
-            { kelurahan: { contains: query.toLowerCase(), mode: undefined } },
-          ],
-        }
-      : {};
+  ? {
+      OR: [
+        { provinsi: { contains: query } },
+        { kabupaten: { contains: query } },
+        { kecamatan: { contains: query } },
+        { kelurahan: { contains: query } },
+      ],
+    }
+  : {};
   
     if (!limit) {
       limit = 10;
     }
   
     const result = await this.prisma.wilayah.findMany({
-      where: {
-        kabupaten : query
-      },
+      where: whereClause,
       take: Number(limit),
       skip: skip,
       orderBy: {
