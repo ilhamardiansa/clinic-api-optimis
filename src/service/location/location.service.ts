@@ -34,7 +34,9 @@ export class WilayahService {
     }
   
     const result = await this.prisma.wilayah.findMany({
-      where: whereClause,
+      where: {
+        kabupaten : query
+      },
       take: Number(limit),
       skip: skip,
       orderBy: {
