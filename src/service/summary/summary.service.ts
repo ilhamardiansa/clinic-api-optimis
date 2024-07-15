@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as jwt from 'jsonwebtoken';
 import { PrismaService } from 'src/prisma.service';
 import { ZodError, z } from 'zod';
+import { Status } from '@prisma/client';
 
 @Injectable()
 export class SummaryService {
@@ -14,7 +15,12 @@ export class SummaryService {
     private prisma: PrismaService,
   ) {}
 
-  async getappointments(token: string) {
+  async getappointments(
+    token: string,
+    page: number,
+    limit: number,
+    order: 'asc' | 'desc' = 'asc',
+    status: Status) {
     try {
 
       const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
@@ -23,14 +29,41 @@ export class SummaryService {
         var userId = extracttoken.userId;
       }
 
+      const profile = await this.prisma.profile.findUnique({
+        where: { user_id: userId },
+      });
 
+      if (!profile) {
+        return {
+          status: false,
+          message: 'Profile tidak ditemukan',
+          data: null,
+        };
+      }
+
+      const skip = (page - 1) * limit;
+      
       const find = await this.prisma.summary.findMany({
-        where: { patient_id : userId },
+        where: {
+          patient_id: profile.id,
+          status: status || undefined,
+        },
+        take: Number(limit) || 10,
+        skip: skip || 0,
+        orderBy: order ? { scheduled_date_time: order } : undefined,
         include: {
-          poly : true,
+          poly: {
+            include: {
+              clinic: {
+                include: {
+                  city: true
+                }
+              }
+            }
+          },
           doctor: {
             include: {
-              poly : {
+              poly: {
                 include: {
                   clinic: true
                 }
@@ -44,11 +77,49 @@ export class SummaryService {
             }
           },
         }
-      })
+      });
+
+      const result = find.map((find) => ({
+        ...find,
+          poly : {
+            clinic: {
+              ...find.poly.clinic,
+              city_id: Number(find.poly.clinic.city_id),
+              city: {
+                ...find.poly.clinic.city,
+                id: Number(find.poly.clinic.city.id),
+              },
+            },
+          },
+          doctor : {
+            poly : {
+              clinic: {
+                ...find.poly.clinic,
+                city_id: Number(find.poly.clinic.city_id),
+                city: {
+                  ...find.poly.clinic.city,
+                  id: Number(find.poly.clinic.city.id),
+                },
+              },
+            },
+            wilayah_id: Number(find.doctor.wilayah_id),
+            city: {
+              ...find.doctor.city,
+                  id: Number(find.doctor.city.id),
+            },
+          },
+          patient: {
+            city: {
+              ...find.patient,
+              city_id: Number(find.patient.city_id),
+            }
+          }
+      }));
+
       return {
         status: true,
         message: 'Success',
-        data: find,
+        data: result,
       };
 
     } catch (e: any) {
@@ -73,23 +144,25 @@ export class SummaryService {
   }
   
   async createSummary(token: string,summaryDto: SummaryDto) {
+
     const schema = z.object({
       poly_id: z.string().min(1),
       doctor_id: z.string().min(1),
-      scheduled_date_time: z.date(),
+      scheduled_date_time: z.string().min(1),
       qr_code: z.string().min(1),
       image_captured_checked: z.boolean(),
       symptoms: z.string().min(1),
       symptoms_description: z.string().min(1),
-      status: z.boolean(),
-      ai_status: z.boolean(),
       ai_response: z.string(),
+      ai_status: z.boolean(),
       image_url: z.string(),
       ai_token: z.string(),
-      drug:  z.object({
-        drug_id: z.string(),
-        qty: z.number(),
-      })
+      drug: z.array(
+        z.object({
+          drug_id: z.string(),
+          qty: z.number(),
+        })
+      ),
     });
     try {
       const validatedData = schema.parse(summaryDto);
@@ -99,10 +172,22 @@ export class SummaryService {
         var userId = extracttoken.userId;
       }
 
+      const profile = await this.prisma.profile.findUnique({
+        where: { user_id: userId },
+      });
+
+      if (!profile) {
+        return {
+          status: false,
+          message: 'Profile tidak ditemukan',
+          data: null,
+        };
+      }
+
 
       const find = await this.prisma.summary.findFirst({
         where: {
-          patient_id: userId,
+          patient_id: profile.id,
           poly_id : validatedData.poly_id,
           doctor_id : validatedData.doctor_id,
           scheduled_date_time : validatedData.scheduled_date_time,
@@ -129,6 +214,14 @@ export class SummaryService {
       })
 
       if(find) {
+        let getstatus;
+
+        if(find.symptoms && find.ai_response) {
+          getstatus = Status.diagnosed
+        } else {
+          getstatus = Status.waiting
+        }
+
         const update = await this.prisma.summary.update({
           where: { id: find.id },
           data : {
@@ -142,12 +235,12 @@ export class SummaryService {
                 id: validatedData.doctor_id
               }
             },
-            scheduled_date_time: validatedData.doctor_id,
+            scheduled_date_time: validatedData.scheduled_date_time,
             qr_code: validatedData.qr_code,
             image_captured_checked: validatedData.image_captured_checked,
             symptoms: validatedData.symptoms,
             symptoms_description: validatedData.symptoms_description,
-            status: validatedData.status,
+            status: getstatus,
             ai_status: validatedData.ai_status,
             ai_response: validatedData.ai_response,
             image_url: validatedData.image_url,
@@ -155,7 +248,15 @@ export class SummaryService {
             drug: validatedData.drug,
           },
           include: {
-            poly : true,
+            poly : {
+              include: {
+                clinic : {
+                  include : {
+                    city: true
+                  }
+                }
+              }
+            },
             doctor: {
               include: {
                 poly : {
@@ -174,10 +275,47 @@ export class SummaryService {
           }
         })
 
+        const serializedResult = {
+          ...update,
+          poly : {
+            clinic: {
+              ...update.poly.clinic,
+              city_id: Number(update.poly.clinic.city_id),
+              city: {
+                ...update.poly.clinic.city,
+                id: Number(update.poly.clinic.city.id),
+              },
+            },
+          },
+          doctor : {
+            poly : {
+              clinic: {
+                ...update.poly.clinic,
+                city_id: Number(update.poly.clinic.city_id),
+                city: {
+                  ...update.poly.clinic.city,
+                  id: Number(update.poly.clinic.city.id),
+                },
+              },
+            },
+            wilayah_id: Number(update.doctor.wilayah_id),
+            city: {
+              ...update.doctor.city,
+                  id: Number(update.doctor.city.id),
+            },
+          },
+          patient: {
+            city: {
+              ...update.patient,
+              city_id: Number(update.patient.city_id),
+            }
+          }
+        };
+
         return {
           status: true,
           message: 'Success',
-          data: update,
+          data: serializedResult,
         };
       } else {
         const create = await this.prisma.summary.create({
@@ -192,17 +330,17 @@ export class SummaryService {
                 id: validatedData.doctor_id
               }
             },
-            scheduled_date_time: validatedData.doctor_id,
+            scheduled_date_time: validatedData.scheduled_date_time,
             qr_code: validatedData.qr_code,
             image_captured_checked: validatedData.image_captured_checked,
             patient: {
               connect : {
-                id: userId
+                id: profile.id
               }
             },
             symptoms: validatedData.symptoms,
             symptoms_description: validatedData.symptoms_description,
-            status: validatedData.status,
+            status: Status.waiting,
             ai_status: validatedData.ai_status,
             ai_response: validatedData.ai_response,
             image_url: validatedData.image_url,
@@ -210,7 +348,15 @@ export class SummaryService {
             drug: validatedData.drug,
           },
           include: {
-            poly : true,
+            poly : {
+              include: {
+                clinic : {
+                  include : {
+                    city: true
+                  }
+                }
+              }
+            },
             doctor: {
               include: {
                 poly : {
@@ -229,10 +375,47 @@ export class SummaryService {
           }
         })
 
+        const serializedResult = {
+          ...create,
+          poly : {
+            clinic: {
+              ...create.poly.clinic,
+              city_id: Number(create.poly.clinic.city_id),
+              city: {
+                ...create.poly.clinic.city,
+                id: Number(create.poly.clinic.city.id),
+              },
+            },
+          },
+          doctor : {
+            poly : {
+              clinic: {
+                ...create.poly.clinic,
+                city_id: Number(create.poly.clinic.city_id),
+                city: {
+                  ...create.poly.clinic.city,
+                  id: Number(create.poly.clinic.city.id),
+                },
+              },
+            },
+            wilayah_id: Number(create.doctor.wilayah_id),
+            city: {
+              ...create.doctor.city,
+                  id: Number(create.doctor.city.id),
+            },
+          },
+          patient: {
+            city: {
+              ...create.patient,
+              city_id: Number(create.patient.city_id),
+            }
+          }
+        };
+
         return {
           status: true,
           message: 'Success',
-          data: create,
+          data: serializedResult,
         };
       }
 

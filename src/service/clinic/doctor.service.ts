@@ -301,18 +301,18 @@ export class DoctorService {
     const whereClause = query
       ? {
           OR: [
-            { doctor_name: { contains: query, mode: 'insensitive' } },
-            { description: { contains: query, mode: 'insensitive' } },
-            { address: { contains: query, mode: 'insensitive' } },
-            { education: { contains: query, mode: 'insensitive' } },
+            { doctor_name: { contains: query } },
+            { description: { contains: query } },
+            { address: { contains: query } },
+            { education: { contains: query } },
           ],
         }
       : {};
 
       const doctors = await this.prisma.doctor.findMany({
         where: whereClause,
-        take: limit || 10,
-        skip: skip || 0,
+        take: Number(limit),
+        skip: skip,
         orderBy: {
           doctor_name: order,
         },

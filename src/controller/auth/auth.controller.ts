@@ -794,7 +794,6 @@ export class AuthController {
     }
   })
   async update_avatar(
-    @Body() update_avatar : Updateavatar,
     @Req() req: Request,
     @UploadedFile() profil_image: Express.Multer.File,
     @Res() res: Response,

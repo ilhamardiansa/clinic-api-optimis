@@ -22,7 +22,7 @@ import { DoctorService } from 'src/service/clinic/doctor.service';
 import { UpdateDoctorDto } from 'src/dto/clinic/update.doctor.dto';
 import { DoctorDto } from 'src/dto/clinic/doctor.dto';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Doctor')
 @Controller('api/doctors')
@@ -351,6 +351,10 @@ export class DoctorController {
     }
   }
 })
+  @ApiQuery({ name: 'q', required: false, type: String })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({ name: 'order', required: false, enum: ['asc', 'desc'], example: 'asc' })
   async findAll(
     @Query('q') query: string = '',
     @Query('page') page: number = null,

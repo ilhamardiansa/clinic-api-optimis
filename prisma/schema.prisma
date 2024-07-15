@@ -271,6 +271,14 @@ model ProfileConfiguration {
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
+enum Status {
+  waiting
+  diagnosed
+  checkout
+  completed
+  rejected
+}
+
 model Summary {
   id String  @id @default(uuid())
   poly_id String
@@ -285,7 +293,7 @@ model Summary {
   approved_by_doctor_id Int?
   symptoms String
   symptoms_description String @db.Text
-  status Boolean?
+  status Status
   ai_status Boolean?
   ai_response String @db.Text
   image_url String
