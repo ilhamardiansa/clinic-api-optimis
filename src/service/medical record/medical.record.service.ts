@@ -2,6 +2,7 @@ import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { MedicalRecordDto } from 'src/dto/medical record/medical.record.dto';
 import { PrismaService } from 'src/prisma.service';
 import { ZodError, z } from 'zod';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class MedicalRecordService {
@@ -9,7 +10,7 @@ export class MedicalRecordService {
 
   constructor(private prisma: PrismaService) {}
 
-  async createRecord(medicalRecordDto: MedicalRecordDto) {
+  async createRecord(medicalRecordDto: MedicalRecordDto, token: string) {
     const schema = z.object({
       consultation_date_time: z.string().min(1),
       vistting_time: z.string().min(1),
@@ -23,15 +24,19 @@ export class MedicalRecordService {
       complaint: z.string().min(1),
       history_of_illness: z.string().min(1),
       solution: z.string().min(1),
-      user_id: z.string().min(1),
       poly_id: z.string().min(1),
       clinic_id: z.string().min(1),
       doctor_id: z.string().min(1),
-      wilayah_id: z.number().int().min(1),
+      city_id: z.number().int().min(1),
     });
 
     try {
       const validatedData = schema.parse(medicalRecordDto);
+      const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+      if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+        var userId = extracttoken.userId;
+      }
+
       const create = await this.prisma.record.create({
         data: {
           consultation_date_time: validatedData.consultation_date_time,
@@ -46,11 +51,11 @@ export class MedicalRecordService {
           complaint: validatedData.complaint,
           history_of_illness: validatedData.history_of_illness,
           solution: validatedData.solution,
-          user: { connect: { id: validatedData.user_id } },
+          user: { connect: { id: userId } },
           poly: { connect: { id: validatedData.poly_id } },
           clinic: { connect: { id: validatedData.clinic_id } },
           doctor: { connect: { id: validatedData.doctor_id } },
-          city: { connect: { id: validatedData.wilayah_id } },
+          city: { connect: { id: validatedData.city_id } },
         },
         include: {
           poly: {
@@ -69,7 +74,6 @@ export class MedicalRecordService {
       const serializedResult = {
         ...create,
         poly: {
-          ...create.poly,
           clinic: {
             ...create.poly.clinic,
             city_id: Number(create.poly.clinic.city_id),
@@ -79,7 +83,7 @@ export class MedicalRecordService {
             },
           },
         },
-        wilayah_id: Number(create.city_id),
+        city_id: Number(create.city_id),
         city: {
           ...create.city,
           id: Number(create.city.id),
@@ -101,16 +105,12 @@ export class MedicalRecordService {
         return {
           status: false,
           message: 'Validasi gagal',
-          errors: errorMessages,
-          users: null,
-          token: null,
+          data: errorMessages,
         };
       }
       return {
         status: false,
         message: e.message || 'Terjadi kesalahan',
-        users: null,
-        token: null,
       };
     }
   }
@@ -129,11 +129,10 @@ export class MedicalRecordService {
       complaint: z.string().min(1),
       history_of_illness: z.string().min(1),
       solution: z.string().min(1),
-      user_id: z.string().min(1),
       poly_id: z.string().min(1),
       clinic_id: z.string().min(1),
       doctor_id: z.string().min(1),
-      wilayah_id: z.number().int().min(1),
+      city_id: z.number().int().min(1),
     });
 
     try {
@@ -153,10 +152,10 @@ export class MedicalRecordService {
           complaint: validatedData.complaint,
           history_of_illness: validatedData.history_of_illness,
           solution: validatedData.solution,
-          user: { connect: { id: validatedData.user_id } },
           poly: { connect: { id: validatedData.poly_id } },
           clinic: { connect: { id: validatedData.clinic_id } },
           doctor: { connect: { id: validatedData.doctor_id } },
+          city: { connect: { id: validatedData.city_id } },
         },
         include: {
           poly: { include: { clinic: true } },

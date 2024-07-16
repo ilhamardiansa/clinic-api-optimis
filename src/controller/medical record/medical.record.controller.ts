@@ -10,6 +10,8 @@ import {
   UseGuards,
   UsePipes,
   Logger,
+  Req,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -39,36 +41,70 @@ export class MedicalRecordController {
   async create(
     @Body() medicalRecordDto: MedicalRecordDto,
     @Res() res: Response,
+    @Req() req: Request
   ) {
     try {
+      const authorizationHeader = req.headers['authorization'];
+
+      if (!authorizationHeader) {
+        console.log('Authorization header is missing');
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Authorization header is missing',
+              null,
+            ),
+          );
+      }
+
+      const token = authorizationHeader.split(' ')[1];
+      if (!token) {
+        console.log('Bearer token is missing');
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(
+            format_json(
+              400,
+              false,
+              null,
+              null,
+              'Bearer token is missing',
+              null,
+            ),
+          );
+      }
+
+
       const createdRecord =
-        await this.medicalRecordService.createRecord(medicalRecordDto);
+      await this.medicalRecordService.createRecord(medicalRecordDto,token);
+
+      if (createdRecord.status) {
+        return res
+          .status(HttpStatus.OK)
+          .json(
+            format_json(200, true, null, null, createdRecord.message, createdRecord.data),
+          );
+      } else {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(format_json(400, false, null, createdRecord.data, createdRecord.message, null));
+      }
+    } catch (error:any) {
       return res
-        .status(201)
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(
           format_json(
-            201,
+            500,
+            false,
             true,
             null,
-            null,
-            'Medical record created successfully',
-            createdRecord,
-          ),
-        );
-    } catch (error) {
-      this.logger.error('Error creating medical record', error);
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-      return res
-        .status(400)
-        .json(
-          format_json(
-            400,
-            false,
-            'Bad Request',
-            null,
-            'Failed to create medical record',
-            errorMessage,
+            'Server Error ' + error,
+            error.message,
           ),
         );
     }

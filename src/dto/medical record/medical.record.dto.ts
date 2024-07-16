@@ -72,5 +72,19 @@ export class MedicalRecordDto {
   @IsString()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  user_id: string;
+  poly_id: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
+  @ApiProperty()
+  clinic_id: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'should not be empty' })
+  @ApiProperty()
+  doctor_id: string;
+
+  @IsNotEmpty({ message: 'should not be empty' })
+  @ApiProperty()
+  city_id: number;
 }
