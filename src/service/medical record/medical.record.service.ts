@@ -50,32 +50,68 @@ export class MedicalRecordService {
           poly: { connect: { id: validatedData.poly_id } },
           clinic: { connect: { id: validatedData.clinic_id } },
           doctor: { connect: { id: validatedData.doctor_id } },
+          city: { connect: { id: validatedData.wilayah_id } },
         },
         include: {
-          poly: { include: { clinic: true } },
+          poly: {
+            include: {
+              clinic: {
+                include: {
+                  city: true,
+                },
+              },
+            },
+          },
+          city: true,
         },
       });
 
-      return create;
-    } catch (e: any) {
-      this.logger.error('Error creating medical record', e);
+      const serializedResult = {
+        ...create,
+        poly: {
+          ...create.poly,
+          clinic: {
+            ...create.poly.clinic,
+            city_id: Number(create.poly.clinic.city_id),
+            city: {
+              ...create.poly.clinic.city,
+              id: Number(create.poly.clinic.city.id),
+            },
+          },
+        },
+        wilayah_id: Number(create.city_id),
+        city: {
+          ...create.city,
+          id: Number(create.city.id),
+        },
+      };
 
+      return {
+        status: true,
+        message: 'Success',
+        data: serializedResult,
+      };
+    } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
           field: error.path.join('.'),
           message: error.message,
         }));
 
-        throw new BadRequestException({
-          status: 400,
+        return {
+          status: false,
           message: 'Validasi gagal',
           errors: errorMessages,
-        });
+          users: null,
+          token: null,
+        };
       }
-      throw new BadRequestException({
-        status: 400,
+      return {
+        status: false,
         message: e.message || 'Terjadi kesalahan',
-      });
+        users: null,
+        token: null,
+      };
     }
   }
 

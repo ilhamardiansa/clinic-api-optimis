@@ -21,6 +21,7 @@ model wilayah {
   profile Profile[] @relation()
   clinic Clinic[] @relation()
   doctor Doctor[] @relation()
+  record Record[] @relation()
 }
 
 model User {
@@ -235,6 +236,8 @@ model Record {
   clinic Clinic @relation(fields: [clinic_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   doctor_id String
   doctor Doctor @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  city_id BigInt?
+  city    wilayah? @relation(fields: [city_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Payment {

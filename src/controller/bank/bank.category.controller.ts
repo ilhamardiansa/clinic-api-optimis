@@ -12,7 +12,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { format_json } from 'src/env'; // Sesuaikan dengan path yang benar
+import { format_json } from 'src/env';
 import { BankCategoryDto } from 'src/dto/bank/bank.category.dto';
 import { UpdateBankCategoryDto } from 'src/dto/bank/update.bank.category.dto';
 import { BankCategoryService } from 'src/service/bank/bank.category.service';

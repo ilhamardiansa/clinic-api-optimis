@@ -14,9 +14,21 @@ export class PaymentService {
     if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
       const userId = extracttoken.userId;
 
+      const profile = await this.prisma.profile.findUnique({
+        where: { user_id: userId },
+      });
+
+      if (!profile) {
+        return {
+          status: false,
+          message: 'Profile tidak ditemukan',
+          data: null,
+        };
+      }
+
       try {
         const payments = await this.prisma.payment.findMany({
-          where: { user_id: userId },
+          where: { user_id: profile.id },
           include: {
             bank: {
               include: {
@@ -88,13 +100,25 @@ export class PaymentService {
       if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
         const userId = extracttoken.userId;
 
+        const profile = await this.prisma.profile.findUnique({
+          where: { user_id: userId },
+        });
+
+        if (!profile) {
+          return {
+            status: false,
+            message: 'Profile tidak ditemukan',
+            data: null,
+          };
+        }
+
         const create = await this.prisma.payment.create({
           data: {
             payment_name: validatedData.payment_name,
             bank_id: validatedData.bank_id,
             redeem_id: validatedData.redeem_id,
             status: 'Pending',
-            user_id: userId,
+            user_id: profile.id,
           },
           include: {
             bank: {
@@ -208,7 +232,6 @@ export class PaymentService {
           },
         });
 
-        // Convert BigInt to Number
         const serializedResult = {
           ...update,
           redeem: {
