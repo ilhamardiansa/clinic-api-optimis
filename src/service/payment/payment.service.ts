@@ -143,7 +143,7 @@ export class PaymentService {
         return {
           status: false,
           message: 'Validation failed',
-          errors: errorMessages,
+          data: errorMessages,
         };
       }
       return {
@@ -242,7 +242,7 @@ export class PaymentService {
         return {
           status: false,
           message: 'Validation failed',
-          errors: errorMessages,
+          data: errorMessages,
         };
       }
       return {

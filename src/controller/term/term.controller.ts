@@ -41,7 +41,25 @@ export class TermController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Get ticket' })
-  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiResponse({
+    status: 201,
+    description: 'Success',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        title: { type: 'string' },
+        content: { type: 'string' },
+        term_category: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            name: { type: 'string' },
+          },
+        },
+      },
+    },
+  })
   async findAllTickets(@Res() res: Response) {
     try {
       const tickets = await this.termService.findAllTickets();
@@ -100,18 +118,15 @@ export class TermController {
   async create(@Body() termDto: TermDto, @Res() res: Response) {
     try {
       const createdTerm = await this.termService.createTerm(termDto);
-      return res
-        .status(201)
-        .json(
-          format_json(
-            201,
-            true,
-            null,
-            null,
-            'Term created successfully',
-            createdTerm,
-          ),
+      if (createdTerm.status) {
+        return res.status(200).json(
+          format_json(200, true, null, null, createdTerm.message, createdTerm.data)
         );
+      } else {
+        return res.status(400).json(
+          format_json(400, false, null, createdTerm.data, 'Error Server', null)
+        );
+      }
     } catch (error: any) {
       return res
         .status(400)
@@ -163,7 +178,7 @@ export class TermController {
         return res
           .status(404)
           .json(
-            format_json(404, false, 'Not Found', null, 'Term not found', null),
+            format_json(404, false, 'Not Found', updatedTerm.data, updatedTerm.message, null),
           );
       }
       return res
@@ -402,18 +417,15 @@ export class TermController {
       }
 
       const ticket = await this.termService.sendTicket(ticketDto, token);
-      return res
-        .status(200)
-        .json(
-          format_json(
-            200,
-            true,
-            null,
-            null,
-            'Ticket sent successfully',
-            ticket,
-          ),
+      if (ticket.status) {
+        return res.status(200).json(
+          format_json(200, true, null, null, ticket.message, ticket.data)
         );
+      } else {
+        return res.status(400).json(
+          format_json(400, false, null, ticket.data, 'Error Server', null)
+        );
+      }
     } catch (error: any) {
       return res
         .status(400)

@@ -64,18 +64,15 @@ export class PaymentDetailsController {
         await this.paymentDetailsService.createPaymentDetails(
           paymentDetailsDto,
         );
-      return res
-        .status(201)
-        .json(
-          format_json(
-            201,
-            true,
-            null,
-            null,
-            'PaymentDetails created successfully',
-            createdPaymentDetails,
-          ),
-        );
+        if (createdPaymentDetails.status) {
+          return res.status(200).json(
+            format_json(200, true, null, null, createdPaymentDetails.message, createdPaymentDetails.data)
+          );
+        } else {
+          return res.status(400).json(
+            format_json(400, false, null, createdPaymentDetails.data, 'Error Server', null)
+          );
+        }
     } catch (error) {
       return res
         .status(400)
@@ -138,18 +135,15 @@ export class PaymentDetailsController {
           id,
           updatePaymentDetailsDto,
         );
-      return res
-        .status(200)
-        .json(
-          format_json(
-            200,
-            true,
-            null,
-            null,
-            'PaymentDetails updated successfully',
-            updatedPaymentDetails,
-          ),
-        );
+        if (updatedPaymentDetails.status) {
+          return res.status(200).json(
+            format_json(200, true, null, null, updatedPaymentDetails.message, updatedPaymentDetails.data)
+          );
+        } else {
+          return res.status(400).json(
+            format_json(400, false, null, updatedPaymentDetails.data, 'Error Server', null)
+          );
+        }
     } catch (error) {
       return res
         .status(400)

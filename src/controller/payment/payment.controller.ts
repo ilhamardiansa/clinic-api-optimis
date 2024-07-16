@@ -458,7 +458,7 @@ export class PaymentController {
         return res
           .status(400)
           .json(
-            format_json(400, false, null, null, create.message, create.data),
+            format_json(400, false, null, create.data, create.message, null),
           );
       }
     } catch (error) {
@@ -690,7 +690,7 @@ export class PaymentController {
         return res
           .status(400)
           .json(
-            format_json(400, false, null, null, update.message, update.data),
+            format_json(400, false, null, update.data, update.message, null),
           );
       }
     } catch (error) {

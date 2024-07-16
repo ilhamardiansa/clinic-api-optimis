@@ -167,7 +167,7 @@ export class RedeemController {
       } else {
         return res
           .status(400)
-          .json(format_json(400, false, null, null, getdata.message, getdata.data));
+          .json(format_json(400, false, null, getdata.data, getdata.message, null));
       }
     } catch (error) {
       return res
@@ -328,7 +328,7 @@ export class RedeemController {
       } else {
         return res
           .status(400)
-          .json(format_json(400, false, null, null, getdata.message, getdata.data));
+          .json(format_json(400, false, null, getdata.data, getdata.message, null));
       }
     } catch (error) {
       return res
@@ -501,7 +501,7 @@ export class RedeemController {
       } else {
         return res
           .status(400)
-          .json(format_json(400, false, null, null, create.message, create.data));
+          .json(format_json(400, false, null, create.data, create.message, null));
       }
     } catch (error) {
       return res
@@ -676,7 +676,7 @@ export class RedeemController {
       } else {
         return res
           .status(400)
-          .json(format_json(400, false, null, null, update.message, update.data));
+          .json(format_json(400, false, null, update.data, update.message, null));
       }
     } catch (error) {
       return res
