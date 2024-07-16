@@ -215,9 +215,9 @@ model LastRedeem {
 
 model Record {
   id String  @id @default(uuid())
-  consultation_date_time DateTime @db.DateTime(0)
+  consultation_date_time String
   way_to_come String
-  vistting_time DateTime @db.DateTime(0)
+  vistting_time String
   transportation String
   reference String
   person_responsible String
@@ -408,6 +408,5 @@ model Transaction {
   handling_fees  Int
   room_cost      BigInt
   payment_id     String
-  payment        Payment @relation(fields: [payment_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  payment        Payment @relation(fields: [payment_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
-

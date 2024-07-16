@@ -142,6 +142,125 @@ export class SummaryService {
       };
     }
   }
+
+  async detailappointments(
+    id: string,
+    token: string) {
+    try {
+
+      const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
+
+      if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+        var userId = extracttoken.userId;
+      }
+
+      const profile = await this.prisma.profile.findUnique({
+        where: { user_id: userId },
+      });
+
+      if (!profile) {
+        return {
+          status: false,
+          message: 'Profile tidak ditemukan',
+          data: null,
+        };
+      }
+      
+      const find = await this.prisma.summary.findFirst({
+        where: {
+          id: id,
+        },
+        include: {
+          poly: {
+            include: {
+              clinic: {
+                include: {
+                  city: true
+                }
+              }
+            }
+          },
+          doctor: {
+            include: {
+              poly: {
+                include: {
+                  clinic: true
+                }
+              },
+              city: true,
+            }
+          },
+          patient: {
+            include: {
+              user: true
+            }
+          },
+        }
+      });
+
+      const serializedResult = {
+        ...find,
+        poly : {
+          clinic: {
+            ...find.poly.clinic,
+            city_id: Number(find.poly.clinic.city_id),
+            city: {
+              ...find.poly.clinic.city,
+              id: Number(find.poly.clinic.city.id),
+            },
+          },
+        },
+        doctor : {
+          poly : {
+            clinic: {
+              ...find.poly.clinic,
+              city_id: Number(find.poly.clinic.city_id),
+              city: {
+                ...find.poly.clinic.city,
+                id: Number(find.poly.clinic.city.id),
+              },
+            },
+          },
+          wilayah_id: Number(find.doctor.wilayah_id),
+          city: {
+            ...find.doctor.city,
+                id: Number(find.doctor.city.id),
+          },
+        },
+        patient: {
+          city: {
+            ...find.patient,
+            city_id: Number(find.patient.city_id),
+          }
+        }
+      };
+
+      return {
+        status: true,
+        message: 'Success',
+        data: serializedResult,
+      };
+
+    } catch (e: any) {
+      if (e instanceof ZodError) {
+        const errorMessages = e.errors.map((error) => ({
+          field: error.path.join('.'),
+          message: error.message,
+        }));
+
+        return {
+          status: false,
+          message: 'Sistem Error',
+          data: errorMessages,
+        };
+      }
+      return {
+        status: false,
+        message: 'Sistem Error',
+        data: e.message,
+      };
+    }
+  }
   
   async createSummary(token: string,summaryDto: SummaryDto) {
 
