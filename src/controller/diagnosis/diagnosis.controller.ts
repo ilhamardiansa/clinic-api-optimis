@@ -1,17 +1,17 @@
 import {
-    Controller,
-    Get,
-    Post,
-    UseGuards,
-    Req,
-    Res,
-    HttpStatus,
-    Body,
-    Put,
-    Param,
-    Delete,
-    UsePipes
-  } from '@nestjs/common';
+  Controller,
+  Get,
+  Post,
+  UseGuards,
+  Req,
+  Res,
+  HttpStatus,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UsePipes,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { format_json } from 'src/env';
 import { Request, Response } from 'express';
@@ -30,8 +30,8 @@ export class DiagnosisController {
 
   @Get('diagnosis')
   @Roles('admin', 'manager', 'operator')
- @UseGuards(AuthGuard('jwt'), RolesGuard)
- @ApiOperation({ summary: 'Get' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiOperation({ summary: 'Get' })
   @ApiResponse({ status: 200, description: 'Success' })
   async find(@Res() res: Response, @Req() req: Request) {
     try {
@@ -86,22 +86,15 @@ export class DiagnosisController {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(
-          format_json(
-            500,
-            false,
-            true,
-            null,
-            'Server Error ' + error,
-            error,
-          ),
+          format_json(500, false, true, null, 'Server Error ' + error, error),
         );
     }
   }
 
   @Post('diagnosis')
   @Roles('admin', 'manager', 'operator')
- @UseGuards(AuthGuard('jwt'), RolesGuard)
- @ApiOperation({ summary: 'Create' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiOperation({ summary: 'Create' })
   @ApiResponse({ status: 200, description: 'Success' })
   @UsePipes(CustomValidationPipe)
   async create(
@@ -161,21 +154,14 @@ export class DiagnosisController {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(
-          format_json(
-            500,
-            false,
-            true,
-            null,
-            'Server Error ' + error,
-            error,
-          ),
+          format_json(500, false, true, null, 'Server Error ' + error, error),
         );
     }
   }
 
   @Put('diagnosis/:id')
   @Roles('admin', 'manager', 'operator')
- @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UsePipes(CustomValidationPipe)
   @ApiOperation({ summary: 'Update' })
   @ApiResponse({ status: 200, description: 'Success' })
@@ -241,22 +227,15 @@ export class DiagnosisController {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json(
-          format_json(
-            500,
-            false,
-            true,
-            null,
-            'Server Error ' + error,
-            error,
-          ),
+          format_json(500, false, true, null, 'Server Error ' + error, error),
         );
     }
   }
 
   @Delete('diagnosis/:id')
   @Roles('admin', 'manager', 'operator')
- @UseGuards(AuthGuard('jwt'), RolesGuard)
- @ApiOperation({ summary: 'Delete' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiOperation({ summary: 'Delete' })
   @ApiResponse({ status: 200, description: 'Success' })
   async deletepayment(
     @Param('id') id: string,
@@ -322,14 +301,7 @@ export class DiagnosisController {
       return res
         .status(400)
         .json(
-          format_json(
-            400,
-            false,
-            true,
-            null,
-            'Server Error ' + error,
-            error,
-          ),
+          format_json(400, false, true, null, 'Server Error ' + error, error),
         );
     }
   }

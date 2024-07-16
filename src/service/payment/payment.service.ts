@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import * as jwt from 'jsonwebtoken';
 import { paymentDTO } from 'src/dto/payment/payment.dto';
@@ -41,7 +41,7 @@ export class PaymentService {
               drugs: payment.redeem?.drug.map((drug) => ({
                 id: drug.id,
                 name: drug.drug_name,
-                price: drug.sell_price,
+                price: Number(drug.sell_price),
               })),
             },
             status: payment.status,
@@ -110,10 +110,21 @@ export class PaymentService {
           },
         });
 
+        const serializedResult = {
+          ...create,
+          redeem: {
+            ...create.redeem,
+            drug: create.redeem.drug.map((drug) => ({
+              ...drug,
+              sell_price: Number(drug.sell_price),
+            })),
+          },
+        };
+
         return {
           status: true,
           message: 'Data successfully created',
-          data: create,
+          data: serializedResult,
         };
       } else {
         return {
@@ -197,10 +208,22 @@ export class PaymentService {
           },
         });
 
+        // Convert BigInt to Number
+        const serializedResult = {
+          ...update,
+          redeem: {
+            ...update.redeem,
+            drug: update.redeem.drug.map((drug) => ({
+              ...drug,
+              sell_price: Number(drug.sell_price),
+            })),
+          },
+        };
+
         return {
           status: true,
           message: 'Data successfully updated',
-          data: update,
+          data: serializedResult,
         };
       } else {
         return {

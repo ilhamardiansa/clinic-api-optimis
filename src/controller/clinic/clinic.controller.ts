@@ -22,7 +22,13 @@ import { format_json } from 'src/env';
 import { ClinicDto } from 'src/dto/clinic/clinic.dto';
 import { Request, response, Response } from 'express';
 import { CustomValidationPipe } from 'src/custom-validation.pipe';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('Clinic')
 @Controller('api/clinics')
@@ -34,43 +40,46 @@ export class ClinicController {
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Create' })
-@ApiResponse({
-  status: 200,
-  description: 'Success',
-  schema: {
-    type: 'object',
-    properties: {
-      status: { type: 'number', example: 200 },
-      success: { type: 'boolean', example: true },
-      errors: { type: 'object', example: null },
-      meta: { type: 'object', example: null },
-      message: { type: 'string', example: 'Clinic retrieved successfully' },
-      data: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', example: '431fa01e-ece4-4027-91ea-4ff48b6a677a' },
-          clinic_name: { type: 'string', example: 'Klinik Tongz' },
-          description: { type: 'string', example: 'Deskripsi Klinik' },
-          address: { type: 'string', example: 'jl.arjosari' },
-          post_code: { type: 'string', example: '12345' },
-          latitude: { type: 'number', example: 123456 },
-          longitude: { type: 'number', example: 123456 },
-          city_id: { type: 'number', example: 3507062002 },
-          city: {
-            type: 'object',
-            properties: {
-              id: { type: 'number', example: 3507062002 },
-              provinsi: { type: 'string', example: '' },
-              kabupaten: { type: 'string', example: '' },
-              kecamatan: { type: 'string', example: '' },
-              kelurahan: { type: 'string', example: '' },
-            }
-          }
-        }
-      }
-    }
-  }
-})
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'number', example: 200 },
+        success: { type: 'boolean', example: true },
+        errors: { type: 'object', example: null },
+        meta: { type: 'object', example: null },
+        message: { type: 'string', example: 'Clinic retrieved successfully' },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              example: '431fa01e-ece4-4027-91ea-4ff48b6a677a',
+            },
+            clinic_name: { type: 'string', example: 'Klinik Tongz' },
+            description: { type: 'string', example: 'Deskripsi Klinik' },
+            address: { type: 'string', example: 'jl.arjosari' },
+            post_code: { type: 'string', example: '12345' },
+            latitude: { type: 'number', example: 123456 },
+            longitude: { type: 'number', example: 123456 },
+            city_id: { type: 'number', example: 3507062002 },
+            city: {
+              type: 'object',
+              properties: {
+                id: { type: 'number', example: 3507062002 },
+                provinsi: { type: 'string', example: '' },
+                kabupaten: { type: 'string', example: '' },
+                kecamatan: { type: 'string', example: '' },
+                kelurahan: { type: 'string', example: '' },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   async create(
     @Body() clinicDto: ClinicDto,
     @Req() req: Request,
@@ -79,38 +88,46 @@ export class ClinicController {
     try {
       const createdClinic = await this.clinicService.createClinic(clinicDto);
       if (createdClinic.status === true) {
-        return res.status(201).json(format_json(
-          200,
-          false,
-          null,
-          null,
-          'clinic Created Success',
-          createdClinic.data,
-        ));
-      } else {
-        return res.status(400).json(format_json(
-          400,
-          false,
-          createdClinic.errors,
-          null,
-          createdClinic.message,
-          null,
-        ));
-      }
-      } catch (error:any) {
         return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .status(201)
           .json(
             format_json(
-              500,
+              200,
               false,
-              true,
               null,
-              'Server Error ' + error,
-              error.message,
+              null,
+              'clinic Created Success',
+              createdClinic.data,
+            ),
+          );
+      } else {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              createdClinic.errors,
+              null,
+              createdClinic.message,
+              null,
             ),
           );
       }
+    } catch (error: any) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(
+          format_json(
+            500,
+            false,
+            true,
+            null,
+            'Server Error ' + error,
+            error.message,
+          ),
+        );
+    }
   }
 
   @Put(':id')
@@ -118,43 +135,46 @@ export class ClinicController {
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Update' })
-@ApiResponse({
-  status: 200,
-  description: 'Success',
-  schema: {
-    type: 'object',
-    properties: {
-      status: { type: 'number', example: 200 },
-      success: { type: 'boolean', example: true },
-      errors: { type: 'object', example: null },
-      meta: { type: 'object', example: null },
-      message: { type: 'string', example: 'Clinic retrieved successfully' },
-      data: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', example: '431fa01e-ece4-4027-91ea-4ff48b6a677a' },
-          clinic_name: { type: 'string', example: 'Klinik Tongz' },
-          description: { type: 'string', example: 'Deskripsi Klinik' },
-          address: { type: 'string', example: 'jl.arjosari' },
-          post_code: { type: 'string', example: '12345' },
-          latitude: { type: 'number', example: 123456 },
-          longitude: { type: 'number', example: 123456 },
-          city_id: { type: 'number', example: 3507062002 },
-          city: {
-            type: 'object',
-            properties: {
-              id: { type: 'number', example: 3507062002 },
-              provinsi: { type: 'string', example: '' },
-              kabupaten: { type: 'string', example: '' },
-              kecamatan: { type: 'string', example: '' },
-              kelurahan: { type: 'string', example: '' },
-            }
-          }
-        }
-      }
-    }
-  }
-})
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'number', example: 200 },
+        success: { type: 'boolean', example: true },
+        errors: { type: 'object', example: null },
+        meta: { type: 'object', example: null },
+        message: { type: 'string', example: 'Clinic retrieved successfully' },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              example: '431fa01e-ece4-4027-91ea-4ff48b6a677a',
+            },
+            clinic_name: { type: 'string', example: 'Klinik Tongz' },
+            description: { type: 'string', example: 'Deskripsi Klinik' },
+            address: { type: 'string', example: 'jl.arjosari' },
+            post_code: { type: 'string', example: '12345' },
+            latitude: { type: 'number', example: 123456 },
+            longitude: { type: 'number', example: 123456 },
+            city_id: { type: 'number', example: 3507062002 },
+            city: {
+              type: 'object',
+              properties: {
+                id: { type: 'number', example: 3507062002 },
+                provinsi: { type: 'string', example: '' },
+                kabupaten: { type: 'string', example: '' },
+                kecamatan: { type: 'string', example: '' },
+                kelurahan: { type: 'string', example: '' },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   @ApiSecurity('bearer')
   @ApiBearerAuth()
   async update(
@@ -171,84 +191,97 @@ export class ClinicController {
           .json(format_json(404, false, null, null, 'Clinic not found', null));
       }
 
-      const updatedClinic = await this.clinicService.updateClinic(id,updateClinicDto,
+      const updatedClinic = await this.clinicService.updateClinic(
+        id,
+        updateClinicDto,
       );
       if (updatedClinic.status === true) {
-        return res.status(201).json(format_json(
-          200,
-          false,
-          null,
-          null,
-          'clinic update Success',
-          updatedClinic.data,
-        ));
-      } else {
-        return res.status(400).json(format_json(
-          400,
-          false,
-          updatedClinic.errors,
-          null,
-          updatedClinic.message,
-          null,
-        ));
-      }
-      } catch (error:any) {
         return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .status(201)
           .json(
             format_json(
-              500,
+              200,
               false,
-              true,
               null,
-              'Server Error ' + error,
-              error.message,
+              null,
+              'clinic update Success',
+              updatedClinic.data,
+            ),
+          );
+      } else {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              updatedClinic.errors,
+              null,
+              updatedClinic.message,
+              null,
             ),
           );
       }
+    } catch (error: any) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(
+          format_json(
+            500,
+            false,
+            true,
+            null,
+            'Server Error ' + error,
+            error.message,
+          ),
+        );
+    }
   }
 
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
   @ApiOperation({ summary: 'Get' })
-@ApiResponse({
-  status: 200,
-  description: 'Success',
-  schema: {
-    type: 'object',
-    properties: {
-      status: { type: 'number', example: 200 },
-      success: { type: 'boolean', example: true },
-      errors: { type: 'object', example: null },
-      meta: { type: 'object', example: null },
-      message: { type: 'string', example: 'Clinic retrieved successfully' },
-      data: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', example: '431fa01e-ece4-4027-91ea-4ff48b6a677a' },
-          clinic_name: { type: 'string', example: 'Klinik Tongz' },
-          description: { type: 'string', example: 'Deskripsi Klinik' },
-          address: { type: 'string', example: 'jl.arjosari' },
-          post_code: { type: 'string', example: '12345' },
-          latitude: { type: 'number', example: 123456 },
-          longitude: { type: 'number', example: 123456 },
-          city_id: { type: 'number', example: 3507062002 },
-          city: {
-            type: 'object',
-            properties: {
-              id: { type: 'number', example: 3507062002 },
-              provinsi: { type: 'string', example: '' },
-              kabupaten: { type: 'string', example: '' },
-              kecamatan: { type: 'string', example: '' },
-              kelurahan: { type: 'string', example: '' },
-            }
-          }
-        }
-      }
-    }
-  }
-})
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'number', example: 200 },
+        success: { type: 'boolean', example: true },
+        errors: { type: 'object', example: null },
+        meta: { type: 'object', example: null },
+        message: { type: 'string', example: 'Clinic retrieved successfully' },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              example: '431fa01e-ece4-4027-91ea-4ff48b6a677a',
+            },
+            clinic_name: { type: 'string', example: 'Klinik Tongz' },
+            description: { type: 'string', example: 'Deskripsi Klinik' },
+            address: { type: 'string', example: 'jl.arjosari' },
+            post_code: { type: 'string', example: '12345' },
+            latitude: { type: 'number', example: 123456 },
+            longitude: { type: 'number', example: 123456 },
+            city_id: { type: 'number', example: 3507062002 },
+            city: {
+              type: 'object',
+              properties: {
+                id: { type: 'number', example: 3507062002 },
+                provinsi: { type: 'string', example: '' },
+                kabupaten: { type: 'string', example: '' },
+                kecamatan: { type: 'string', example: '' },
+                kelurahan: { type: 'string', example: '' },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   async findAll(@Req() req: Request, @Res() res: Response) {
     try {
       const clinics = await this.clinicService.findAll();
@@ -264,63 +297,66 @@ export class ClinicController {
             clinics,
           ),
         );
-      } catch (error:any) {
-        return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json(
-            format_json(
-              500,
-              false,
-              true,
-              null,
-              'Server Error ' + error,
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(
+          format_json(
+            500,
+            false,
+            true,
+            null,
+            'Server Error ' + error,
+            error.message,
+          ),
+        );
+    }
   }
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
   @ApiOperation({ summary: 'Detail' })
-@ApiResponse({
-  status: 200,
-  description: 'Success',
-  schema: {
-    type: 'object',
-    properties: {
-      status: { type: 'number', example: 200 },
-      success: { type: 'boolean', example: true },
-      errors: { type: 'object', example: null },
-      meta: { type: 'object', example: null },
-      message: { type: 'string', example: 'Clinic retrieved successfully' },
-      data: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', example: '431fa01e-ece4-4027-91ea-4ff48b6a677a' },
-          clinic_name: { type: 'string', example: 'Klinik Tongz' },
-          description: { type: 'string', example: 'Deskripsi Klinik' },
-          address: { type: 'string', example: 'jl.arjosari' },
-          post_code: { type: 'string', example: '12345' },
-          latitude: { type: 'number', example: 123456 },
-          longitude: { type: 'number', example: 123456 },
-          city_id: { type: 'number', example: 3507062002 },
-          city: {
-            type: 'object',
-            properties: {
-              id: { type: 'number', example: 3507062002 },
-              provinsi: { type: 'string', example: '' },
-              kabupaten: { type: 'string', example: '' },
-              kecamatan: { type: 'string', example: '' },
-              kelurahan: { type: 'string', example: '' },
-            }
-          }
-        }
-      }
-    }
-  }
-})
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'number', example: 200 },
+        success: { type: 'boolean', example: true },
+        errors: { type: 'object', example: null },
+        meta: { type: 'object', example: null },
+        message: { type: 'string', example: 'Clinic retrieved successfully' },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              example: '431fa01e-ece4-4027-91ea-4ff48b6a677a',
+            },
+            clinic_name: { type: 'string', example: 'Klinik Tongz' },
+            description: { type: 'string', example: 'Deskripsi Klinik' },
+            address: { type: 'string', example: 'jl.arjosari' },
+            post_code: { type: 'string', example: '12345' },
+            latitude: { type: 'number', example: 123456 },
+            longitude: { type: 'number', example: 123456 },
+            city_id: { type: 'number', example: 3507062002 },
+            city: {
+              type: 'object',
+              properties: {
+                id: { type: 'number', example: 3507062002 },
+                provinsi: { type: 'string', example: '' },
+                kabupaten: { type: 'string', example: '' },
+                kecamatan: { type: 'string', example: '' },
+                kelurahan: { type: 'string', example: '' },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   async findOne(
     @Param('id') id: string,
     @Req() req: Request,
@@ -345,63 +381,66 @@ export class ClinicController {
             clinic,
           ),
         );
-      } catch (error:any) {
-        return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json(
-            format_json(
-              500,
-              false,
-              true,
-              null,
-              'Server Error ' + error,
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(
+          format_json(
+            500,
+            false,
+            true,
+            null,
+            'Server Error ' + error,
+            error.message,
+          ),
+        );
+    }
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Delete' })
-@ApiResponse({
-  status: 200,
-  description: 'Success',
-  schema: {
-    type: 'object',
-    properties: {
-      status: { type: 'number', example: 200 },
-      success: { type: 'boolean', example: true },
-      errors: { type: 'object', example: null },
-      meta: { type: 'object', example: null },
-      message: { type: 'string', example: 'Clinic retrieved successfully' },
-      data: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', example: '431fa01e-ece4-4027-91ea-4ff48b6a677a' },
-          clinic_name: { type: 'string', example: 'Klinik Tongz' },
-          description: { type: 'string', example: 'Deskripsi Klinik' },
-          address: { type: 'string', example: 'jl.arjosari' },
-          post_code: { type: 'string', example: '12345' },
-          latitude: { type: 'number', example: 123456 },
-          longitude: { type: 'number', example: 123456 },
-          city_id: { type: 'number', example: 3507062002 },
-          city: {
-            type: 'object',
-            properties: {
-              id: { type: 'number', example: 3507062002 },
-              provinsi: { type: 'string', example: '' },
-              kabupaten: { type: 'string', example: '' },
-              kecamatan: { type: 'string', example: '' },
-              kelurahan: { type: 'string', example: '' },
-            }
-          }
-        }
-      }
-    }
-  }
-})
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'number', example: 200 },
+        success: { type: 'boolean', example: true },
+        errors: { type: 'object', example: null },
+        meta: { type: 'object', example: null },
+        message: { type: 'string', example: 'Clinic retrieved successfully' },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              example: '431fa01e-ece4-4027-91ea-4ff48b6a677a',
+            },
+            clinic_name: { type: 'string', example: 'Klinik Tongz' },
+            description: { type: 'string', example: 'Deskripsi Klinik' },
+            address: { type: 'string', example: 'jl.arjosari' },
+            post_code: { type: 'string', example: '12345' },
+            latitude: { type: 'number', example: 123456 },
+            longitude: { type: 'number', example: 123456 },
+            city_id: { type: 'number', example: 3507062002 },
+            city: {
+              type: 'object',
+              properties: {
+                id: { type: 'number', example: 3507062002 },
+                provinsi: { type: 'string', example: '' },
+                kabupaten: { type: 'string', example: '' },
+                kecamatan: { type: 'string', example: '' },
+                kelurahan: { type: 'string', example: '' },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   async remove(
     @Param('id') id: string,
     @Req() req: Request,
@@ -428,19 +467,19 @@ export class ClinicController {
             null,
           ),
         );
-      } catch (error:any) {
-        return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json(
-            format_json(
-              500,
-              false,
-              true,
-              null,
-              'Server Error ' + error,
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(
+          format_json(
+            500,
+            false,
+            true,
+            null,
+            'Server Error ' + error,
+            error.message,
+          ),
+        );
+    }
   }
 }

@@ -19,7 +19,7 @@ export class BankService {
 
     try {
       const validatedData = schema.parse(bankDto);
-      const create = this.prisma.bank.create({
+      const create = await this.prisma.bank.create({
         data: {
           bank_name: validatedData.bank_name,
           account_number: validatedData.account_number,
@@ -76,7 +76,7 @@ export class BankService {
 
     try {
       const validatedData = schema.parse(updateBankDto);
-      const update = this.prisma.bank.update({
+      const update = await this.prisma.bank.update({
         where: { id: id },
         data: {
           bank_name: validatedData.bank_name,

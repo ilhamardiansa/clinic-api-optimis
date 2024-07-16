@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { ZodError, z } from 'zod';
 import { MedicalRecordDto } from 'src/dto/medical record/medical.record.dto';
@@ -9,9 +9,9 @@ export class MedicalRecordService {
 
   async createRecord(medicalRecordDto: MedicalRecordDto) {
     const schema = z.object({
-      consultation_date_time: z.string().datetime(),
+      consultation_date_time: z.string().min(1),
+      vistting_time: z.string().min(1),
       way_to_come: z.string().min(1),
-      vistting_time: z.string().datetime(),
       transportation: z.string().min(1),
       reference: z.string().min(1),
       person_responsible: z.string().min(1),
@@ -32,11 +32,9 @@ export class MedicalRecordService {
       const validatedData = schema.parse(medicalRecordDto);
       const create = await this.prisma.record.create({
         data: {
-          consultation_date_time: new Date(
-            validatedData.consultation_date_time,
-          ),
+          consultation_date_time: validatedData.consultation_date_time,
+          vistting_time: validatedData.vistting_time,
           way_to_come: validatedData.way_to_come,
-          vistting_time: new Date(validatedData.vistting_time),
           transportation: validatedData.transportation,
           reference: validatedData.reference,
           person_responsible: validatedData.person_responsible,
@@ -46,33 +44,13 @@ export class MedicalRecordService {
           complaint: validatedData.complaint,
           history_of_illness: validatedData.history_of_illness,
           solution: validatedData.solution,
-          user: {
-            connect: {
-              id: validatedData.user_id,
-            },
-          },
-          poly: {
-            connect: {
-              id: validatedData.poly_id,
-            },
-          },
-          clinic: {
-            connect: {
-              id: validatedData.clinic_id,
-            },
-          },
-          doctor: {
-            connect: {
-              id: validatedData.doctor_id,
-            },
-          },
+          user: { connect: { id: validatedData.user_id } },
+          poly: { connect: { id: validatedData.poly_id } },
+          clinic: { connect: { id: validatedData.clinic_id } },
+          doctor: { connect: { id: validatedData.doctor_id } },
         },
         include: {
-          poly: {
-            include: {
-              clinic: true,
-            },
-          },
+          poly: { include: { clinic: true } },
         },
       });
 
@@ -84,24 +62,24 @@ export class MedicalRecordService {
           message: error.message,
         }));
 
-        return {
-          status: false,
+        throw new BadRequestException({
+          status: 400,
           message: 'Validasi gagal',
           errors: errorMessages,
-        };
+        });
       }
-      return {
-        status: false,
+      throw new BadRequestException({
+        status: 400,
         message: e.message || 'Terjadi kesalahan',
-      };
+      });
     }
   }
 
   async updateRecord(id: string, medicalRecordDto: MedicalRecordDto) {
     const schema = z.object({
-      consultation_date_time: z.string().datetime(),
+      consultation_date_time: z.string().min(1),
+      vistting_time: z.string().min(1),
       way_to_come: z.string().min(1),
-      vistting_time: z.string().datetime(),
       transportation: z.string().min(1),
       reference: z.string().min(1),
       person_responsible: z.string().min(1),
@@ -123,11 +101,9 @@ export class MedicalRecordService {
       const update = await this.prisma.record.update({
         where: { id: id },
         data: {
-          consultation_date_time: new Date(
-            validatedData.consultation_date_time,
-          ),
+          consultation_date_time: validatedData.consultation_date_time,
+          vistting_time: validatedData.vistting_time,
           way_to_come: validatedData.way_to_come,
-          vistting_time: new Date(validatedData.vistting_time),
           transportation: validatedData.transportation,
           reference: validatedData.reference,
           person_responsible: validatedData.person_responsible,
@@ -175,16 +151,16 @@ export class MedicalRecordService {
           message: error.message,
         }));
 
-        return {
-          status: false,
+        throw new BadRequestException({
+          status: 400,
           message: 'Validasi gagal',
           errors: errorMessages,
-        };
+        });
       }
-      return {
-        status: false,
+      throw new BadRequestException({
+        status: 400,
         message: e.message || 'Terjadi kesalahan',
-      };
+      });
     }
   }
 

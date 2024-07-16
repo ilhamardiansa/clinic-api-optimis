@@ -9,20 +9,20 @@ import {
 } from 'class-validator';
 
 export class MedicalRecordDto {
-  @IsDate()
+  @IsString()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  consultation_date_time: Date;
+  consultation_date_time: string;
 
   @IsString()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
   way_to_come: string;
 
-  @IsDate()
+  @IsString()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  visiting_time: Date;
+  vistting_time: string;
 
   @IsString()
   @IsNotEmpty({ message: 'should not be empty' })
@@ -69,8 +69,8 @@ export class MedicalRecordDto {
   @ApiProperty()
   solution: string;
 
-  @IsInt()
+  @IsString()
   @IsNotEmpty({ message: 'should not be empty' })
   @ApiProperty()
-  user_id: number;
+  user_id: string;
 }

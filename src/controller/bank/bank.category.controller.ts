@@ -56,27 +56,35 @@ export class BankCategoryController {
   async create(@Res() res: Response, @Body() bankCategoryDto: BankCategoryDto) {
     try {
       const createdBankCategory =
-      await this.bankCategoryService.createBankCategory(bankCategoryDto);
-    
-    if (createdBankCategory.status === true) {
-      return res.status(201).json(format_json(
-        200,
-        false,
-        null,
-        null,
-        'Bank category Created Success',
-        createdBankCategory.data,
-      ));
-    } else {
-      return res.status(400).json(format_json(
-        400,
-        false,
-        createdBankCategory.errors,
-        null,
-        createdBankCategory.message,
-        null,
-      ));
-    }
+        await this.bankCategoryService.createBankCategory(bankCategoryDto);
+
+      if (createdBankCategory.status === true) {
+        return res
+          .status(201)
+          .json(
+            format_json(
+              200,
+              true,
+              null,
+              null,
+              'Bank category Created Success',
+              createdBankCategory.data,
+            ),
+          );
+      } else {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              createdBankCategory.errors,
+              null,
+              createdBankCategory.message,
+              null,
+            ),
+          );
+      }
     } catch (error: any) {
       throw new HttpException(
         format_json(
@@ -121,25 +129,33 @@ export class BankCategoryController {
           updateBankCategoryDto,
         );
 
-        if (updatedBankCategory.status === true) {
-          return res.status(201).json(format_json(
-            200,
-            false,
-            null,
-            null,
-            'Bank category update Success',
-            updatedBankCategory.data,
-          ));
-        } else {
-          return res.status(400).json(format_json(
-            400,
-            false,
-            updatedBankCategory.errors,
-            null,
-            updatedBankCategory.message,
-            null,
-          ));
-        }
+      if (updatedBankCategory.status === true) {
+        return res
+          .status(201)
+          .json(
+            format_json(
+              200,
+              false,
+              null,
+              null,
+              'Bank category update Success',
+              updatedBankCategory.data,
+            ),
+          );
+      } else {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              updatedBankCategory.errors,
+              null,
+              updatedBankCategory.message,
+              null,
+            ),
+          );
+      }
     } catch (error: any) {
       throw new HttpException(
         format_json(

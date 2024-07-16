@@ -39,14 +39,54 @@ export class SymptomController {
   @ApiOperation({ summary: 'Create' })
   @ApiResponse({
     status: 201,
-    description: 'Symptom created successfully',
+    description: 'Success',
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
-        name: { type: 'string' },
-        description: { type: 'string' },
-        poly_id: { type: 'number' },
+        id: {
+          type: 'string',
+          example: '2312bfe1-fd15-4499-bbf7-495fbc1832f9',
+        },
+        name: { type: 'string', example: 'Fever' },
+        description: { type: 'string', example: 'High body temperature' },
+        poly_id: {
+          type: 'string',
+          example: '560e7ce8-6ad1-408a-b1ee-dc5ccdfd2349',
+        },
+        poly: {
+          type: 'object',
+          properties: {
+            clinic: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30',
+                },
+                clinic_name: { type: 'string', example: 'Klinik Tongz' },
+                description: {
+                  type: 'string',
+                  example: 'Deskripsi Klinik',
+                },
+                address: { type: 'string', example: 'jl.arjosari' },
+                post_code: { type: 'string', example: '12345' },
+                latitude: { type: 'number', example: 123456 },
+                longitude: { type: 'number', example: 123456 },
+                city_id: { type: 'number', example: 3507062002 },
+                city: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number', example: 3507062002 },
+                    provinsi: { type: 'string', example: '' },
+                    kabupaten: { type: 'string', example: '' },
+                    kecamatan: { type: 'string', example: '' },
+                    kelurahan: { type: 'string', example: '' },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
   })
@@ -87,14 +127,48 @@ export class SymptomController {
   @ApiOperation({ summary: 'Update' })
   @ApiResponse({
     status: 200,
-    description: 'Symptom updated successfully',
+    description: 'Success',
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
-        name: { type: 'string' },
-        description: { type: 'string' },
-        poly_id: { type: 'number' },
+        id: { type: 'string', example: '2312bfe1-fd15-4499-bbf7-495fbc1832f9' },
+        name: { type: 'string', example: 'Fever' },
+        description: { type: 'string', example: 'High body temperature' },
+        poly_id: {
+          type: 'string',
+          example: '560e7ce8-6ad1-408a-b1ee-dc5ccdfd2349',
+        },
+        poly: {
+          type: 'object',
+          properties: {
+            clinic: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30',
+                },
+                clinic_name: { type: 'string', example: 'Klinik Tongz' },
+                description: { type: 'string', example: 'Deskripsi Klinik' },
+                address: { type: 'string', example: 'jl.arjosari' },
+                post_code: { type: 'string', example: '12345' },
+                latitude: { type: 'number', example: 123456 },
+                longitude: { type: 'number', example: 123456 },
+                city_id: { type: 'number', example: 3507062002 },
+                city: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number', example: 3507062002 },
+                    provinsi: { type: 'string', example: '' },
+                    kabupaten: { type: 'string', example: '' },
+                    kecamatan: { type: 'string', example: '' },
+                    kelurahan: { type: 'string', example: '' },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
   })
@@ -141,16 +215,47 @@ export class SymptomController {
   @ApiOperation({ summary: 'Get all symptoms' })
   @ApiResponse({
     status: 200,
-    description: 'Symptoms retrieved successfully',
+    description: 'Success',
     schema: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', format: 'uuid' },
-          name: { type: 'string' },
-          description: { type: 'string' },
-          poly_id: { type: 'number' },
+      type: 'object',
+      properties: {
+        id: { type: 'string', example: '2312bfe1-fd15-4499-bbf7-495fbc1832f9' },
+        name: { type: 'string', example: 'Fever' },
+        description: { type: 'string', example: 'High body temperature' },
+        poly_id: {
+          type: 'string',
+          example: '560e7ce8-6ad1-408a-b1ee-dc5ccdfd2349',
+        },
+        poly: {
+          type: 'object',
+          properties: {
+            clinic: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30',
+                },
+                clinic_name: { type: 'string', example: 'Klinik Tongz' },
+                description: { type: 'string', example: 'Deskripsi Klinik' },
+                address: { type: 'string', example: 'jl.arjosari' },
+                post_code: { type: 'string', example: '12345' },
+                latitude: { type: 'number', example: 123456 },
+                longitude: { type: 'number', example: 123456 },
+                city_id: { type: 'number', example: 3507062002 },
+                city: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number', example: 3507062002 },
+                    provinsi: { type: 'string', example: '' },
+                    kabupaten: { type: 'string', example: '' },
+                    kecamatan: { type: 'string', example: '' },
+                    kelurahan: { type: 'string', example: '' },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -191,14 +296,48 @@ export class SymptomController {
   @ApiOperation({ summary: 'Get symptom details' })
   @ApiResponse({
     status: 200,
-    description: 'Symptom retrieved successfully',
+    description: 'Success',
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
-        name: { type: 'string' },
-        description: { type: 'string' },
-        poly_id: { type: 'number' },
+        id: { type: 'string', example: '2312bfe1-fd15-4499-bbf7-495fbc1832f9' },
+        name: { type: 'string', example: 'Fever' },
+        description: { type: 'string', example: 'High body temperature' },
+        poly_id: {
+          type: 'string',
+          example: '560e7ce8-6ad1-408a-b1ee-dc5ccdfd2349',
+        },
+        poly: {
+          type: 'object',
+          properties: {
+            clinic: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30',
+                },
+                clinic_name: { type: 'string', example: 'Klinik Tongz' },
+                description: { type: 'string', example: 'Deskripsi Klinik' },
+                address: { type: 'string', example: 'jl.arjosari' },
+                post_code: { type: 'string', example: '12345' },
+                latitude: { type: 'number', example: 123456 },
+                longitude: { type: 'number', example: 123456 },
+                city_id: { type: 'number', example: 3507062002 },
+                city: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number', example: 3507062002 },
+                    provinsi: { type: 'string', example: '' },
+                    kabupaten: { type: 'string', example: '' },
+                    kecamatan: { type: 'string', example: '' },
+                    kelurahan: { type: 'string', example: '' },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
   })
@@ -244,11 +383,11 @@ export class SymptomController {
   @ApiOperation({ summary: 'Delete symptom' })
   @ApiResponse({
     status: 200,
-    description: 'Symptom deleted successfully',
+    description: 'Success',
     schema: {
       type: 'object',
       properties: {
-        data: { type: 'null' },
+        id: { type: 'string', example: '2312bfe1-fd15-4499-bbf7-495fbc1832f9' },
       },
     },
   })
