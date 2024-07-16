@@ -11,18 +11,16 @@ import { Status } from '@prisma/client';
 
 @Injectable()
 export class SummaryService {
-  constructor(
-    private prisma: PrismaService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async getappointments(
     token: string,
     page: number,
     limit: number,
     order: 'asc' | 'desc' = 'asc',
-    status: Status) {
+    status: Status,
+  ) {
     try {
-
       const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
       if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
@@ -42,7 +40,7 @@ export class SummaryService {
       }
 
       const skip = (page - 1) * limit;
-      
+
       const find = await this.prisma.summary.findMany({
         where: {
           patient_id: profile.id,
@@ -56,32 +54,43 @@ export class SummaryService {
             include: {
               clinic: {
                 include: {
-                  city: true
-                }
-              }
-            }
+                  city: true,
+                },
+              },
+            },
           },
           doctor: {
             include: {
               poly: {
                 include: {
-                  clinic: true
-                }
+                  clinic: true,
+                },
               },
               city: true,
-            }
+            },
           },
           patient: {
             include: {
-              user: true
-            }
+              user: true,
+            },
           },
-        }
+        },
       });
 
       const result = find.map((find) => ({
         ...find,
-          poly : {
+        poly: {
+          clinic: {
+            ...find.poly.clinic,
+            city_id: Number(find.poly.clinic.city_id),
+            city: {
+              ...find.poly.clinic.city,
+              id: Number(find.poly.clinic.city.id),
+            },
+          },
+        },
+        doctor: {
+          poly: {
             clinic: {
               ...find.poly.clinic,
               city_id: Number(find.poly.clinic.city_id),
@@ -91,29 +100,18 @@ export class SummaryService {
               },
             },
           },
-          doctor : {
-            poly : {
-              clinic: {
-                ...find.poly.clinic,
-                city_id: Number(find.poly.clinic.city_id),
-                city: {
-                  ...find.poly.clinic.city,
-                  id: Number(find.poly.clinic.city.id),
-                },
-              },
-            },
-            wilayah_id: Number(find.doctor.wilayah_id),
-            city: {
-              ...find.doctor.city,
-                  id: Number(find.doctor.city.id),
-            },
+          wilayah_id: Number(find.doctor.wilayah_id),
+          city: {
+            ...find.doctor.city,
+            id: Number(find.doctor.city.id),
           },
-          patient: {
-            city: {
-              ...find.patient,
-              city_id: Number(find.patient.city_id),
-            }
-          }
+        },
+        patient: {
+          city: {
+            ...find.patient,
+            city_id: Number(find.patient.city_id),
+          },
+        },
       }));
 
       return {
@@ -121,7 +119,6 @@ export class SummaryService {
         message: 'Success',
         data: result,
       };
-
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
@@ -143,11 +140,8 @@ export class SummaryService {
     }
   }
 
-  async detailappointments(
-    id: string,
-    token: string) {
+  async detailappointments(id: string, token: string) {
     try {
-
       const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
       if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
@@ -165,7 +159,7 @@ export class SummaryService {
           data: null,
         };
       }
-      
+
       const find = await this.prisma.summary.findFirst({
         where: {
           id: id,
@@ -175,32 +169,32 @@ export class SummaryService {
             include: {
               clinic: {
                 include: {
-                  city: true
-                }
-              }
-            }
+                  city: true,
+                },
+              },
+            },
           },
           doctor: {
             include: {
               poly: {
                 include: {
-                  clinic: true
-                }
+                  clinic: true,
+                },
               },
               city: true,
-            }
+            },
           },
           patient: {
             include: {
-              user: true
-            }
+              user: true,
+            },
           },
-        }
+        },
       });
 
       const serializedResult = {
         ...find,
-        poly : {
+        poly: {
           clinic: {
             ...find.poly.clinic,
             city_id: Number(find.poly.clinic.city_id),
@@ -210,8 +204,8 @@ export class SummaryService {
             },
           },
         },
-        doctor : {
-          poly : {
+        doctor: {
+          poly: {
             clinic: {
               ...find.poly.clinic,
               city_id: Number(find.poly.clinic.city_id),
@@ -224,15 +218,15 @@ export class SummaryService {
           wilayah_id: Number(find.doctor.wilayah_id),
           city: {
             ...find.doctor.city,
-                id: Number(find.doctor.city.id),
+            id: Number(find.doctor.city.id),
           },
         },
         patient: {
           city: {
             ...find.patient,
             city_id: Number(find.patient.city_id),
-          }
-        }
+          },
+        },
       };
 
       return {
@@ -240,7 +234,6 @@ export class SummaryService {
         message: 'Success',
         data: serializedResult,
       };
-
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
@@ -261,9 +254,8 @@ export class SummaryService {
       };
     }
   }
-  
-  async createSummary(token: string,summaryDto: SummaryDto) {
 
+  async createSummary(token: string, summaryDto: SummaryDto) {
     const schema = z.object({
       poly_id: z.string().min(1),
       doctor_id: z.string().min(1),
@@ -280,7 +272,7 @@ export class SummaryService {
         z.object({
           drug_id: z.string(),
           qty: z.number(),
-        })
+        }),
       ),
     });
     try {
@@ -303,56 +295,55 @@ export class SummaryService {
         };
       }
 
-
       const find = await this.prisma.summary.findFirst({
         where: {
           patient_id: profile.id,
-          poly_id : validatedData.poly_id,
-          doctor_id : validatedData.doctor_id,
-          scheduled_date_time : validatedData.scheduled_date_time,
-          qr_code : validatedData.qr_code
-         },
+          poly_id: validatedData.poly_id,
+          doctor_id: validatedData.doctor_id,
+          scheduled_date_time: validatedData.scheduled_date_time,
+          qr_code: validatedData.qr_code,
+        },
         include: {
-          poly : true,
+          poly: true,
           doctor: {
             include: {
-              poly : {
+              poly: {
                 include: {
-                  clinic: true
-                }
+                  clinic: true,
+                },
               },
               city: true,
-            }
+            },
           },
           patient: {
             include: {
-              user: true
-            }
+              user: true,
+            },
           },
-        }
-      })
+        },
+      });
 
-      if(find) {
+      if (find) {
         let getstatus;
 
-        if(find.symptoms && find.ai_response) {
-          getstatus = Status.diagnosed
+        if (find.symptoms && find.ai_response) {
+          getstatus = Status.diagnosed;
         } else {
-          getstatus = Status.waiting
+          getstatus = Status.waiting;
         }
 
         const update = await this.prisma.summary.update({
           where: { id: find.id },
-          data : {
+          data: {
             poly: {
               connect: {
-                id: validatedData.poly_id
-              }
+                id: validatedData.poly_id,
+              },
             },
             doctor: {
               connect: {
-                id: validatedData.doctor_id
-              }
+                id: validatedData.doctor_id,
+              },
             },
             scheduled_date_time: validatedData.scheduled_date_time,
             qr_code: validatedData.qr_code,
@@ -367,36 +358,36 @@ export class SummaryService {
             drug: validatedData.drug,
           },
           include: {
-            poly : {
+            poly: {
               include: {
-                clinic : {
-                  include : {
-                    city: true
-                  }
-                }
-              }
+                clinic: {
+                  include: {
+                    city: true,
+                  },
+                },
+              },
             },
             doctor: {
               include: {
-                poly : {
+                poly: {
                   include: {
-                    clinic: true
-                  }
+                    clinic: true,
+                  },
                 },
                 city: true,
-              }
+              },
             },
             patient: {
               include: {
-                user: true
-              }
+                user: true,
+              },
             },
-          }
-        })
+          },
+        });
 
         const serializedResult = {
           ...update,
-          poly : {
+          poly: {
             clinic: {
               ...update.poly.clinic,
               city_id: Number(update.poly.clinic.city_id),
@@ -406,8 +397,8 @@ export class SummaryService {
               },
             },
           },
-          doctor : {
-            poly : {
+          doctor: {
+            poly: {
               clinic: {
                 ...update.poly.clinic,
                 city_id: Number(update.poly.clinic.city_id),
@@ -420,15 +411,15 @@ export class SummaryService {
             wilayah_id: Number(update.doctor.wilayah_id),
             city: {
               ...update.doctor.city,
-                  id: Number(update.doctor.city.id),
+              id: Number(update.doctor.city.id),
             },
           },
           patient: {
             city: {
               ...update.patient,
               city_id: Number(update.patient.city_id),
-            }
-          }
+            },
+          },
         };
 
         return {
@@ -438,24 +429,24 @@ export class SummaryService {
         };
       } else {
         const create = await this.prisma.summary.create({
-          data : {
+          data: {
             poly: {
               connect: {
-                id: validatedData.poly_id
-              }
+                id: validatedData.poly_id,
+              },
             },
             doctor: {
               connect: {
-                id: validatedData.doctor_id
-              }
+                id: validatedData.doctor_id,
+              },
             },
             scheduled_date_time: validatedData.scheduled_date_time,
             qr_code: validatedData.qr_code,
             image_captured_checked: validatedData.image_captured_checked,
             patient: {
-              connect : {
-                id: profile.id
-              }
+              connect: {
+                id: profile.id,
+              },
             },
             symptoms: validatedData.symptoms,
             symptoms_description: validatedData.symptoms_description,
@@ -467,36 +458,36 @@ export class SummaryService {
             drug: validatedData.drug,
           },
           include: {
-            poly : {
+            poly: {
               include: {
-                clinic : {
-                  include : {
-                    city: true
-                  }
-                }
-              }
+                clinic: {
+                  include: {
+                    city: true,
+                  },
+                },
+              },
             },
             doctor: {
               include: {
-                poly : {
+                poly: {
                   include: {
-                    clinic: true
-                  }
+                    clinic: true,
+                  },
                 },
                 city: true,
-              }
+              },
             },
             patient: {
               include: {
-                user: true
-              }
+                user: true,
+              },
             },
-          }
-        })
+          },
+        });
 
         const serializedResult = {
           ...create,
-          poly : {
+          poly: {
             clinic: {
               ...create.poly.clinic,
               city_id: Number(create.poly.clinic.city_id),
@@ -506,8 +497,8 @@ export class SummaryService {
               },
             },
           },
-          doctor : {
-            poly : {
+          doctor: {
+            poly: {
               clinic: {
                 ...create.poly.clinic,
                 city_id: Number(create.poly.clinic.city_id),
@@ -520,15 +511,15 @@ export class SummaryService {
             wilayah_id: Number(create.doctor.wilayah_id),
             city: {
               ...create.doctor.city,
-                  id: Number(create.doctor.city.id),
+              id: Number(create.doctor.city.id),
             },
           },
           patient: {
             city: {
               ...create.patient,
               city_id: Number(create.patient.city_id),
-            }
-          }
+            },
+          },
         };
 
         return {
@@ -537,7 +528,6 @@ export class SummaryService {
           data: serializedResult,
         };
       }
-
     } catch (e: any) {
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({

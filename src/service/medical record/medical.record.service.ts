@@ -1,10 +1,12 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { MedicalRecordDto } from 'src/dto/medical record/medical.record.dto';
 import { PrismaService } from 'src/prisma.service';
 import { ZodError, z } from 'zod';
-import { MedicalRecordDto } from 'src/dto/medical record/medical.record.dto';
 
 @Injectable()
 export class MedicalRecordService {
+  private readonly logger = new Logger(MedicalRecordService.name);
+
   constructor(private prisma: PrismaService) {}
 
   async createRecord(medicalRecordDto: MedicalRecordDto) {
@@ -56,6 +58,8 @@ export class MedicalRecordService {
 
       return create;
     } catch (e: any) {
+      this.logger.error('Error creating medical record', e);
+
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
           field: error.path.join('.'),
@@ -113,38 +117,20 @@ export class MedicalRecordService {
           complaint: validatedData.complaint,
           history_of_illness: validatedData.history_of_illness,
           solution: validatedData.solution,
-          user: {
-            connect: {
-              id: validatedData.user_id,
-            },
-          },
-          poly: {
-            connect: {
-              id: validatedData.poly_id,
-            },
-          },
-          clinic: {
-            connect: {
-              id: validatedData.clinic_id,
-            },
-          },
-          doctor: {
-            connect: {
-              id: validatedData.doctor_id,
-            },
-          },
+          user: { connect: { id: validatedData.user_id } },
+          poly: { connect: { id: validatedData.poly_id } },
+          clinic: { connect: { id: validatedData.clinic_id } },
+          doctor: { connect: { id: validatedData.doctor_id } },
         },
         include: {
-          poly: {
-            include: {
-              clinic: true,
-            },
-          },
+          poly: { include: { clinic: true } },
         },
       });
 
       return update;
     } catch (e: any) {
+      this.logger.error('Error updating medical record', e);
+
       if (e instanceof ZodError) {
         const errorMessages = e.errors.map((error) => ({
           field: error.path.join('.'),
@@ -165,33 +151,63 @@ export class MedicalRecordService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.record.findUnique({
-      where: { id: id },
-      include: {
-        poly: {
-          include: {
-            clinic: true,
-          },
+    try {
+      const record = await this.prisma.record.findUnique({
+        where: { id: id },
+        include: {
+          poly: { include: { clinic: true } },
         },
-      },
-    });
+      });
+      if (!record) {
+        throw new BadRequestException({
+          status: 404,
+          message: 'Medical record not found',
+        });
+      }
+      return record;
+    } catch (e: any) {
+      this.logger.error('Error finding medical record', e);
+      throw new BadRequestException({
+        status: 400,
+        message: e.message || 'Terjadi kesalahan',
+      });
+    }
   }
 
   async findAll() {
-    return await this.prisma.record.findMany({
-      include: {
-        poly: {
-          include: {
-            clinic: true,
-          },
+    try {
+      return await this.prisma.record.findMany({
+        include: {
+          poly: { include: { clinic: true } },
         },
-      },
-    });
+      });
+    } catch (e: any) {
+      this.logger.error('Error finding medical records', e);
+      throw new BadRequestException({
+        status: 400,
+        message: e.message || 'Terjadi kesalahan',
+      });
+    }
   }
 
   async removeRecord(id: string) {
-    return await this.prisma.record.delete({
-      where: { id: id },
-    });
+    try {
+      const record = await this.findOne(id);
+      if (!record) {
+        throw new BadRequestException({
+          status: 404,
+          message: 'Medical record not found',
+        });
+      }
+      return await this.prisma.record.delete({
+        where: { id: id },
+      });
+    } catch (e: any) {
+      this.logger.error('Error deleting medical record', e);
+      throw new BadRequestException({
+        status: 400,
+        message: e.message || 'Terjadi kesalahan',
+      });
+    }
   }
 }
