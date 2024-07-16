@@ -43,6 +43,7 @@
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
     "handlebars": "^4.7.8",
+    "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mailgun.js": "^10.2.1",
     "moment-timezone": "^0.5.45",

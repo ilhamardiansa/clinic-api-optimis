@@ -5,11 +5,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { CustomValidationPipe } from './custom-validation.pipe';
 import { CustomExceptionFilter } from './custom.exptesion';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 
 async function bootstrap() {
   dotenv.config();
 
   const app = await NestFactory.create(AppModule);
+  app.use(helmet());
   app.enableCors();
   const config = new DocumentBuilder()
   .setTitle('Documentasion Clinic Ai')
