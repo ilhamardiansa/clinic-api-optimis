@@ -1,9 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
-import { ValidationPipe } from '@nestjs/common';
-import { CustomValidationPipe } from './custom-validation.pipe';
-import { CustomExceptionFilter } from './custom.exptesion';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 
@@ -32,4 +29,4 @@ async function bootstrap() {
   SwaggerModule.setup('api-swagger', app, document);
   await app.listen(3000);
 }
-bootstrap();
+bootstrap().catch(err => console.error('Bootstrap error:', err));

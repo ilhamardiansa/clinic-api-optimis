@@ -74,7 +74,7 @@ export class DiagnosisService {
 
         const create = await this.prisma.diagnosis.create({
           data: {
-            user_id: userId,
+            user_id: profile.id,
             deaseas_name: validatedData.deaseas_name,
           },
           include: {
