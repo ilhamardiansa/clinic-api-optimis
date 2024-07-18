@@ -228,6 +228,7 @@ export class ProfileService {
               email: null,
               is_verified: null,
               role: null,
+              clinic_id: null,
               token: null,
             },
           };
@@ -251,6 +252,7 @@ export class ProfileService {
               email: null,
               is_verified: null,
               role: null,
+              clinic_id: null,
               token: null,
             },
           };
