@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { profile } from 'console';
 import * as jwt from 'jsonwebtoken';
 import { ProfileDto } from 'src/dto/auth/profile.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -10,71 +11,68 @@ export function generateRandomNumber(min: number, max: number): number {
 
 @Injectable()
 export class ProfileService {
-  constructor(
-    private prisma: PrismaService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
-  async findprofile(tokenjwt){
+  async findprofile(tokenjwt) {
     try {
+      const extracttoken = jwt.verify(tokenjwt, process.env.JWT_SECRET);
 
-        const extracttoken = jwt.verify(tokenjwt, process.env.JWT_SECRET);
-  
-        if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
-          var userId = extracttoken.userId;
-        }
+      if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
+        var userId = extracttoken.userId;
+      }
 
-        const getprofile = await this.prisma.profile.findUnique({
-            where: { 
-              user_id: userId
-            },
-            include: {
-                user: true,
-              },
-          });
+      const getprofile = await this.prisma.profile.findUnique({
+        where: {
+          user_id: userId,
+        },
+        include: {
+          user: true,
+        },
+      });
 
-          const checkuser = await this.prisma.user.findUnique({
-            where: {
-              id: getprofile.user_id,
-            },
-            include: {
-              role: true
-            }
-          });
-        
-          if(!getprofile){
-            return {
-                status: false,
-                message: 'Profile tidak ditemukan',
-                users: null,
-                token: null,
-              };
-          }
+      const checkuser = await this.prisma.user.findUnique({
+        where: {
+          id: getprofile.user_id,
+        },
+        include: {
+          role: true,
+        },
+      });
 
-          const serializedResult = {
-            ...getprofile,
-            city_id: Number(getprofile.city_id),
-          };
-
+      if (!getprofile) {
         return {
-            status: true,
-            message: 'Berhasil',
-            users: {
-              id: checkuser.id,
-              email: checkuser.email,
-              is_verified: checkuser.verifed === 1,
-              role: checkuser.role,
-              profile: serializedResult,
-              token: null,
-            },
+          status: false,
+          message: 'Profile tidak ditemukan',
+          users: null,
+          token: null,
         };
+      }
 
-    } catch (e : any) {
+      const serializedResult = {
+        ...getprofile,
+        city_id: Number(getprofile.city_id),
+      };
+
+      return {
+        status: true,
+        message: 'Berhasil',
+        users: {
+          id: checkuser.id,
+          email: checkuser.email,
+          is_verified: checkuser.verifed === 1,
+          role: checkuser.role,
+          clinic_id: getprofile.clinic_id,
+          profile: serializedResult,
+          token: null,
+        },
+      };
+    } catch (e: any) {
       if (e instanceof ZodError) {
-        const errorMessages = e.errors.map(error => ({
+        const errorMessages = e.errors.map((error) => ({
           field: error.path.join('.'),
           message: error.message,
         }));
-    
+
         return {
           status: false,
           message: 'Validasi gagal',
@@ -95,9 +93,9 @@ export class ProfileService {
   async updatecreate(ProfileDTO: ProfileDto, tokenjwt: string) {
     try {
       const profileData = { ...ProfileDTO };
-  
-      console.log('ProfileDTO:', profileData); 
-  
+
+      console.log('ProfileDTO:', profileData);
+
       const profileSchema = z.object({
         fullname: z.string().max(64).min(1),
         phone_number: z.string().min(1),
@@ -117,20 +115,20 @@ export class ProfileService {
         area_code: z.number().int().optional(),
         responsibleForCosts: z.string().optional(),
       });
-  
+
       const validatedData = profileSchema.parse(profileData);
       const extracttoken = jwt.verify(tokenjwt, process.env.JWT_SECRET);
-  
+
       if (typeof extracttoken !== 'string' && 'userId' in extracttoken) {
         var userId = extracttoken.userId;
       }
-  
+
       const getprofile = await this.prisma.profile.findUnique({
         where: {
-          user_id: userId
+          user_id: userId,
         },
       });
-  
+
       if (!getprofile) {
         return {
           status: false,
@@ -140,7 +138,7 @@ export class ProfileService {
           token: null,
         };
       }
-  
+
       const updateprofile = await this.prisma.profile.update({
         where: { user_id: userId },
         data: profileData,
@@ -154,15 +152,15 @@ export class ProfileService {
           id: updateprofile.user_id,
         },
         include: {
-          role: true
-        }
+          role: true,
+        },
       });
 
       const serializedResult = {
         ...getprofile,
         city_id: Number(getprofile.city_id),
       };
-  
+
       return {
         status: true,
         message: 'Berhasil',
@@ -171,18 +169,18 @@ export class ProfileService {
           email: checkuser.email,
           is_verified: checkuser.verifed === 1,
           role: checkuser.role,
+          clinic_id: getprofile.clinic_id,
           profile: serializedResult,
           token: null,
         },
       };
-  
-    } catch (e : any) {
+    } catch (e: any) {
       if (e instanceof ZodError) {
-        const errorMessages = e.errors.map(error => ({
+        const errorMessages = e.errors.map((error) => ({
           field: error.path.join('.'),
           message: error.message,
         }));
-  
+
         return {
           status: 400,
           success: false,
@@ -192,24 +190,24 @@ export class ProfileService {
           data: null,
         };
       }
-  
+
       return {
         status: 400,
         success: false,
-        errors: [{
-          field: "",
-          message: e.message || 'Terjadi kesalahan',
-        }],
+        errors: [
+          {
+            field: '',
+            message: e.message || 'Terjadi kesalahan',
+          },
+        ],
         meta: null,
         message: 'Validasi gagal',
         data: null,
       };
     }
   }
-  
 
-  async update_avatar(token: string,profil_image: string,){
-
+  async update_avatar(token: string, profil_image: string) {
     try {
       const extracttoken = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -240,8 +238,8 @@ export class ProfileService {
             id: userId,
           },
           include: {
-            role: true
-          }
+            role: true,
+          },
         });
 
         if (!checkuser) {
@@ -257,17 +255,16 @@ export class ProfileService {
             },
           };
         }
-        
+
         const updateprofile = await this.prisma.profile.update({
           where: { user_id: userId },
-          data: { 
-            profil_image: profil_image
+          data: {
+            profil_image: profil_image,
           },
           include: {
             user: true,
           },
         });
-        
 
         return {
           status: true,
@@ -277,6 +274,7 @@ export class ProfileService {
             email: checkuser.email,
             is_verified: checkuser.verifed === 1,
             role: checkuser.role,
+            clinic_id: updateprofile.clinic_id,
             profile: updateprofile,
             token: null,
           },
@@ -312,5 +310,4 @@ export class ProfileService {
       };
     }
   }
-  
 }

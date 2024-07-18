@@ -33,88 +33,102 @@ export class PolyController {
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Create' })
- @ApiResponse({
-  status: 201,
-  description: 'success',
-  schema: {
-    type: 'object',
-    properties: {
-      status: { type: 'number', example: 201 },
-      success: { type: 'boolean', example: true },
-      errors: { type: 'object', example: null },
-      meta: { type: 'object', example: null },
-      message: { type: 'string', example: 'Poly created successfully' },
-      data: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', example: 'd06ff337-18a0-4a77-9b7c-090eed3591d1' },
-          name: { type: 'string', example: 'Teeth' },
-          description: { type: 'string', example: 'Clinic for teeth care' },
-          clinic_id: { type: 'string', example: null },
-          clinic: {
-            type: 'object',
-            properties: {
-              id: { type: 'string', example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30' },
-              clinic_name: { type: 'string', example: 'Klinik Tongz' },
-              description: { type: 'string', example: 'Deskripsi Klinik' },
-              address: { type: 'string', example: 'jl.arjosari' },
-              post_code: { type: 'string', example: '12345' },
-              latitude: { type: 'number', example: 123456 },
-              longitude: { type: 'number', example: 123456 },
-              city_id: { type: 'number', example: 3507062002 },
-              city: {
-                type: 'object',
-                properties: {
-                  id: { type: 'number', example: 3507062002 },
-                  provinsi: { type: 'string', example: '' },
-                  kabupaten: { type: 'string', example: '' },
-                  kecamatan: { type: 'string', example: '' },
-                  kelurahan: { type: 'string', example: '' },
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-})
+  @ApiResponse({
+    status: 201,
+    description: 'success',
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'number', example: 201 },
+        success: { type: 'boolean', example: true },
+        errors: { type: 'object', example: null },
+        meta: { type: 'object', example: null },
+        message: { type: 'string', example: 'Poly created successfully' },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              example: 'd06ff337-18a0-4a77-9b7c-090eed3591d1',
+            },
+            name: { type: 'string', example: 'Teeth' },
+            description: { type: 'string', example: 'Clinic for teeth care' },
+            clinic_id: { type: 'string', example: null },
+            clinic: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30',
+                },
+                clinic_name: { type: 'string', example: 'Klinik Tongz' },
+                description: { type: 'string', example: 'Deskripsi Klinik' },
+                address: { type: 'string', example: 'jl.arjosari' },
+                post_code: { type: 'string', example: '12345' },
+                latitude: { type: 'number', example: 123456 },
+                longitude: { type: 'number', example: 123456 },
+                city_id: { type: 'number', example: 3507062002 },
+                city: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number', example: 3507062002 },
+                    provinsi: { type: 'string', example: '' },
+                    kabupaten: { type: 'string', example: '' },
+                    kecamatan: { type: 'string', example: '' },
+                    kelurahan: { type: 'string', example: '' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   async create(@Body() polyDto: PolyDto, @Res() res: Response) {
     try {
       const createdPoly = await this.polyService.createPoly(polyDto);
       if (createdPoly.status === true) {
-        return res.status(201).json(format_json(
-          200,
-          false,
-          null,
-          null,
-          'poly created Success',
-          createdPoly.data,
-        ));
-      } else {
-        return res.status(400).json(format_json(
-          400,
-          false,
-          createdPoly.errors,
-          null,
-          createdPoly.message,
-          null,
-        ));
-      }
-      } catch (error:any) {
         return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .status(201)
           .json(
             format_json(
-              500,
-              false,
+              200,
               true,
               null,
-              'Server Error ' + error,
-              error.message,
+              null,
+              'poly created Success',
+              createdPoly.data,
+            ),
+          );
+      } else {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              createdPoly.errors,
+              null,
+              createdPoly.message,
+              null,
             ),
           );
       }
+    } catch (error: any) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(
+          format_json(
+            500,
+            false,
+            true,
+            null,
+            'Server Error ' + error,
+            error.message,
+          ),
+        );
+    }
   }
 
   @Put(':id')
@@ -122,52 +136,58 @@ export class PolyController {
   @UsePipes(CustomValidationPipe)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Update' })
- @ApiResponse({
-  status: 201,
-  description: 'success',
-  schema: {
-    type: 'object',
-    properties: {
-      status: { type: 'number', example: 201 },
-      success: { type: 'boolean', example: true },
-      errors: { type: 'object', example: null },
-      meta: { type: 'object', example: null },
-      message: { type: 'string', example: 'Poly created successfully' },
-      data: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', example: 'd06ff337-18a0-4a77-9b7c-090eed3591d1' },
-          name: { type: 'string', example: 'Teeth' },
-          description: { type: 'string', example: 'Clinic for teeth care' },
-          clinic_id: { type: 'string', example: null },
-          clinic: {
-            type: 'object',
-            properties: {
-              id: { type: 'string', example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30' },
-              clinic_name: { type: 'string', example: 'Klinik Tongz' },
-              description: { type: 'string', example: 'Deskripsi Klinik' },
-              address: { type: 'string', example: 'jl.arjosari' },
-              post_code: { type: 'string', example: '12345' },
-              latitude: { type: 'number', example: 123456 },
-              longitude: { type: 'number', example: 123456 },
-              city_id: { type: 'number', example: 3507062002 },
-              city: {
-                type: 'object',
-                properties: {
-                  id: { type: 'number', example: 3507062002 },
-                  provinsi: { type: 'string', example: '' },
-                  kabupaten: { type: 'string', example: '' },
-                  kecamatan: { type: 'string', example: '' },
-                  kelurahan: { type: 'string', example: '' },
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-})
+  @ApiResponse({
+    status: 201,
+    description: 'success',
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'number', example: 201 },
+        success: { type: 'boolean', example: true },
+        errors: { type: 'object', example: null },
+        meta: { type: 'object', example: null },
+        message: { type: 'string', example: 'Poly created successfully' },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              example: 'd06ff337-18a0-4a77-9b7c-090eed3591d1',
+            },
+            name: { type: 'string', example: 'Teeth' },
+            description: { type: 'string', example: 'Clinic for teeth care' },
+            clinic_id: { type: 'string', example: null },
+            clinic: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30',
+                },
+                clinic_name: { type: 'string', example: 'Klinik Tongz' },
+                description: { type: 'string', example: 'Deskripsi Klinik' },
+                address: { type: 'string', example: 'jl.arjosari' },
+                post_code: { type: 'string', example: '12345' },
+                latitude: { type: 'number', example: 123456 },
+                longitude: { type: 'number', example: 123456 },
+                city_id: { type: 'number', example: 3507062002 },
+                city: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number', example: 3507062002 },
+                    provinsi: { type: 'string', example: '' },
+                    kabupaten: { type: 'string', example: '' },
+                    kecamatan: { type: 'string', example: '' },
+                    kelurahan: { type: 'string', example: '' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   async update(
     @Param('id') id: string,
     @Body() updatePolyDto: UpdatePolyDto,
@@ -176,90 +196,104 @@ export class PolyController {
     try {
       const updatedPoly = await this.polyService.updatePoly(id, updatePolyDto);
       if (updatedPoly.status === true) {
-        return res.status(201).json(format_json(
-          200,
-          false,
-          null,
-          null,
-          'poly update Success',
-          updatedPoly.data,
-        ));
-      } else {
-        return res.status(400).json(format_json(
-          400,
-          false,
-          updatedPoly.errors,
-          null,
-          updatedPoly.message,
-          null,
-        ));
-      }
-      } catch (error:any) {
         return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .status(201)
           .json(
             format_json(
-              500,
-              false,
+              200,
               true,
               null,
-              'Server Error ' + error,
-              error.message,
+              null,
+              'poly update Success',
+              updatedPoly.data,
+            ),
+          );
+      } else {
+        return res
+          .status(400)
+          .json(
+            format_json(
+              400,
+              false,
+              updatedPoly.errors,
+              null,
+              updatedPoly.message,
+              null,
             ),
           );
       }
+    } catch (error: any) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(
+          format_json(
+            500,
+            false,
+            true,
+            null,
+            'Server Error ' + error,
+            error.message,
+          ),
+        );
+    }
   }
 
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
   @ApiOperation({ summary: 'Get' })
- @ApiResponse({
-  status: 201,
-  description: 'success',
-  schema: {
-    type: 'object',
-    properties: {
-      status: { type: 'number', example: 201 },
-      success: { type: 'boolean', example: true },
-      errors: { type: 'object', example: null },
-      meta: { type: 'object', example: null },
-      message: { type: 'string', example: 'Poly created successfully' },
-      data: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', example: 'd06ff337-18a0-4a77-9b7c-090eed3591d1' },
-          name: { type: 'string', example: 'Teeth' },
-          description: { type: 'string', example: 'Clinic for teeth care' },
-          clinic_id: { type: 'string', example: null },
-          clinic: {
-            type: 'object',
-            properties: {
-              id: { type: 'string', example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30' },
-              clinic_name: { type: 'string', example: 'Klinik Tongz' },
-              description: { type: 'string', example: 'Deskripsi Klinik' },
-              address: { type: 'string', example: 'jl.arjosari' },
-              post_code: { type: 'string', example: '12345' },
-              latitude: { type: 'number', example: 123456 },
-              longitude: { type: 'number', example: 123456 },
-              city_id: { type: 'number', example: 3507062002 },
-              city: {
-                type: 'object',
-                properties: {
-                  id: { type: 'number', example: 3507062002 },
-                  provinsi: { type: 'string', example: '' },
-                  kabupaten: { type: 'string', example: '' },
-                  kecamatan: { type: 'string', example: '' },
-                  kelurahan: { type: 'string', example: '' },
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-})
+  @ApiResponse({
+    status: 201,
+    description: 'success',
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'number', example: 201 },
+        success: { type: 'boolean', example: true },
+        errors: { type: 'object', example: null },
+        meta: { type: 'object', example: null },
+        message: { type: 'string', example: 'Poly created successfully' },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              example: 'd06ff337-18a0-4a77-9b7c-090eed3591d1',
+            },
+            name: { type: 'string', example: 'Teeth' },
+            description: { type: 'string', example: 'Clinic for teeth care' },
+            clinic_id: { type: 'string', example: null },
+            clinic: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30',
+                },
+                clinic_name: { type: 'string', example: 'Klinik Tongz' },
+                description: { type: 'string', example: 'Deskripsi Klinik' },
+                address: { type: 'string', example: 'jl.arjosari' },
+                post_code: { type: 'string', example: '12345' },
+                latitude: { type: 'number', example: 123456 },
+                longitude: { type: 'number', example: 123456 },
+                city_id: { type: 'number', example: 3507062002 },
+                city: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number', example: 3507062002 },
+                    provinsi: { type: 'string', example: '' },
+                    kabupaten: { type: 'string', example: '' },
+                    kecamatan: { type: 'string', example: '' },
+                    kelurahan: { type: 'string', example: '' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   async findAll(@Res() res: Response) {
     try {
       const polies = await this.polyService.findAll();
@@ -275,72 +309,78 @@ export class PolyController {
             polies,
           ),
         );
-      } catch (error:any) {
-        return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json(
-            format_json(
-              500,
-              false,
-              true,
-              null,
-              'Server Error ' + error,
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(
+          format_json(
+            500,
+            false,
+            true,
+            null,
+            'Server Error ' + error,
+            error.message,
+          ),
+        );
+    }
   }
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator', 'patient', 'doctor', 'guest')
   @ApiOperation({ summary: 'Details' })
- @ApiResponse({
-  status: 201,
-  description: 'success',
-  schema: {
-    type: 'object',
-    properties: {
-      status: { type: 'number', example: 201 },
-      success: { type: 'boolean', example: true },
-      errors: { type: 'object', example: null },
-      meta: { type: 'object', example: null },
-      message: { type: 'string', example: 'Poly created successfully' },
-      data: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', example: 'd06ff337-18a0-4a77-9b7c-090eed3591d1' },
-          name: { type: 'string', example: 'Teeth' },
-          description: { type: 'string', example: 'Clinic for teeth care' },
-          clinic_id: { type: 'string', example: null },
-          clinic: {
-            type: 'object',
-            properties: {
-              id: { type: 'string', example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30' },
-              clinic_name: { type: 'string', example: 'Klinik Tongz' },
-              description: { type: 'string', example: 'Deskripsi Klinik' },
-              address: { type: 'string', example: 'jl.arjosari' },
-              post_code: { type: 'string', example: '12345' },
-              latitude: { type: 'number', example: 123456 },
-              longitude: { type: 'number', example: 123456 },
-              city_id: { type: 'number', example: 3507062002 },
-              city: {
-                type: 'object',
-                properties: {
-                  id: { type: 'number', example: 3507062002 },
-                  provinsi: { type: 'string', example: '' },
-                  kabupaten: { type: 'string', example: '' },
-                  kecamatan: { type: 'string', example: '' },
-                  kelurahan: { type: 'string', example: '' },
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-})
+  @ApiResponse({
+    status: 201,
+    description: 'success',
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'number', example: 201 },
+        success: { type: 'boolean', example: true },
+        errors: { type: 'object', example: null },
+        meta: { type: 'object', example: null },
+        message: { type: 'string', example: 'Poly created successfully' },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              example: 'd06ff337-18a0-4a77-9b7c-090eed3591d1',
+            },
+            name: { type: 'string', example: 'Teeth' },
+            description: { type: 'string', example: 'Clinic for teeth care' },
+            clinic_id: { type: 'string', example: null },
+            clinic: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30',
+                },
+                clinic_name: { type: 'string', example: 'Klinik Tongz' },
+                description: { type: 'string', example: 'Deskripsi Klinik' },
+                address: { type: 'string', example: 'jl.arjosari' },
+                post_code: { type: 'string', example: '12345' },
+                latitude: { type: 'number', example: 123456 },
+                longitude: { type: 'number', example: 123456 },
+                city_id: { type: 'number', example: 3507062002 },
+                city: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number', example: 3507062002 },
+                    provinsi: { type: 'string', example: '' },
+                    kabupaten: { type: 'string', example: '' },
+                    kecamatan: { type: 'string', example: '' },
+                    kelurahan: { type: 'string', example: '' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const poly = await this.polyService.findOne(id);
@@ -356,72 +396,78 @@ export class PolyController {
             poly,
           ),
         );
-      } catch (error:any) {
-        return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json(
-            format_json(
-              500,
-              false,
-              true,
-              null,
-              'Server Error ' + error,
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(
+          format_json(
+            500,
+            false,
+            true,
+            null,
+            'Server Error ' + error,
+            error.message,
+          ),
+        );
+    }
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'manager', 'operator')
   @ApiOperation({ summary: 'Delete' })
- @ApiResponse({
-  status: 201,
-  description: 'success',
-  schema: {
-    type: 'object',
-    properties: {
-      status: { type: 'number', example: 201 },
-      success: { type: 'boolean', example: true },
-      errors: { type: 'object', example: null },
-      meta: { type: 'object', example: null },
-      message: { type: 'string', example: 'Poly created successfully' },
-      data: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', example: 'd06ff337-18a0-4a77-9b7c-090eed3591d1' },
-          name: { type: 'string', example: 'Teeth' },
-          description: { type: 'string', example: 'Clinic for teeth care' },
-          clinic_id: { type: 'string', example: null },
-          clinic: {
-            type: 'object',
-            properties: {
-              id: { type: 'string', example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30' },
-              clinic_name: { type: 'string', example: 'Klinik Tongz' },
-              description: { type: 'string', example: 'Deskripsi Klinik' },
-              address: { type: 'string', example: 'jl.arjosari' },
-              post_code: { type: 'string', example: '12345' },
-              latitude: { type: 'number', example: 123456 },
-              longitude: { type: 'number', example: 123456 },
-              city_id: { type: 'number', example: 3507062002 },
-              city: {
-                type: 'object',
-                properties: {
-                  id: { type: 'number', example: 3507062002 },
-                  provinsi: { type: 'string', example: '' },
-                  kabupaten: { type: 'string', example: '' },
-                  kecamatan: { type: 'string', example: '' },
-                  kelurahan: { type: 'string', example: '' },
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-})
+  @ApiResponse({
+    status: 201,
+    description: 'success',
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'number', example: 201 },
+        success: { type: 'boolean', example: true },
+        errors: { type: 'object', example: null },
+        meta: { type: 'object', example: null },
+        message: { type: 'string', example: 'Poly created successfully' },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              example: 'd06ff337-18a0-4a77-9b7c-090eed3591d1',
+            },
+            name: { type: 'string', example: 'Teeth' },
+            description: { type: 'string', example: 'Clinic for teeth care' },
+            clinic_id: { type: 'string', example: null },
+            clinic: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  example: '11c3a62b-6962-4458-b7a4-e2b6f1a63b30',
+                },
+                clinic_name: { type: 'string', example: 'Klinik Tongz' },
+                description: { type: 'string', example: 'Deskripsi Klinik' },
+                address: { type: 'string', example: 'jl.arjosari' },
+                post_code: { type: 'string', example: '12345' },
+                latitude: { type: 'number', example: 123456 },
+                longitude: { type: 'number', example: 123456 },
+                city_id: { type: 'number', example: 3507062002 },
+                city: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number', example: 3507062002 },
+                    provinsi: { type: 'string', example: '' },
+                    kabupaten: { type: 'string', example: '' },
+                    kecamatan: { type: 'string', example: '' },
+                    kelurahan: { type: 'string', example: '' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       await this.polyService.removePoly(id);
@@ -430,19 +476,19 @@ export class PolyController {
         .json(
           format_json(200, true, null, null, 'Poly deleted successfully', null),
         );
-      } catch (error:any) {
-        return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json(
-            format_json(
-              500,
-              false,
-              true,
-              null,
-              'Server Error ' + error,
-              error.message,
-            ),
-          );
-      }
+    } catch (error: any) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(
+          format_json(
+            500,
+            false,
+            true,
+            null,
+            'Server Error ' + error,
+            error.message,
+          ),
+        );
+    }
   }
 }
