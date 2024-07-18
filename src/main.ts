@@ -26,7 +26,9 @@ async function bootstrap() {
   .addBearerAuth()
   .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-swagger', app, document);
+  SwaggerModule.setup('swagger', app, document, {
+    jsonDocumentUrl: 'swagger/json',
+  });
   await app.listen(3000);
 }
 bootstrap().catch(err => console.error('Bootstrap error:', err));
