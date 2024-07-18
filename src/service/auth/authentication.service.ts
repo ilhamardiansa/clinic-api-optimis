@@ -443,8 +443,8 @@ export class AuthenticationService {
             role: null,
             clinic_id: null,
             is_verified: false,
+            token: null,
           },
-          token: null,
         };
       }
 
@@ -486,8 +486,8 @@ export class AuthenticationService {
             role: user.role,
             clinic_id : getprofile.clinic_id,
             is_verified: false,
+            token: token_verifikasi,
           },
-          token: token_verifikasi,
         };
       }
 
