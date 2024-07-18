@@ -442,7 +442,7 @@ export class AuthenticationService {
             email: null,
             role: null,
             clinic_id: null,
-            verifikasi: false,
+            is_verified: false,
           },
           token: null,
         };
@@ -460,6 +460,22 @@ export class AuthenticationService {
           process.env.JWT_SECRET,
           { expiresIn: '7d' },
         );
+
+        const otp = generateRandomNumber(100000, 999999);
+
+        const sendemail = this.mailService.sendMail(
+          user.email,
+          'Verifikasi email',
+          otp,
+          getprofile.fullname,
+        );
+  
+        const saveotp = await this.prisma.otp.create({
+          data: {
+            kode_otp: otp,
+            user_id: user.id,
+          },
+        });
   
         return {
           status: true,
@@ -469,7 +485,7 @@ export class AuthenticationService {
             email: user.email,
             role: user.role,
             clinic_id : getprofile.clinic_id,
-            verifikasi: false,
+            is_verified: false,
           },
           token: token_verifikasi,
         };
