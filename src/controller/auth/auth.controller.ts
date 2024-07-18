@@ -29,6 +29,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import { Updateavatar } from 'src/dto/auth/updateavatar.dto';
 import { ChangePassDTO } from 'src/dto/auth/change.pass.dto';
+import { SignInDto } from 'src/dto/auth/signin.dto';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -572,7 +573,7 @@ export class AuthController {
       }
     }
   })
-  async signin(@Body() authDTO: AuthDTO, @Res() res: Response) {
+  async signin(@Body() authDTO: SignInDto, @Res() res: Response) {
     try {
       const user = await this.AuthenticationService.signin(authDTO);
       if (user.status) {

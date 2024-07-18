@@ -6,6 +6,7 @@ import { ZodError, z } from 'zod';
 import { mailService } from '../mailer/mailer.service';
 import { VerifikasiDTO } from 'src/dto/auth/verifikasi.dto';
 import * as bcrypt from 'bcrypt';
+import { SignInDto } from 'src/dto/auth/signin.dto';
 
 export function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -388,7 +389,7 @@ export class AuthenticationService {
     }
   }
 
-  async signin(authDTO: AuthDTO) {
+  async signin(authDTO: SignInDto) {
     const SigninSchema = z.object({
       email: z.string().email().min(1),
       password: z.string().min(8),
