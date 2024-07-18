@@ -85,6 +85,22 @@ async function main() {
     },
   });
 
+  const clinic = await prisma.clinic.create({
+    data: {
+      clinic_name: 'PERMATA BUNDA',
+      description: 'clinic',
+      address: 'disini',
+      post_code: "0792321",
+      latitude: 2313123,
+      longitude: 2323232,
+      city: {
+        connect: {
+          id: 1101012001
+        },
+      },
+    },
+  });
+
   await prisma.profile.create({
     data: {
       fullname: 'Manager',
@@ -102,6 +118,7 @@ async function main() {
       nationality: null,
       religion: null,
       city_id: null,
+      clinic_id: clinic.id,
       neighborhood_no: null,
       citizen_no: null,
       area_code: null,
@@ -126,6 +143,7 @@ async function main() {
       nationality: null,
       religion: null,
       city_id: null,
+      clinic_id: clinic.id,
       neighborhood_no: null,
       citizen_no: null,
       area_code: null,
@@ -150,6 +168,7 @@ async function main() {
       nationality: null,
       religion: null,
       city_id: null,
+      clinic_id: clinic.id,
       neighborhood_no: null,
       citizen_no: null,
       area_code: null,
@@ -174,6 +193,7 @@ async function main() {
       nationality: null,
       religion: null,
       city_id: null,
+      clinic_id: clinic.id,
       neighborhood_no: null,
       citizen_no: null,
       area_code: null,
@@ -198,6 +218,7 @@ async function main() {
       nationality: null,
       religion: null,
       city_id: null,
+      clinic_id: clinic.id,
       neighborhood_no: null,
       citizen_no: null,
       area_code: null,

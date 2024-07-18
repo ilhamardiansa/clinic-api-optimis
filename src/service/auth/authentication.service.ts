@@ -79,6 +79,10 @@ export class AuthenticationService {
         role: true
       } });
 
+      const clinic = await this.prisma.clinic.findFirst({
+        where: { clinic_name: "PERMATA BUNDA"}
+      });
+
       const dataprofile = {
         fullname: AuthDTO.fullname,
         phone_number: AuthDTO.phone_number,
@@ -97,6 +101,11 @@ export class AuthenticationService {
         user: {
           connect: {
             id: user.id,
+          },
+        },
+        clinic: {
+          connect: {
+            id: clinic.id,
           },
         },
         neighborhood_no: null,
@@ -139,6 +148,7 @@ export class AuthenticationService {
           email: user.email,
           is_verified: user.verifed === 1,
           role: user.role,
+          clinic_id : profile.clinic_id,
           token: token,
         },
       };
@@ -190,6 +200,7 @@ export class AuthenticationService {
             email: null,
             is_verified: null,
             role: null,
+            clinic_id: null,
             token: null,
           },
         };
@@ -210,6 +221,7 @@ export class AuthenticationService {
             email: checkuser.email,
             is_verified: checkuser.verifed === 1,
             role: checkuser.role,
+            clinic_id : getprofile.clinic_id,
             token: null,
           },
         };
@@ -239,6 +251,7 @@ export class AuthenticationService {
           email: checkuser.email,
           is_verified: checkuser.verifed === 1,
           role: checkuser.role,
+          clinic_id : getprofile.clinic_id,
           token: null,
         },
       };
@@ -289,6 +302,7 @@ export class AuthenticationService {
             email: null,
             is_verified: null,
             role: null,
+            clinic_id : null,
             token: null,
           },
         };
@@ -309,6 +323,7 @@ export class AuthenticationService {
             email: checkuser.email,
             is_verified: checkuser.verifed === 1,
             role: checkuser.role,
+            clinic_id : getprofile.clinic_id,
             token: null,
           },
         };
@@ -331,6 +346,7 @@ export class AuthenticationService {
             email: checkuser.email,
             is_verified: checkuser.verifed === 1,
             role: checkuser.role,
+            clinic_id : getprofile.clinic_id,
             token: null,
           },
         };
@@ -362,6 +378,7 @@ export class AuthenticationService {
           email: checkuser.email,
           is_verified: checkuser.verifed === 1,
           role: checkuser.role,
+          clinic_id : getprofile.clinic_id,
           token: newToken,
         },
       };
@@ -424,11 +441,18 @@ export class AuthenticationService {
             id: null,
             email: null,
             role: null,
+            clinic_id: null,
             verifikasi: false,
           },
           token: null,
         };
       }
+
+      const getprofile = await this.prisma.profile.findUnique({
+        where: {
+          user_id: user.id,
+        },
+      });
 
       if (user.verifed == 0) {
         const token_verifikasi = jwt.sign(
@@ -444,6 +468,7 @@ export class AuthenticationService {
             id: user.id,
             email: user.email,
             role: user.role,
+            clinic_id : getprofile.clinic_id,
             verifikasi: false,
           },
           token: token_verifikasi,
@@ -466,6 +491,7 @@ export class AuthenticationService {
           email: user.email,
           is_verified: user.verifed === 1,
           role: user.role,
+          clinic_id : getprofile.clinic_id,
           token: token,
         },
       };
@@ -561,6 +587,7 @@ export class AuthenticationService {
               email: null,
               is_verified: null,
               role: null,
+              clinic_id: null,
               token: null,
             },
           };
@@ -584,10 +611,16 @@ export class AuthenticationService {
               email: null,
               is_verified: null,
               role: null,
+              clinic_id: null,
               token: null,
             },
           };
         }
+        const getprofile = await this.prisma.profile.findUnique({
+          where: {
+            user_id: checkuser.id,
+          },
+        });
 
         const isPasswordValid = await bcrypt.compare(
           password,
@@ -603,6 +636,7 @@ export class AuthenticationService {
               email: checkuser.email,
               is_verified: checkuser.verifed === 1,
               role: checkuser.role,
+              clinic_id : getprofile.clinic_id,
               token: null,
             },
           };
@@ -625,6 +659,7 @@ export class AuthenticationService {
             email: checkuser.email,
             is_verified: checkuser.verifed === 1,
             role: checkuser.role,
+            clinic_id : getprofile.clinic_id,
             token: null,
           },
         };
