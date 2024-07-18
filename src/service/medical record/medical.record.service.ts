@@ -158,11 +158,39 @@ export class MedicalRecordService {
           city: { connect: { id: validatedData.city_id } },
         },
         include: {
-          poly: { include: { clinic: true } },
+          poly: {
+            include: {
+              clinic: {
+                include: {
+                  city: true,
+                },
+              },
+            },
+          },
+          city: true,
         },
       });
 
-      return update;
+      const serializedResult = {
+        ...update,
+        poly: {
+          clinic: {
+            ...update.poly.clinic,
+            city_id: Number(update.poly.clinic.city_id),
+            city: {
+              ...update.poly.clinic.city,
+              id: Number(update.poly.clinic.city.id),
+            },
+          },
+        },
+        city_id: Number(update.city_id),
+        city: {
+          ...update.city,
+          id: Number(update.city.id),
+        },
+      };
+
+      return serializedResult;
     } catch (e: any) {
       this.logger.error('Error updating medical record', e);
 
@@ -190,8 +218,18 @@ export class MedicalRecordService {
       const record = await this.prisma.record.findUnique({
         where: { id: id },
         include: {
-          poly: { include: { clinic: true } },
+          poly: {
+            include: {
+              clinic: {
+                include: {
+                  city: true,
+                },
+              },
+            },
+          },
+          city: true,
         },
+
       });
       if (!record) {
         throw new BadRequestException({
@@ -199,7 +237,27 @@ export class MedicalRecordService {
           message: 'Medical record not found',
         });
       }
-      return record;
+
+      const serializedResult = {
+        ...record,
+        poly: {
+          clinic: {
+            ...record.poly.clinic,
+            city_id: Number(record.poly.clinic.city_id),
+            city: {
+              ...record.poly.clinic.city,
+              id: Number(record.poly.clinic.city.id),
+            },
+          },
+        },
+        city_id: Number(record.city_id),
+        city: {
+          ...record.city,
+          id: Number(record.city.id),
+        },
+      };
+
+      return serializedResult;
     } catch (e: any) {
       this.logger.error('Error finding medical record', e);
       throw new BadRequestException({
@@ -211,11 +269,41 @@ export class MedicalRecordService {
 
   async findAll() {
     try {
-      return await this.prisma.record.findMany({
+      const findall =  await this.prisma.record.findMany({
         include: {
-          poly: { include: { clinic: true } },
+          poly: {
+            include: {
+              clinic: {
+                include: {
+                  city: true,
+                },
+              },
+            },
+          },
+          city: true,
         },
       });
+
+      const result = findall.map((findall) => ({
+        ...findall,
+        poly: {
+          clinic: {
+            ...findall.poly.clinic,
+            city_id: Number(findall.poly.clinic.city_id),
+            city: {
+              ...findall.poly.clinic.city,
+              id: Number(findall.poly.clinic.city.id),
+            },
+          },
+        },
+        city_id: Number(findall.city_id),
+        city: {
+          ...findall.city,
+          id: Number(findall.city.id),
+        },
+      }));
+
+      return result
     } catch (e: any) {
       this.logger.error('Error finding medical records', e);
       throw new BadRequestException({

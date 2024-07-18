@@ -19,36 +19,44 @@ export class LastMedicalRecordService {
         var userId = extracttoken.userId;
       }
 
-      const find = await this.prisma.record.findMany({
+      const findall = await this.prisma.record.findMany({
         include: {
-          user: true,
           poly: {
             include: {
-              clinic: true,
-            },
-          },
-          doctor: {
-            include: {
-              poly: {
+              clinic: {
                 include: {
-                  clinic: true,
+                  city: true,
                 },
               },
-              city: true,
             },
           },
+          city: true,
+        },
+      });
+
+      const result = findall.map((findall) => ({
+        ...findall,
+        poly: {
           clinic: {
-            include: {
-              city: true,
+            ...findall.poly.clinic,
+            city_id: Number(findall.poly.clinic.city_id),
+            city: {
+              ...findall.poly.clinic.city,
+              id: Number(findall.poly.clinic.city.id),
             },
           },
         },
-      });
+        city_id: Number(findall.city_id),
+        city: {
+          ...findall.city,
+          id: Number(findall.city.id),
+        },
+      }));
 
       return {
         status: true,
         message: 'Success',
-        data: find,
+        data: result,
       };
     } catch (e: any) {
       if (e instanceof ZodError) {

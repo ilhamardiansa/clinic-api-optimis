@@ -202,7 +202,7 @@ export class MedicalRecordController {
             false,
             'Bad Request',
             null,
-            'Failed to retrieve medical records',
+            'Failed to retrieve medical recordss',
             errorMessage,
           ),
         );
